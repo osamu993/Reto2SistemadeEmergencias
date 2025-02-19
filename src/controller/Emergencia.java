@@ -1,6 +1,6 @@
 package controller;
 
-public class Emergencia implements Responder {
+public class Emergencia {
     private String ubicacion;
     private int nivelGravedad;
     private int tiempoReespuesta;
@@ -40,18 +40,5 @@ public class Emergencia implements Responder {
         return "Emergencia [ubicacion=" + ubicacion + ", nivelGravedad=" + nivelGravedad + ", tiempoReespuesta="
                 + tiempoReespuesta + "]";
     }
-
-    @Override
-    public void atenderEmergencia() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'atenderEmergencia'");
-    }
-
-    @Override
-    public void evaluarEstado() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'evaluarEstado'");
-    }
-
     
 }
