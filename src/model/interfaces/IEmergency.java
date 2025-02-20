@@ -1,5 +1,4 @@
-package interfaces;
-
+package model.interfaces;
 
  // Interfaz que define los métodos base para una emergencia.
 

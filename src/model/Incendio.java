@@ -4,8 +4,8 @@ import controller.Responder;
 
 public class Incendio extends Emergencia implements Responder{
 
-    public Incendio (String tipo, String ubicacion, int nivelGravedad, int tiempoReespuesta){
-        super(ubicacion, nivelGravedad, tiempoReespuesta);
+    public Incendio (String ubicacion, int nivelGravedad, int tiempoReespuesta){
+        super("Incendio", ubicacion, nivelGravedad, tiempoReespuesta);
     }
 
     @Override

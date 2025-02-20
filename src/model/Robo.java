@@ -4,8 +4,8 @@ import controller.Responder;
 
 public class Robo extends Emergencia implements Responder{
 
-    public Robo (String tipo, String ubicacion, int nivelGravedad, int tiempoReespuesta){
-        super(ubicacion, nivelGravedad, tiempoReespuesta);
+    public Robo (String ubicacion, int nivelGravedad, int tiempoReespuesta){
+        super("Robo", ubicacion, nivelGravedad, tiempoReespuesta);
     }
 
     @Override
