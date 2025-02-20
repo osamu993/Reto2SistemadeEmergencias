@@ -8,9 +8,9 @@ public interface IServicioEmergencia {
     boolean estaDisponible();
     void asignarPersonal(int cantidad);
     void liberarPersonal(int cantidad);
-    void asignarCombustible(int cantidad);
-    void liberarCombustible(int cantidad);
-    void atenderEmergencia(Emergencia emergencia);
+    void gastarCombustible(int cantidad);
+    void tanquearCombustible(int cantidad);
+    //void atenderEmergencia(Emergencia emergencia); 
 
 
 }
