@@ -1,7 +1,7 @@
 package model.services;
 
-import controller.Emergencia;
-import controller.IServicioEmergencia;
+import model.Emergencia;
+import model.interfaces.IServicioEmergencia;
 
 public abstract class ServicioBase implements IServicioEmergencia{
 

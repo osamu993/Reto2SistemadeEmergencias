@@ -2,6 +2,7 @@ package controller;
 
 public interface Responder {
 
-    void atenderEmergencia ();
+    void atenderEmergencia();
+
     void evaluarEstado();
 }

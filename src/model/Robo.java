@@ -1,4 +1,6 @@
-package controller;
+package model;
+
+import controller.Responder;
 
 public class Robo extends Emergencia implements Responder{
 

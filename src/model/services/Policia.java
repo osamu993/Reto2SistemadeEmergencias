@@ -1,6 +1,6 @@
 package model.services;
 
-import controller.Emergencia;
+import model.Emergencia;
 
 public class Policia extends ServicioBase{
 

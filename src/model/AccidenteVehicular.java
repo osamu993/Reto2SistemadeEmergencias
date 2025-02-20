@@ -1,8 +1,10 @@
-package controller;
+package model;
 
-public class Accidente extends Emergencia implements Responder{
+import controller.Responder;
 
-    public Accidente(String tipo, String ubicacion, int nivelGravedad, int tiempoReespuesta){
+public class AccidenteVehicular extends Emergencia implements Responder{
+
+    public AccidenteVehicular(String tipo, String ubicacion, int nivelGravedad, int tiempoReespuesta){
         super(ubicacion, nivelGravedad, tiempoReespuesta);
     }
 

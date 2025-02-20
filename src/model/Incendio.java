@@ -1,4 +1,6 @@
-package controller;
+package model;
+
+import controller.Responder;
 
 public class Incendio extends Emergencia implements Responder{
 
