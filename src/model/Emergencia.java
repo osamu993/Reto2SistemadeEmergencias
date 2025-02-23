@@ -1,16 +1,18 @@
 package model;
+import utils.NivelGravedad;
+
 
 public abstract  class Emergencia {
     private String tipo;
     private String ubicacion;
-    private int nivelGravedad;
+    private NivelGravedad nivelGravedad;
     private int tiempoReespuesta;
     private boolean atendida;
     private long tiempoInicioAtencion;
     private long tiempoFinAtencion; 
 
     
-    public Emergencia(String tipo,String ubicacion, int nivelGravedad, int tiempoReespuesta) {
+    public Emergencia(String tipo,String ubicacion, NivelGravedad nivelGravedad, int tiempoReespuesta) {
         this.tipo = tipo;
         this.ubicacion = ubicacion;
         this.nivelGravedad = nivelGravedad;
@@ -39,12 +41,12 @@ public abstract  class Emergencia {
     }
 
 
-    public int getNivelGravedad() {
+    public NivelGravedad getNivelGravedad() {
         return nivelGravedad;
     }
 
 
-    public void setNivelGravedad(int nivelGravedad) {
+    public void setNivelGravedad(NivelGravedad nivelGravedad) {
         this.nivelGravedad = nivelGravedad;
     }
 

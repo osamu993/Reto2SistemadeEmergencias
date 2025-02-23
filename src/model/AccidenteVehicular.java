@@ -1,10 +1,11 @@
 package model;
 
 import controller.Responder;
+import utils.NivelGravedad;
 
 public class AccidenteVehicular extends Emergencia implements Responder{
 
-    public AccidenteVehicular(String ubicacion, int nivelGravedad, int tiempoReespuesta){
+    public AccidenteVehicular(String ubicacion, NivelGravedad nivelGravedad, int tiempoReespuesta){
         super("Accidente Vehicular", ubicacion, nivelGravedad, tiempoReespuesta);
     }
 

@@ -1,10 +1,11 @@
 package model;
 
 import controller.Responder;
+import utils.NivelGravedad;
 
 public class Robo extends Emergencia implements Responder{
 
-    public Robo (String ubicacion, int nivelGravedad, int tiempoReespuesta){
+    public Robo (String ubicacion, NivelGravedad nivelGravedad, int tiempoReespuesta){
         super("Robo", ubicacion, nivelGravedad, tiempoReespuesta);
     }
 
