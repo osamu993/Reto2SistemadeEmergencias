@@ -6,6 +6,9 @@ import controller.SistemaEmergencias;
  //Clase que representa el menú del sistema de emergencias.
  
 public class MenuSistemaEmergencia {
+    public SistemaEmergencias controller;
+
+
     private Scanner scanner;
 
     
