@@ -22,7 +22,7 @@ public class SistemaEmergencias implements SujetoEmergencias{
     private int emergenciasAtendidas;  
     private long tiempoTotalAtencion;
 
-    private SistemaEmergencias(){
+    public SistemaEmergencias(){
         strategyPrioridad = new StrategyPrioridadGravedad();
         listaEmergencias = new ArrayList<>();
         listaRecursos = new ArrayList<>();
