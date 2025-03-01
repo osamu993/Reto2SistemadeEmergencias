@@ -38,16 +38,16 @@ public class SistemaEmergencias implements SujetoEmergencias {
         if (emergencia != null) {
             listaEmergencias.add(emergencia);
             notificarObservers(emergencia);
-            System.out.println("✅ Emergencia registrada: " + tipo + " en " + ubicacion);
+            System.out.println(" Emergencia registrada: " + tipo + " en " + ubicacion);
         } else {
-            System.err.println("⚠️ Error: No se pudo registrar la emergencia.");
+            System.err.println(" Error: No se pudo registrar la emergencia.");
         }
     }
 
 
     public void listarEmergencias() {
         if (listaEmergencias.isEmpty()) {
-            System.out.println("⚠️ No hay emergencias activas.");
+            System.out.println(" No hay emergencias activas.");
         } else {
             System.out.println("\n--- Emergencias Activas ---");
             for (Emergencia emergencia : listaEmergencias) {
@@ -58,7 +58,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
 
     public void mostrarRecursos() {
         if (listaRecursos.isEmpty()) {
-            System.out.println("⚠️ No hay recursos disponibles.");
+            System.out.println(" No hay recursos disponibles.");
         } else {
             for (IServicioEmergencia recurso : listaRecursos) {
                 System.out.println("- " + recurso.getId() + " (Disponible: " + recurso.estaDisponible() + ")");
