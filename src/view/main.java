@@ -1,11 +1,12 @@
 package view;
-import java.util.Scanner;
 
-/**
- * Clase principal que ejecuta el sistema de emergencias.
- */
+
+ //Clase principal que ejecuta el sistema de emergencias.
 public class Main {
-    public static void main(String[] args) {
 
+    public static void main(String[] args) {  // Método main correcto
+        MenuSistemaEmergencia menu = new MenuSistemaEmergencia();
+        menu.mostrarMenu();
+ // Llamamos a un método para que el programa funcione
     }
 }
