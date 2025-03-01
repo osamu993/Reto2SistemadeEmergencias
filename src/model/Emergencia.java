@@ -91,6 +91,11 @@ public abstract  class Emergencia {
     }
 
 
+    public String getDescripcion() {
+        return tipo + " en " + ubicacion + " (Nivel: " + nivelGravedad + ")";
+    }
+
+
     @Override
     public String toString() {
         return "Emergencia [tipo=" + tipo + ", ubicacion=" + ubicacion + ", nivelGravedad=" + nivelGravedad
