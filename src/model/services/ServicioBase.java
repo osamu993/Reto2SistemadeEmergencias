@@ -8,11 +8,13 @@ public abstract class ServicioBase implements IServicioEmergencia{
     private String id;
     private int personalDisponible;
     private int combustible;
+    private String ubicacion;
 
-    public ServicioBase(String id, int personalDisponible, int combustible) {
+    public ServicioBase(String id, int personalDisponible, int combustible, String ubicacion) {
         this.id = id;
         this.personalDisponible = personalDisponible;
         this.combustible = combustible;
+        this.ubicacion = ubicacion;
     }
 
     @Override
@@ -28,6 +30,11 @@ public abstract class ServicioBase implements IServicioEmergencia{
     @Override
     public int getCombustible() {
         return combustible;
+    }
+
+    @Override
+    public String getUbicacion() {
+        return ubicacion;
     }
 
     @Override
