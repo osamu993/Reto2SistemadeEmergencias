@@ -7,10 +7,12 @@ public class Policia implements IServicioEmergencia {
     private boolean disponible;
     private int combustible;
     private int personalDisponible;
+    private String ubicacion;
 
-    public Policia(String id) {
+    public Policia(String id, String ubicacion) {
         this.id = id;
         this.disponible = true;
+        this.ubicacion = ubicacion;
     }
 
     @Override
@@ -79,5 +81,10 @@ public class Policia implements IServicioEmergencia {
         } else {
             System.out.println(" No hay suficiente personal disponible en la policía.");
         }
+    }
+
+    @Override
+    public String getUbicacion() {
+        return ubicacion;
     }
 }

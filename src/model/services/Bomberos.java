@@ -7,10 +7,12 @@ public class Bomberos implements IServicioEmergencia {
     private boolean disponible;
     private int combustible;
     private int personalDisponible;
+    private String ubicacion;
 
-    public Bomberos(String id) {
+    public Bomberos(String id, String ubicacion) {
         this.id = id;
         this.disponible = true;
+        this.ubicacion = ubicacion;
     }
 
     @Override
@@ -79,5 +81,10 @@ public class Bomberos implements IServicioEmergencia {
         } else {
             System.out.println(" No hay suficiente personal disponible en la estación de bomberos.");
         }
+    }
+
+    @Override
+    public String getUbicacion() {
+        return ubicacion;
     }
 }

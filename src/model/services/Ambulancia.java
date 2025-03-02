@@ -7,11 +7,13 @@ public class Ambulancia implements IServicioEmergencia {
     private boolean disponible;
     private int combustible;
     private int personalDisponible;
+    private String ubicacion;
     
 
-    public Ambulancia(String id) {
+    public Ambulancia(String id, String ubicacion) {
         this.id = id;
         this.disponible = true;
+        this.ubicacion = ubicacion;
     }
 
     @Override
@@ -80,5 +82,10 @@ public class Ambulancia implements IServicioEmergencia {
         } else {
             System.out.println(" No hay suficiente personal disponible en la ambulancia.");
         }
+    }
+
+    @Override
+    public String getUbicacion() {
+        return ubicacion;
     }
 }
