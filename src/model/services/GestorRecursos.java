@@ -23,6 +23,17 @@ public class GestorRecursos {
                 return null; // No hay recursos disponibles
     }
 
+    public IServicioEmergencia asignarRecursoDesde(String estacion, String tipoRecurso) {
+        for (IServicioEmergencia recurso : recursosDisponibles) {
+            if (recurso.estaDisponible() && recurso.getUbicacion().equalsIgnoreCase(estacion) && recurso.getClass().getSimpleName().equalsIgnoreCase(tipoRecurso)) {
+                recurso.desplegarUnidad(estacion);
+                return recurso;
+            }
+        }
+        return null; // No hay recursos disponibles de ese tipo en la estación indicada
+    }
+    
+
     public void liberarRecurso(IServicioEmergencia recurso, int personalLiberado) {
         recurso.liberarPersonal(personalLiberado);
     }
