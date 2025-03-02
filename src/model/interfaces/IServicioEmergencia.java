@@ -34,6 +34,8 @@ public interface IServicioEmergencia {
          */
         void liberarRecurso();
 
+        String getUbicacion();
+
         
     }
 
