@@ -11,7 +11,7 @@ public class MenuSistemaEmergencia {
     public MenuSistemaEmergencia() {
         this.scanner = new Scanner(System.in);
         this.controller = SistemaEmergencias.getInstance();
-    }
+        }
 
     public void mostrarMenu() {
         int opcion;
