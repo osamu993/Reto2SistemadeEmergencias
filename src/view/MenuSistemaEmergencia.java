@@ -24,6 +24,12 @@ public class MenuSistemaEmergencia {
             System.out.println("5. Mostrar estadísticas del día");
             System.out.println("6. Salir");
             System.out.print("Seleccione una opción: ");
+
+            while (!scanner.hasNextInt()) {
+                System.out.println(" Entrada no válida. Ingrese un número del 1 al 6.");
+                scanner.next(); // Limpiar entrada incorrecta
+            }
+
             opcion = scanner.nextInt();
             scanner.nextLine(); // Limpiar buffer
 
@@ -57,14 +63,25 @@ public class MenuSistemaEmergencia {
         String tipo = scanner.nextLine().toUpperCase();
         System.out.print("Ingrese la ubicación: ");
         String ubicacion = scanner.nextLine();
+
         System.out.print("Ingrese el nivel de gravedad (BAJO, MEDIO, ALTO): ");
         String gravedad = scanner.nextLine().toUpperCase();
+
+        while (!gravedad.equals("BAJO") && !gravedad.equals("MEDIO") && !gravedad.equals("ALTO")) {
+            System.out.print(" Nivel de gravedad inválido. Ingrese BAJO, MEDIO o ALTO: ");
+            gravedad = scanner.nextLine().toUpperCase();
+        }
+
         System.out.print("Ingrese el tiempo estimado de respuesta en minutos: ");
+        while (!scanner.hasNextInt()) {
+            System.out.println(" Entrada no válida. Ingrese un número entero para el tiempo estimado de respuesta.");
+            scanner.next(); // Limpiar entrada incorrecta
+        }
         int tiempo = scanner.nextInt();
         scanner.nextLine(); // Limpiar buffer
 
         controller.registrarEmergencia(tipo, ubicacion, NivelGravedad.valueOf(gravedad), tiempo);
-        System.out.println("✅ Emergencia registrada correctamente.");
+        System.out.println(" Emergencia registrada correctamente.");
     }
 
     private void mostrarEmergencias() {
@@ -80,9 +97,9 @@ public class MenuSistemaEmergencia {
     private void reasignarRecursos() {
         System.out.println("\nIntentando reasignar recursos...");
         if (controller.reasignarRecursos()) {
-            System.out.println("✅ Recursos reasignados correctamente.");
+            System.out.println(" Recursos reasignados correctamente.");
         } else {
-            System.out.println("⚠️ No hay recursos disponibles para reasignar.");
+            System.out.println(" No hay recursos disponibles para reasignar.");
         }
     }
 
