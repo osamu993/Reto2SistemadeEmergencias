@@ -30,6 +30,16 @@ public class GestorRecursos {
                 return null; // No hay recursos disponibles
     }
 
+    public IServicioEmergencia obtenerRecursoDisponible() {
+        for (IServicioEmergencia recurso : recursosDisponibles) {
+            if (!recurso.estaDisponible()) { // Busca un recurso ocupado para liberarlo
+                return recurso;
+            }
+        }
+        return null; // No hay recursos disponibles
+    }
+    
+
     public IServicioEmergencia asignarRecursoDesde(String ubicacionEmergencia, String tipoRecurso) {
 
         String estacionCercana = cityMap.obtenerEstacionCercana(ubicacionEmergencia);
