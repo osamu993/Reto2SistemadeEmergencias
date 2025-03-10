@@ -120,7 +120,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
         }
 
         if (emergenciaGrave != null && emergenciaLeve != null) {
-            IServicioEmergencia recurso = emergenciaLeve.liberarRecurso();
+            IServicioEmergencia recurso = emergenciaLeve.liberarRecurso(gestorRecursos);
             if (recurso != null) {
                 emergenciaGrave.asignarRecurso(recurso);
                 return true;
