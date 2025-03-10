@@ -36,6 +36,8 @@ public interface IServicioEmergencia {
 
         String getUbicacion();
 
+        void setDisponible(boolean estado); // Establece el recurso como disponible 
+
         
     }
 
