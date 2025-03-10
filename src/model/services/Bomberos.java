@@ -87,4 +87,9 @@ public class Bomberos implements IServicioEmergencia {
     public String getUbicacion() {
         return ubicacion;
     }
+
+    @Override
+    public void setDisponible(boolean estado) {
+        this.disponible = estado;
+    }
 }
