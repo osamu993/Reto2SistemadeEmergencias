@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.interfaces.IServicioEmergencia;
+import utils.CityMap;
 
 public class GestorRecursos {
     private List <ServicioBase> recursosDisponibles = new ArrayList<>();
+    private CityMap cityMap;
+
+    public GestorRecursos(CityMap cityMap) {
+        this.cityMap = cityMap;
+    }
 
     public void agregarRecursos(ServicioBase recurso) {
         recursosDisponibles.add(recurso);
@@ -17,16 +23,25 @@ public class GestorRecursos {
             if(recurso.estaDisponible() && recurso.getPersonalDisponible() >= personalRequerido && recurso.getCombustible() >= combustibleRequerido) {
                 recurso.asignarPersonal(personalRequerido);
                 recurso.gastarCombustible(combustibleRequerido);
+                recurso.setDisponible(false);
                 return recurso;
             }
         }
                 return null; // No hay recursos disponibles
     }
 
-    public IServicioEmergencia asignarRecursoDesde(String estacion, String tipoRecurso) {
+    public IServicioEmergencia asignarRecursoDesde(String ubicacionEmergencia, String tipoRecurso) {
+
+        String estacionCercana = cityMap.obtenerEstacionCercana(ubicacionEmergencia);
+
+        if (estacionCercana == null) {
+            System.out.println("No se encontro una estación cercana a la ubicación de emergencia.");
+            return null; // No se pudo obtener la estación cercana a la ubicación de emergencia
+        }
+
         for (IServicioEmergencia recurso : recursosDisponibles) {
-            if (recurso.estaDisponible() && recurso.getUbicacion().equalsIgnoreCase(estacion) && recurso.getClass().getSimpleName().equalsIgnoreCase(tipoRecurso)) {
-                recurso.desplegarUnidad(estacion);
+            if (recurso.estaDisponible() && recurso.getUbicacion().equalsIgnoreCase(estacionCercana) && recurso.getClass().getSimpleName().equalsIgnoreCase(tipoRecurso)) {
+                recurso.desplegarUnidad(estacionCercana);
                 return recurso;
             }
         }
@@ -36,6 +51,7 @@ public class GestorRecursos {
 
     public void liberarRecurso(IServicioEmergencia recurso, int personalLiberado) {
         recurso.liberarPersonal(personalLiberado);
+        recurso.setDisponible(true);
     }
 
     public void mostrarRecursos() {
