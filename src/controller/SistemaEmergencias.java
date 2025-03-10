@@ -25,7 +25,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
     private int emergenciasAtendidas;
     private long tiempoTotalAtencion;
 
-    private SistemaEmergencias() {
+    public SistemaEmergencias() {
         listaEmergencias = new ArrayList<>();
         listaRecursos = new ArrayList<>();
         observadores = new ArrayList<>();
