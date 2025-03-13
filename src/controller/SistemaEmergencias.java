@@ -184,6 +184,10 @@ public class SistemaEmergencias implements SujetoEmergencias {
         return recursosNecesarios;
     }
 
+    public CityMap getCityMap() {
+        return mapa;
+    }
+
     @Override
     public void agregarObserver(ObserverEmergencias observerEmergencias) {
         observadores.add(observerEmergencias);
