@@ -1,21 +1,25 @@
 package model.strategy;
 
-import model.Emergencia;
+import java.util.List;
 
-public class StrategyPrioridadGravedad implements StrategyPrioridad {
+import model.Emergencia;
+import model.interfaces.IServicioEmergencia;
+import utils.NivelGravedad;
+
+public class StrategyPrioridadGravedad implements IEstrategyAsignacion {
 
     @Override
-    public int calcularPrioridad(Emergencia emergencia) {
-        switch (emergencia.getNivelGravedad()) {
-            case ALTO:
-                return 3;
-            case MEDIO:
-                return 2;
-            case BAJO:
-                return 1;
-            default:
-                return 1;
+    public IServicioEmergencia asignarRecurso(List<IServicioEmergencia> recursos, Emergencia emergencia) {
+        IServicioEmergencia recursoPrioritario = null;
+
+        for (IServicioEmergencia recurso : recursos) {
+            if (recursoPrioritario == null || emergencia.getNivelGravedad().compareTo(NivelGravedad.ALTO) >= 0) {
+                recursoPrioritario = recurso;
+            }
+
         }
+
+        return recursoPrioritario;
     }
 
 }
