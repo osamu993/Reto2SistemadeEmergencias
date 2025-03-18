@@ -2,18 +2,20 @@ package utils;
 
 import java.util.List;
 
+/**
+ * Clase para calcular métricas del desempeño del sistema de emergencias.
+ */
+public class StatisticsSystem {
 
- //Clase para calcular métricas del desempeño del sistema de emergencias.
- 
-public class StatisticsSystem{
     /**
      * Calcula el tiempo promedio de respuesta a emergencias.
      * @param tiempos Lista de tiempos de respuesta en minutos.
-     * @return Tiempo promedio o -1 si la lista está vacía.
+     * @return Tiempo promedio o 0.0 si la lista está vacía.
      */
     public static double calcularTiempoPromedio(List<Double> tiempos) {
         if (tiempos.isEmpty()) {
-            return -1;
+            System.out.println("⚠️ Advertencia: No hay tiempos de respuesta registrados.");
+            return 0.0;
         }
         double suma = 0;
         for (double tiempo : tiempos) {
@@ -26,12 +28,27 @@ public class StatisticsSystem{
      * Calcula la eficiencia del uso de recursos en el sistema.
      * @param recursosUsados Cantidad de recursos utilizados.
      * @param recursosDisponibles Cantidad total de recursos.
-     * @return Porcentaje de uso de recursos o -1 si recursosDisponibles es 0.
+     * @return Porcentaje de uso de recursos o 0.0 si recursosDisponibles es 0.
      */
     public static double calcularEficienciaRecursos(int recursosUsados, int recursosDisponibles) {
         if (recursosDisponibles == 0) {
-            return -1;
+            System.out.println("⚠️ Advertencia: No hay recursos disponibles para calcular eficiencia.");
+            return 0.0;
         }
         return (recursosUsados / (double) recursosDisponibles) * 100;
+    }
+
+    /**
+     * Calcula la tasa de éxito en la atención de emergencias.
+     * @param emergenciasAtendidas Número de emergencias que fueron resueltas.
+     * @param totalEmergencias Número total de emergencias registradas.
+     * @return Porcentaje de emergencias atendidas con éxito o 0.0 si totalEmergencias es 0.
+     */
+    public static double calcularTasaExitoEmergencias(int emergenciasAtendidas, int totalEmergencias) {
+        if (totalEmergencias == 0) {
+            System.out.println("⚠️ Advertencia: No hay emergencias registradas para calcular la tasa de éxito.");
+            return 0.0;
+        }
+        return (emergenciasAtendidas / (double) totalEmergencias) * 100;
     }
 }
