@@ -2,14 +2,17 @@ package view;
 
 import controller.SistemaEmergencias;
 
-//Clase principal que ejecuta el sistema de emergencias.
-public class main {
+/**
+ * Clase principal que ejecuta el sistema de emergencias.
+ */
+public class Main {
 
     public static void main(String[] args) {
-
-        SistemaEmergencias sistemaEmergencias = new SistemaEmergencias();
+        System.out.println("🚨 Iniciando el Sistema de Emergencias...\n");
+        SistemaEmergencias sistemaEmergencias = SistemaEmergencias.getInstance();
         MenuSistemaEmergencia menu = new MenuSistemaEmergencia(sistemaEmergencias);
         menu.mostrarMenu();
-   
+
+        System.out.println("🔥 Gracias por usar el Sistema de Emergencias. ¡Hasta luego!");
     }
 }

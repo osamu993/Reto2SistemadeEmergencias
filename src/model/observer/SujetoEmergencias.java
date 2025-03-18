@@ -32,4 +32,6 @@ public interface SujetoEmergencias {
      * Notifica a los observadores cuando los recursos han sido reasignados.
      */
     void notificarRecursosReasignados();
+
+    
 }

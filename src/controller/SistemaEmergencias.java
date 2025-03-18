@@ -16,6 +16,16 @@ import utils.NivelGravedad;
 
 public class SistemaEmergencias implements SujetoEmergencias {
 
+    @Override
+    public void notificarRecursosReasignados() {
+        System.out.println("Recursos han sido reasignados.");
+    }
+
+    @Override
+    public void notificarEmergenciaResuelta(Emergencia emergencia) {
+        System.out.println("Emergencia resuelta: " + emergencia.getDescripcion());
+    }
+
     private static SistemaEmergencias instancia;
     private List<Emergencia> listaEmergencias;
     private List<IServicioEmergencia> listaRecursos;
@@ -120,7 +130,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
         }
 
         if (emergenciaGrave != null && emergenciaLeve != null) {
-            IServicioEmergencia recurso = emergenciaLeve.liberarRecurso(gestorRecursos);
+            IServicioEmergencia recurso = emergenciaLeve.liberarRecurso();
             if (recurso != null) {
                 emergenciaGrave.asignarRecurso(recurso);
                 return true;
@@ -146,7 +156,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
         double menorDistancia = Double.MAX_VALUE;
 
         for (String estacion : mapa.getUbicaciones()) {
-            double distancia = mapa.getDistancia(estacion, ubicacion);
+            double distancia = mapa.obtenerDistancia(estacion, ubicacion);
             if (distancia < menorDistancia) {
                 menorDistancia = distancia;
                 estacionCercana = estacion;

@@ -142,4 +142,6 @@ public abstract class Emergencia {
                 + ", tiempoReespuesta=" + tiempoReespuesta + ", atendida=" + atendida + ", tiempoInicioAtencion="
                 + tiempoInicioAtencion + ", tiempoFinAtencion=" + tiempoFinAtencion + "]";
     }
+
+    
 }
