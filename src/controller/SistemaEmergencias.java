@@ -9,7 +9,10 @@ import model.Emergencia;
 import model.interfaces.IServicioEmergencia;
 import model.observer.ObserverEmergencias;
 import model.observer.SujetoEmergencias;
+import model.services.Ambulancia;
+import model.services.Bomberos;
 import model.services.GestorRecursos;
+import model.services.Policia;
 import model.factory.FactoryEmergencias;
 import utils.CityMap;
 import utils.NivelGravedad;
@@ -26,6 +29,13 @@ public class SistemaEmergencias implements SujetoEmergencias {
         System.out.println("Emergencia resuelta: " + emergencia.getDescripcion());
     }
 
+    public void inicializarRecursos() {
+    listaRecursos.add(new Ambulancia("AMB1", "Centro"));
+    listaRecursos.add(new Bomberos("BOM1", "Zona Norte"));
+    listaRecursos.add(new Policia("POL1", "Centro"));
+}
+
+
     private static SistemaEmergencias instancia;
     private List<Emergencia> listaEmergencias;
     private List<IServicioEmergencia> listaRecursos;
@@ -41,7 +51,14 @@ public class SistemaEmergencias implements SujetoEmergencias {
         observadores = new ArrayList<>();
         emergenciasAtendidas = 0;
         tiempoTotalAtencion = 0;
-    }
+        listaEmergencias = new ArrayList<>();
+        listaRecursos = new ArrayList<>();
+        observadores = new ArrayList<>();
+        emergenciasAtendidas = 0;
+        tiempoTotalAtencion = 0;
+        inicializarRecursos(); // Agregar recursos al sistema
+        }
+
 
     public static SistemaEmergencias getInstance() {
         if (instancia == null) {
@@ -210,4 +227,6 @@ public class SistemaEmergencias implements SujetoEmergencias {
             observerEmergencias.onNuevasEmergencias(emergencia);
         }
     }
+
+    
 }

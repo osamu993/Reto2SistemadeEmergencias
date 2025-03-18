@@ -64,9 +64,9 @@ public class CityMap {
      * @return Nombre de la estación más cercana o null si no hay datos.
      */
     public String obtenerEstacionCercana(String ubicacionEmergencia) {
-        String estacionCercana = null;
+        String estacionCercana = "Estación General"; // Estación por defecto si no encuentra
         double distanciaMinima = Double.MAX_VALUE;
-
+    
         for (String estacion : mapa.keySet()) {
             double distancia = obtenerDistancia(estacion, ubicacionEmergencia);
             if (distancia >= 0 && distancia < distanciaMinima) {

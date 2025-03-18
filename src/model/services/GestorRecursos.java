@@ -46,22 +46,22 @@ public class GestorRecursos {
 
     public IServicioEmergencia asignarRecursoDesde(String ubicacionEmergencia, String tipoRecurso) {
         String estacionCercana = cityMap.obtenerEstacionCercana(ubicacionEmergencia);
-
-        if (estacionCercana == null) {
+    
+        if (estacionCercana == null || estacionCercana.isEmpty()) {
             System.out.println("⚠️ No se encontró una estación cercana a " + ubicacionEmergencia);
-            return obtenerRecursoDisponible(); // Busca un recurso global si no encuentra en la estación
+            return null;
         }
-
+    
         for (IServicioEmergencia recurso : recursosDisponibles) {
-            if (recurso.estaDisponible() && recurso.getUbicacion().equalsIgnoreCase(estacionCercana) && recurso.getClass().getSimpleName().equalsIgnoreCase(tipoRecurso)) {
-                recurso.desplegarUnidad(ubicacionEmergencia);
+            if (recurso.estaDisponible() && recurso.getUbicacion().equalsIgnoreCase(estacionCercana)
+                    && recurso.getClass().getSimpleName().equalsIgnoreCase(tipoRecurso)) {
+                recurso.desplegarUnidad(estacionCercana);
                 return recurso;
             }
         }
-
-        // Si no hay recursos en la estación, intenta encontrar uno disponible en cualquier ubicación
-        System.out.println("⚠️ No hay recursos de tipo " + tipoRecurso + " en " + estacionCercana + ", buscando en otra estación.");
-        return obtenerRecursoDisponible();
+    
+        System.out.println("⚠️ No hay recursos disponibles en " + estacionCercana);
+        return null;
     }
 
     public void liberarRecurso(IServicioEmergencia recurso, int personalLiberado) {
