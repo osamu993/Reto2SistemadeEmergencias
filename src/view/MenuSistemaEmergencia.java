@@ -7,10 +7,13 @@ import java.util.Scanner;
 public class MenuSistemaEmergencia {
     private Scanner scanner;
     private SistemaEmergencias controller;
+    private SistemaEmergencias sistemaEmergencias;
 
-    public MenuSistemaEmergencia() {
-        this.scanner = new Scanner(System.in);
-        this.controller = SistemaEmergencias.getInstance();
+
+    public MenuSistemaEmergencia(SistemaEmergencias sistemaEmergencias) {
+            this.scanner = new Scanner(System.in);
+            this.controller = SistemaEmergencias.getInstance();
+            this.sistemaEmergencias = sistemaEmergencias;
         }
 
     public void mostrarMenu() {
@@ -95,9 +98,12 @@ public class MenuSistemaEmergencia {
     }
 
     private void reasignarRecursos() {
+        boolean reasignado = sistemaEmergencias.reasignarRecursos();
+
         System.out.println("\nIntentando reasignar recursos...");
-        if (controller.reasignarRecursos()) {
-            System.out.println(" Recursos reasignados correctamente.");
+        
+        if (reasignado) {
+            System.out.println("✅ Recursos reasignados correctamente.");
         } else {
             System.out.println(" No hay recursos disponibles para reasignar.");
         }

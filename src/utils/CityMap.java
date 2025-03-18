@@ -72,4 +72,18 @@ public class CityMap {
         }
         return -1; // Indica que no hay una ruta directa registrada
     }
+
+    public String obtenerEstacionCercana(String ubicacionEmergencia) {
+        String estacionCercana = null;
+        double distanciaMinima = Double.MAX_VALUE;
+
+        for (String estacion : mapa.keySet()) {
+            double distancia = obtenerDistancia(estacion, ubicacionEmergencia);
+            if (distancia >= 0 && distancia < distanciaMinima) {
+                distanciaMinima = distancia;
+                estacionCercana = estacion;
+            }
+        }
+        return estacionCercana;
+    }
 }

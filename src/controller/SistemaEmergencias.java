@@ -20,11 +20,12 @@ public class SistemaEmergencias implements SujetoEmergencias {
     private List<Emergencia> listaEmergencias;
     private List<IServicioEmergencia> listaRecursos;
     private List<ObserverEmergencias> observadores;
-    private GestorRecursos gestorRecursos = new GestorRecursos();
+    private CityMap mapa = new CityMap();
+    private GestorRecursos gestorRecursos = new GestorRecursos(mapa);
     private int emergenciasAtendidas;
     private long tiempoTotalAtencion;
 
-    private SistemaEmergencias() {
+    public SistemaEmergencias() {
         listaEmergencias = new ArrayList<>();
         listaRecursos = new ArrayList<>();
         observadores = new ArrayList<>();
@@ -99,14 +100,34 @@ public class SistemaEmergencias implements SujetoEmergencias {
     }
 
     public boolean reasignarRecursos() {
-        for (IServicioEmergencia recurso : listaRecursos) {
-            if (!recurso.estaDisponible()) {
-                recurso.liberarRecurso();
+
+        Emergencia emergenciaGrave = null;
+        Emergencia emergenciaLeve = null;
+
+        //Busca la amergencia mas grande que no tenga recursos suficientes
+        for (Emergencia emergencia : listaEmergencias) {
+            if (emergencia.getNivelGravedad() == NivelGravedad.ALTO && emergencia.necesitaRecursos()) {
+                emergenciaGrave = emergencia;
+                break;
+            }
+        }
+
+        for (Emergencia emergencia : listaEmergencias) {
+            if (emergencia.getNivelGravedad() != NivelGravedad.ALTO && emergencia.tieneRecursosAsignados()) {
+                emergenciaLeve = emergencia;
+                break;
+            }
+        }
+
+        if (emergenciaGrave != null && emergenciaLeve != null) {
+            IServicioEmergencia recurso = emergenciaLeve.liberarRecurso(gestorRecursos);
+            if (recurso != null) {
+                emergenciaGrave.asignarRecurso(recurso);
                 return true;
             }
         }
-        return false;
-    }
+        return false; // no se pudo reasignar ningun recurso
+    }    
 
     public void mostrarEstadisticas() {
         System.out.println("\n--- Estadísticas del Día ---");
