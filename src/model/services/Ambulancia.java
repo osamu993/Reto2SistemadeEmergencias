@@ -14,17 +14,19 @@ public class Ambulancia implements IServicioEmergencia {
         this.id = id;
         this.disponible = true;
         this.ubicacion = ubicacion;
+        this.combustible = 100; // Inicializamos el combustible
     }
 
     @Override
     public void desplegarUnidad(String ubicacion) {
         this.disponible = false;
-        System.out.println(" Ambulancia " + id + " en camino a " + ubicacion);
+        this.ubicacion = ubicacion; // Actualizamos la ubicación
+        System.out.println("🚑 Ambulancia " + id + " en camino a " + ubicacion);
     }
 
     @Override
     public void evaluarSituacion() {
-        System.out.println(" Evaluando la situación en el lugar del incidente.");
+        System.out.println("📋 Evaluando la situación en el lugar del incidente.");
     }
 
     @Override
@@ -40,18 +42,19 @@ public class Ambulancia implements IServicioEmergencia {
     @Override
     public void liberarRecurso() {
         this.disponible = true;
-        System.out.println(" La ambulancia " + id + " ha sido liberada y está disponible nuevamente.");
+        System.out.println("✅ La ambulancia " + id + " ha sido liberada y está disponible nuevamente.");
     }
 
     @Override
     public void liberarPersonal(int cantidad) {
-        System.out.println(" Ambulancia " + id + " ha liberado " + cantidad + " paramédicos.");
+        System.out.println("🚑 Ambulancia " + id + " ha liberado " + cantidad + " paramédicos.");
     }
 
     @Override
     public int getCombustible() {
         return this.combustible;
     }
+
     @Override
     public String getId() {
         return this.id;
@@ -60,13 +63,13 @@ public class Ambulancia implements IServicioEmergencia {
     @Override
     public void gastarCombustible(int cantidad) {
         this.combustible = Math.max(0, this.combustible - cantidad);
-        System.out.println(" Ambulancia " + id + " ha gastado " + cantidad + " de combustible. Restante: " + this.combustible);
+        System.out.println("⛽ Ambulancia " + id + " ha gastado " + cantidad + " de combustible. Restante: " + this.combustible);
     }
 
     @Override
     public void tanquearCombustible(int cantidad) {
         this.combustible = Math.min(100, this.combustible + cantidad);
-        System.out.println(" Ambulancia " + id + " ha tanqueado " + cantidad + " de combustible. Total: " + this.combustible);
+        System.out.println("⛽ Ambulancia " + id + " ha tanqueado " + cantidad + " de combustible. Total: " + this.combustible);
     }
 
     @Override
@@ -78,9 +81,9 @@ public class Ambulancia implements IServicioEmergencia {
     public void asignarPersonal(int cantidad) {
         if (personalDisponible >= cantidad) {
             personalDisponible -= cantidad;
-            System.out.println(" Se han asignado " + cantidad + " paramédicos. Restantes: " + personalDisponible);
+            System.out.println("👨‍⚕️ Se han asignado " + cantidad + " paramédicos. Restantes: " + personalDisponible);
         } else {
-            System.out.println(" No hay suficiente personal disponible en la ambulancia.");
+            System.out.println("⚠️ No hay suficiente personal disponible en la ambulancia.");
         }
     }
 
@@ -89,8 +92,13 @@ public class Ambulancia implements IServicioEmergencia {
         return ubicacion;
     }
 
+    /**
+     * Método para actualizar la ubicación de la ambulancia.
+     * @param ubicacion Nueva ubicación.
+     */
     @Override
-    public void setDisponible(boolean estado) {
-        this.disponible = estado;
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
+        System.out.println("📍 La ambulancia " + id + " ahora está en " + ubicacion);
     }
 }
