@@ -10,36 +10,40 @@ public interface IServicioEmergencia {
     void liberarPersonal(int cantidad);
     void gastarCombustible(int cantidad);
     void tanquearCombustible(int cantidad);
-    //void atenderEmergencia(Emergencia emergencia); 
-   
-        /**
-         * Método para desplegar una unidad al lugar de la emergencia.
-         * @param ubicacion Ubicación de la emergencia.
-         */
-        void desplegarUnidad(String ubicacion);
-        
-        /**
-         * Método para evaluar la situación en la emergencia.
-         */
-        void evaluarSituacion();
-        
-        /**
-         * Método para obtener el estado del servicio de emergencia.
-         * @return Estado actual del servicio en formato de texto.
-         */
-        String getEstado();
-        
-        /**
-         * Método para liberar el recurso después de atender una emergencia.
-         */
-        void liberarRecurso();
 
-        String getUbicacion();
-
-        void setDisponible(boolean estado); // Establece el recurso como disponible 
-
-        
-    }
-
+    /**
+     * Método para desplegar una unidad al lugar de la emergencia.
+     * @param ubicacion Ubicación de la emergencia.
+     */
+    void desplegarUnidad(String ubicacion);
     
+    /**
+     * Método para evaluar la situación en la emergencia.
+     */
+    void evaluarSituacion();
+    
+    /**
+     * Método para obtener el estado del servicio de emergencia.
+     * @return Estado actual del servicio en formato de texto.
+     */
+    String getEstado();
+    
+    /**
+     * Método para liberar el recurso después de atender una emergencia.
+     */
+    void liberarRecurso();
+
+    /**
+     * Obtiene la ubicación actual de la unidad.
+     * @return Ubicación en formato de texto.
+     */
+    String getUbicacion();
+
+    /**
+     * Actualiza la ubicación de la unidad.
+     * @param ubicacion Nueva ubicación de la unidad.
+     */
+    void setUbicacion(String ubicacion);
+}
+
 

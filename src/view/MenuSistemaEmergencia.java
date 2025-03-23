@@ -2,19 +2,25 @@ package view;
 
 import controller.SistemaEmergencias;
 import utils.NivelGravedad;
+<<<<<<< HEAD
 
 import java.util.Arrays;
 import java.util.List;
+=======
+import utils.TipoEmergencia;
+>>>>>>> a643c021564c78432de695379ef6684efa502cec
 import java.util.Scanner;
 
 public class MenuSistemaEmergencia {
     private Scanner scanner;
-    private SistemaEmergencias controller;
     private SistemaEmergencias sistemaEmergencias;
 
     public MenuSistemaEmergencia(SistemaEmergencias sistemaEmergencias) {
         this.scanner = new Scanner(System.in);
+<<<<<<< HEAD
         this.controller = SistemaEmergencias.getInstance();
+=======
+>>>>>>> a643c021564c78432de695379ef6684efa502cec
         this.sistemaEmergencias = sistemaEmergencias;
     }
 
@@ -28,7 +34,16 @@ public class MenuSistemaEmergencia {
             System.out.println("4. Reasignar recursos");
             System.out.println("5. Mostrar estadísticas del día");
             System.out.println("6. Salir");
+<<<<<<< HEAD
             System.out.print("\nSeleccione una opción: \n");
+=======
+            System.out.print("Seleccione una opción: ");
+
+            while (!scanner.hasNextInt()) {
+                System.out.println("⚠️ Entrada inválida. Ingrese un número.");
+                scanner.next();
+            }
+>>>>>>> a643c021564c78432de695379ef6684efa502cec
             opcion = scanner.nextInt();
             scanner.nextLine(); // Limpiar buffer
 
@@ -49,15 +64,16 @@ public class MenuSistemaEmergencia {
                     mostrarEstadisticas();
                     break;
                 case 6:
-                    System.out.println("Saliendo del sistema...");
+                    System.out.println("👋 Saliendo del sistema...");
                     break;
                 default:
-                    System.out.println("Opción no válida, intente nuevamente.");
+                    System.out.println("⚠️ Opción no válida, intente nuevamente.");
             }
         } while (opcion != 6);
     }
 
     private void registrarEmergencia() {
+<<<<<<< HEAD
 
         // Validar tipo de emergencia
         String tipo = "";
@@ -128,25 +144,70 @@ public class MenuSistemaEmergencia {
 
         System.out.println("🔍 Verificando ubicación de emergencia: " + ubi);
         controller.registrarEmergencia(tipo, ubi, NivelGravedad.valueOf(gravedad), tiempo);
+=======
+        String tipo, ubicacion, gravedad;
+        int tiempo = -1;
+
+        do {
+            System.out.print("Ingrese el tipo de emergencia " + TipoEmergencia.getListaTipos() + ": ");
+            tipo = scanner.nextLine().toUpperCase();
+            if (TipoEmergencia.fromString(tipo) == null) {
+                System.out.println("⚠️ Tipo de emergencia inválido. Intente de nuevo.");
+            }
+        } while (TipoEmergencia.fromString(tipo) == null);
+
+        System.out.print("Ingrese la ubicación: ");
+        ubicacion = scanner.nextLine();
+
+        NivelGravedad nivelGravedad;
+        do {
+            System.out.print("Ingrese el nivel de gravedad (BAJO, MEDIO, ALTO): ");
+            gravedad = scanner.nextLine().toUpperCase();
+            nivelGravedad = NivelGravedad.fromString(gravedad);
+            if (nivelGravedad == null) {
+                System.out.println("⚠️ Nivel de gravedad inválido. Intente de nuevo.");
+            }
+        } while (nivelGravedad == null);
+
+        do {
+            System.out.print("Ingrese el tiempo estimado de respuesta en minutos: ");
+            while (!scanner.hasNextInt()) {
+                System.out.println("⚠️ Entrada inválida. Ingrese un número válido.");
+                scanner.next();
+            }
+            tiempo = scanner.nextInt();
+            scanner.nextLine(); // Limpiar buffer
+            if (tiempo <= 0) {
+                System.out.println("⚠️ El tiempo debe ser mayor a 0.");
+            }
+        } while (tiempo <= 0);
+
+        sistemaEmergencias.registrarEmergencia(tipo, ubicacion, nivelGravedad, tiempo);
+>>>>>>> a643c021564c78432de695379ef6684efa502cec
         System.out.println("✅ Emergencia registrada correctamente.");
     }
 
     private void mostrarEmergencias() {
-        System.out.println("\nListado de emergencias activas:");
-        controller.listarEmergencias();
+        System.out.println("\n📋 Listado de emergencias activas:");
+        sistemaEmergencias.listarEmergencias();
     }
 
     private void mostrarRecursos() {
-        System.out.println("\nRecursos disponibles:");
-        controller.mostrarRecursos();
+        System.out.println("\n🚑 Recursos disponibles:");
+        sistemaEmergencias.mostrarRecursos();
     }
 
     private void reasignarRecursos() {
+<<<<<<< HEAD
         boolean reasignado = sistemaEmergencias.reasignarRecursos();
 
         System.out.println("\nIntentando reasignar recursos...");
 
         if (reasignado) {
+=======
+        System.out.println("\n🔄 Intentando reasignar recursos...");
+        if (sistemaEmergencias.reasignarRecursos()) {
+>>>>>>> a643c021564c78432de695379ef6684efa502cec
             System.out.println("✅ Recursos reasignados correctamente.");
         } else {
             System.out.println("⚠️ No hay recursos disponibles para reasignar.");
@@ -154,7 +215,7 @@ public class MenuSistemaEmergencia {
     }
 
     private void mostrarEstadisticas() {
-        System.out.println("\nEstadísticas del día:");
-        controller.mostrarEstadisticas();
+        System.out.println("\n📊 Estadísticas del día:");
+        sistemaEmergencias.mostrarEstadisticas();
     }
 }
