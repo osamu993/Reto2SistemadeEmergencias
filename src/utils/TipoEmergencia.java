@@ -23,7 +23,7 @@ public enum TipoEmergencia {
         try {
             return TipoEmergencia.valueOf(tipo.trim().toUpperCase());
         } catch (IllegalArgumentException e) {
-            System.err.println("⚠️ Advertencia: Tipo de emergencia desconocido -> " + tipo);
+            System.err.println("Advertencia: Tipo de emergencia desconocido -> " + tipo);
             return null; // Retorna null si el tipo no es válido
         }
     }
