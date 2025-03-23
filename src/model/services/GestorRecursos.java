@@ -1,7 +1,9 @@
 package model.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import model.Emergencia;
 import model.interfaces.IServicioEmergencia;
@@ -44,14 +46,31 @@ public class GestorRecursos {
     }
 
     public IServicioEmergencia asignarRecursoDesde(String ubicacionEmergencia, String tipoRecurso) {
-
-        String estacionCercana = cityMap.obtenerEstacionCercana(ubicacionEmergencia);
-
-        if (estacionCercana == null) {
-            System.out.println("No se encontro una estación cercana a la ubicación de emergencia.");
-            return null; // No se pudo obtener la estación cercana a la ubicación de emergencia
+        System.out.println("🔍 Verificando ubicación de emergencia: " + ubicacionEmergencia);
+    
+        // Determinar qué estación buscar según el recurso
+        Map<String, String> estacionesPorRecurso = new HashMap<>();
+        estacionesPorRecurso.put("BOMBEROS", "Bomberos");
+        estacionesPorRecurso.put("AMBULANCIA", "Hospital");
+        estacionesPorRecurso.put("POLICIA", "Policia");
+        estacionesPorRecurso.put("RESCATE", "Rescate");
+    
+        String tipoEstacion = estacionesPorRecurso.get(tipoRecurso.toUpperCase());
+    
+        if (tipoEstacion == null) {
+            System.out.println("⚠️ Tipo de recurso no reconocido.");
+            return null;
         }
-
+    
+        String estacionCercana = cityMap.obtenerEstacionCercana(ubicacionEmergencia, tipoEstacion);
+    
+        if (estacionCercana == null) {
+            System.out.println("⚠️ No se encontró una estación adecuada para el recurso: " + tipoRecurso);
+            return null;
+        }
+    
+        System.out.println("✅ Asignando recurso de tipo: " + tipoRecurso + " desde la estación: " + estacionCercana);
+    
         for (IServicioEmergencia recurso : recursosDisponibles) {
             if (recurso.estaDisponible() && recurso.getUbicacion().equalsIgnoreCase(estacionCercana)
                     && recurso.getClass().getSimpleName().equalsIgnoreCase(tipoRecurso)) {
@@ -59,8 +78,13 @@ public class GestorRecursos {
                 return recurso;
             }
         }
-        return null; // No hay recursos disponibles de ese tipo en la estación indicada
+    
+        System.out.println("⚠️ No hay suficientes recursos de " + tipoRecurso + " en " + estacionCercana + ". Se buscarán en otra estación.");
+        return null; // No hay recursos disponibles
     }
+    
+    
+    
 
     public void liberarRecurso(IServicioEmergencia recurso, int personalLiberado) {
         recurso.liberarPersonal(personalLiberado);
@@ -86,4 +110,23 @@ public class GestorRecursos {
         }
         return null; // No se asigna recurso
     }
+
+    private String obtenerEstacionPorTipoRecurso(String ubicacionEmergencia, String tipoRecurso) {
+        Map<String, String> estacionesPorRecurso = new HashMap<>();
+        estacionesPorRecurso.put("BOMBEROS", "Bomberos");
+        estacionesPorRecurso.put("AMBULANCIA", "Hospital");
+        estacionesPorRecurso.put("POLICIA", "Policia");
+        estacionesPorRecurso.put("RESCATE", "Rescate");
+    
+        String estacionTipo = estacionesPorRecurso.get(tipoRecurso.toUpperCase());
+    
+        if (estacionTipo == null) {
+            return null; // Si el recurso no existe, no hay estación
+        }
+    
+        // Usamos la versión del método que solo recibe `ubicacionEmergencia`
+        return cityMap.obtenerEstacionCercana(ubicacionEmergencia, estacionTipo);
+    }
+    
+
 }

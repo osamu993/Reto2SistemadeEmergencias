@@ -41,41 +41,51 @@ public class SistemaEmergencias implements SujetoEmergencias {
     }
 
     public void registrarEmergencia(String tipo, String ubicacion, NivelGravedad nivel, int tiempoRespuesta) {
+        System.out.println("🚨 Iniciando registro de emergencia...");
+        
         Emergencia emergencia = FactoryEmergencias.crearEmergencia(tipo, ubicacion, nivel, tiempoRespuesta);
-       
-        if (emergencia != null) {
-
-            listaEmergencias.add(emergencia);
-
-            //usamos el mapa para obtener la estacion mas cercana
-            CityMap mapa = new CityMap();
-            String zona = mapa.obtenerZona(ubicacion);
-            String estacionCercana = obtenerEstacionCercana(mapa,ubicacion);
-
-            //asignamos los recursos en la ubicacion mas cercana
-            Map<String, Integer> recursosRequeridos = determinarRecursosPorEmergencia(tipo, zona);
-
-            for (Map.Entry<String, Integer> entry : recursosRequeridos.entrySet()) {
-
-                String tipoRecurso = entry.getKey();
-                int cantidad = entry.getValue();
-
-                for(int i = 0; i < cantidad; i++) {
-                    IServicioEmergencia recurso = gestorRecursos.asignarRecursoDesde(estacionCercana, tipoRecurso);
-                    if(recurso != null) {
-                      System.out.println("Recurso asignado: " + recurso.getId() + "Desde: " + estacionCercana);
-                    }else{
-                        System.out.println("No hay suficientes recursos de: " + tipoRecurso + " en la estacionmás cercana, se procedera a enviar de otra estacion." + estacionCercana);
-                    }
-                }
-
-            notificarObservers(emergencia);
-            System.out.println(" Emergencia registrada: " + tipo + " en " + ubicacion);
-            }
-        } else {
-            System.err.println(" Error: No se pudo registrar la emergencia.");
+        if (emergencia == null) {
+            System.out.println("❌ Error: No se pudo registrar la emergencia.");
+            return;
         }
+    
+        listaEmergencias.add(emergencia);
+        System.out.println("✅ Emergencia registrada: " + tipo + " en " + ubicacion);
+    
+        // Determinar qué recursos se requieren según el tipo de emergencia
+        List<String> recursosRequeridos = new ArrayList<>();
+        if (tipo.equalsIgnoreCase("INCENDIO")) {
+            recursosRequeridos.add("BOMBEROS");
+            recursosRequeridos.add("AMBULANCIA");
+        } else if (tipo.equalsIgnoreCase("ROBO")) {
+            recursosRequeridos.add("POLICIA");
+            recursosRequeridos.add("RESCATE");
+        } else if (tipo.equalsIgnoreCase("ACCIDENTE_VEHICULAR")) {
+            recursosRequeridos.add("BOMBEROS");
+            recursosRequeridos.add("AMBULANCIA");
+            recursosRequeridos.add("POLICIA");
+        }
+    
+        // Asignar cada recurso requerido desde la estación correcta
+        for (String recurso : recursosRequeridos) {
+            String estacionTipo = obtenerTipoEstacion(recurso);
+            String estacionAsignada = mapa.obtenerEstacionCercana(ubicacion, estacionTipo);
+    
+            System.out.println("🚒 Estación asignada para " + recurso + ": " + estacionAsignada);
+    
+            if (estacionAsignada != null) {
+                IServicioEmergencia unidadAsignada = gestorRecursos.asignarRecursoDesde(estacionAsignada, recurso);
+                if (unidadAsignada == null) {
+                    System.out.println("⚠️ No hay suficientes recursos de: " + recurso + " en la estación: " + estacionAsignada);
+                }
+            } else {
+                System.out.println("⚠️ No se encontró una estación cercana para el recurso: " + recurso);
+            }
+        }
+    
+        notificarObservers(emergencia);
     }
+    
 
     public void listarEmergencias() {
         if (listaEmergencias.isEmpty()) {
@@ -104,7 +114,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
         Emergencia emergenciaGrave = null;
         Emergencia emergenciaLeve = null;
 
-        //Busca la amergencia mas grande que no tenga recursos suficientes
+        // Busca la amergencia mas grande que no tenga recursos suficientes
         for (Emergencia emergencia : listaEmergencias) {
             if (emergencia.getNivelGravedad() == NivelGravedad.ALTO && emergencia.necesitaRecursos()) {
                 emergenciaGrave = emergencia;
@@ -127,7 +137,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
             }
         }
         return false; // no se pudo reasignar ningun recurso
-    }    
+    }
 
     public void mostrarEstadisticas() {
         System.out.println("\n--- Estadísticas del Día ---");
@@ -141,17 +151,17 @@ public class SistemaEmergencias implements SujetoEmergencias {
         System.out.println("Recursos disponibles: " + listaRecursos.size());
     }
 
-    private String obtenerEstacionCercana(CityMap mapa, String ubicacion) {
-        String estacionCercana = null;
-        double menorDistancia = Double.MAX_VALUE;
+    private String obtenerEstacionCercana(CityMap mapa, String ubicacion, String tipoEstacion) {
+        System.out.println("🔍 Buscando estación más cercana a: " + ubicacion);
 
-        for (String estacion : mapa.getUbicaciones()) {
-            double distancia = mapa.getDistancia(estacion, ubicacion);
-            if (distancia < menorDistancia) {
-                menorDistancia = distancia;
-                estacionCercana = estacion;
-            }
+        String estacionCercana = mapa.obtenerEstacionCercana(ubicacion, tipoEstacion);
+
+        if (estacionCercana == null) {
+            System.out.println("⚠️ No se encontró una estación cercana a la ubicación de emergencia.");
+        } else {
+            System.out.println("✅ Estación más cercana encontrada: " + estacionCercana);
         }
+
         return estacionCercana;
     }
 
@@ -183,6 +193,22 @@ public class SistemaEmergencias implements SujetoEmergencias {
 
         return recursosNecesarios;
     }
+
+    private String obtenerTipoEstacion(String recurso) {
+        switch (recurso.toUpperCase()) {
+            case "BOMBEROS":
+                return "Bomberos";
+            case "POLICIA":
+                return "Policia";
+            case "RESCATE":
+                return "Rescate";
+            case "AMBULANCIA":
+                return "Hospital";
+            default:
+                return null;
+        }
+    }
+    
 
     public CityMap getCityMap() {
         return mapa;
