@@ -3,31 +3,6 @@ package model.strategy;
 import java.util.List;
 
 import model.Emergencia;
-<<<<<<< HEAD
-import model.interfaces.IServicioEmergencia;
-import utils.CityMap;
-
-public class StrategyPrioridadCercania implements IEstrategyAsignacion {
-    private CityMap cityMap;
-
-    public StrategyPrioridadCercania(CityMap cityMap) {
-        this.cityMap = cityMap;
-    }
-
-    @Override
-    public IServicioEmergencia asignarRecurso(List<IServicioEmergencia> recursos, Emergencia emergencia) {
-        IServicioEmergencia recursoCercano = null;
-        double distanciaMinima = Double.MAX_VALUE;
-
-        for (IServicioEmergencia recurso : recursos) {
-            double distancia = cityMap.getDistancia(recurso.getUbicacion(), emergencia.getUbicacion());
-            if (distancia < distanciaMinima) {
-                distanciaMinima = distancia;
-                recursoCercano = recurso;
-            }
-        }
-        return recursoCercano;
-=======
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,7 +33,6 @@ class MapaUrbano {
         distancias.put("centro", 2);
         distancias.put("zona-oriente", 5);
         distancias.put("zona-occidente", 6);
->>>>>>> a643c021564c78432de695379ef6684efa502cec
     }
 
     /**

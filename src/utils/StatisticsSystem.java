@@ -2,19 +2,11 @@ package utils;
 
 import java.util.List;
 
-<<<<<<< HEAD
-import model.Emergencia;
-
-//Clase para calcular métricas del desempeño del sistema de emergencias.
-
-public class StatisticsSystem {
-=======
 /**
  * Clase para calcular métricas del desempeño del sistema de emergencias.
  */
 public class StatisticsSystem {
 
->>>>>>> a643c021564c78432de695379ef6684efa502cec
     /**
      * Calcula el tiempo promedio de respuesta a emergencias.
      * 
@@ -48,26 +40,6 @@ public class StatisticsSystem {
         return (recursosUsados / (double) recursosDisponibles) * 100;
     }
 
-<<<<<<< HEAD
-    public static void calcularEstadisticas() {
-        List<Emergencia> historial = SystemRegistration.obtenerHistorial();
-
-        if (historial.isEmpty()) {
-            System.out.println("No hay datos suficientes para calcular estadísticas.");
-            return;
-        }
-
-        long totalEmergencias = historial.size();
-        long emergenciasGraves = historial.stream()
-                .filter(e -> e.getNivelGravedad() == NivelGravedad.ALTO)
-                .count();
-
-        System.out.println("=== Estadísticas del Sistema ===");
-        System.out.println("Total de emergencias registradas: " + totalEmergencias);
-        System.out.println("Emergencias graves atendidas: " + emergenciasGraves);
-    }
-
-=======
     /**
      * Calcula la tasa de éxito en la atención de emergencias.
      * @param emergenciasAtendidas Número de emergencias que fueron resueltas.
@@ -81,5 +53,4 @@ public class StatisticsSystem {
         }
         return (emergenciasAtendidas / (double) totalEmergencias) * 100;
     }
->>>>>>> a643c021564c78432de695379ef6684efa502cec
 }

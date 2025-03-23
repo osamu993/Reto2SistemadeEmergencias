@@ -1,24 +1,7 @@
 package model.strategy;
 
-import java.util.List;
-
-<<<<<<< HEAD
 import model.Emergencia;
-import model.interfaces.IServicioEmergencia;
-import utils.NivelGravedad;
 
-public class StrategyPrioridadGravedad implements IEstrategyAsignacion {
-
-    @Override
-    public IServicioEmergencia asignarRecurso(List<IServicioEmergencia> recursos, Emergencia emergencia) {
-        IServicioEmergencia recursoPrioritario = null;
-
-        for (IServicioEmergencia recurso : recursos) {
-            if (recursoPrioritario == null || emergencia.getNivelGravedad().compareTo(NivelGravedad.ALTO) >= 0) {
-                recursoPrioritario = recurso;
-            }
-
-=======
 /**
  * Estrategia de prioridad basada en el nivel de gravedad de la emergencia.
  */
@@ -40,9 +23,7 @@ public class StrategyPrioridadGravedad implements StrategyPrioridad {
                 return 1;
             default:
                 return 1;
->>>>>>> a643c021564c78432de695379ef6684efa502cec
         }
-
-        return recursoPrioritario;
     }
+
 }

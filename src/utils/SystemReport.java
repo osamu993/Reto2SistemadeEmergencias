@@ -3,17 +3,9 @@ package utils;
 import java.io.*;
 import java.util.List;
 
-<<<<<<< HEAD
-import model.Emergencia;
-
-
- //Clase para generar reportes sobre el desempeño del sistema de emergencias.
- 
-=======
 /**
  * Clase para generar y guardar reportes sobre el desempeño del sistema de emergencias.
  */
->>>>>>> a643c021564c78432de695379ef6684efa502cec
 public class SystemReport {
     private static final String NOMBRE_ARCHIVO = "reporte_emergencias.txt";
 
@@ -21,21 +13,6 @@ public class SystemReport {
      * Genera un reporte con el resumen de emergencias atendidas.
      * @param emergenciasAtendidas Lista de emergencias resueltas.
      */
-<<<<<<< HEAD
-   public static void generarReporte() {
-    List<Emergencia> historial = SystemRegistration.obtenerHistorial();
-
-    if (historial.isEmpty()) {
-        System.out.println("No hay emergencias registradas en el historial.");
-        return;
-    }
-
-    System.out.println("=== Reporte de Emergencias ===");
-    for (Emergencia e : historial) {
-        System.out.println("Tipo: " + e.getTipo() +
-                           ", Ubicación: " + e.getUbicacion() +
-                           ", Gravedad: " + e.getNivelGravedad());
-=======
     public static void generarReporte(List<String> emergenciasAtendidas) {
         System.out.println("\n--- Reporte del Sistema de Emergencias ---");
         System.out.println("Total de emergencias atendidas: " + emergenciasAtendidas.size());
@@ -103,8 +80,7 @@ public class SystemReport {
         } catch (IOException e) {
             System.err.println("❌ Error al limpiar los reportes: " + e.getMessage());
         }
->>>>>>> a643c021564c78432de695379ef6684efa502cec
     }
 }
 
-}
+

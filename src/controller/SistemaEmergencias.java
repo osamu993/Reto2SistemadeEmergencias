@@ -79,7 +79,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
         // Asignar cada recurso requerido desde la estación correcta
         for (String recurso : recursosRequeridos) {
             String estacionTipo = obtenerTipoEstacion(recurso);
-            String estacionAsignada = mapa.obtenerEstacionCercana(ubicacion, estacionTipo);
+            String estacionAsignada = mapa.obtenerEstacionCercana(ubicacion);
     
             System.out.println("🚒 Estación asignada para " + recurso + ": " + estacionAsignada);
     
@@ -164,21 +164,14 @@ public class SistemaEmergencias implements SujetoEmergencias {
     private String obtenerEstacionCercana(CityMap mapa, String ubicacion, String tipoEstacion) {
         System.out.println("🔍 Buscando estación más cercana a: " + ubicacion);
 
-<<<<<<< HEAD
-        String estacionCercana = mapa.obtenerEstacionCercana(ubicacion, tipoEstacion);
-
-        if (estacionCercana == null) {
-            System.out.println("⚠️ No se encontró una estación cercana a la ubicación de emergencia.");
-        } else {
-            System.out.println("✅ Estación más cercana encontrada: " + estacionCercana);
-=======
-        for (String estacion : mapa.getUbicaciones()) {
-            double distancia = mapa.obtenerDistancia(estacion, ubicacion);
-            if (distancia < menorDistancia) {
-                menorDistancia = distancia;
-                estacionCercana = estacion;
+        String estacionCercana = null;
+                for (String estacion : mapa.getUbicaciones()) {
+                    double distancia = mapa.obtenerDistancia(estacion, ubicacion);
+                    double menorDistancia = 0;
+                                        if (distancia < menorDistancia) {
+                        menorDistancia = distancia;
+                        estacionCercana = estacion;
             }
->>>>>>> a643c021564c78432de695379ef6684efa502cec
         }
 
         return estacionCercana;
