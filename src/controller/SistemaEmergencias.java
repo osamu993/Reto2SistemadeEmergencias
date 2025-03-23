@@ -51,16 +51,16 @@ public class SistemaEmergencias implements SujetoEmergencias {
     }
 
     public void registrarEmergencia(String tipo, String ubicacion, NivelGravedad nivel, int tiempoRespuesta) {
-        System.out.println("🚨 Iniciando registro de emergencia...");
+        System.out.println("\nIniciando registro de emergencia...");
         
         Emergencia emergencia = FactoryEmergencias.crearEmergencia(tipo, ubicacion, nivel, tiempoRespuesta);
         if (emergencia == null) {
-            System.out.println("❌ Error: No se pudo registrar la emergencia.");
+            System.out.println("\nError: No se pudo registrar la emergencia.");
             return;
         }
     
         listaEmergencias.add(emergencia);
-        System.out.println("✅ Emergencia registrada: " + tipo + " en " + ubicacion);
+        System.out.println("\nEmergencia registrada: " + tipo + " en zona: " + ubicacion);
     
         // Determinar qué recursos se requieren según el tipo de emergencia
         List<String> recursosRequeridos = new ArrayList<>();
@@ -75,21 +75,23 @@ public class SistemaEmergencias implements SujetoEmergencias {
             recursosRequeridos.add("AMBULANCIA");
             recursosRequeridos.add("POLICIA");
         }
+
+        System.out.println("Recursos requeridos: " + recursosRequeridos);
     
         // Asignar cada recurso requerido desde la estación correcta
         for (String recurso : recursosRequeridos) {
             String estacionTipo = obtenerTipoEstacion(recurso);
-            String estacionAsignada = mapa.obtenerEstacionCercana(ubicacion);
+            String estacionAsignada = mapa.obtenerEstacionCercana(ubicacion, estacionTipo);
     
-            System.out.println("🚒 Estación asignada para " + recurso + ": " + estacionAsignada);
+            System.out.println("Estación asignada para la amergencia: " + tipo + ": " + estacionAsignada);
     
             if (estacionAsignada != null) {
                 IServicioEmergencia unidadAsignada = gestorRecursos.asignarRecursoDesde(estacionAsignada, recurso);
                 if (unidadAsignada == null) {
-                    System.out.println("⚠️ No hay suficientes recursos de: " + recurso + " en la estación: " + estacionAsignada);
+                    System.out.println("\nNo hay suficientes recursos de: " + recurso + " en la estación: " + estacionAsignada);
                 }
             } else {
-                System.out.println("⚠️ No se encontró una estación cercana para el recurso: " + recurso);
+                System.out.println("\nNo se encontró una estación cercana para el recurso: " + recurso);
             }
         }
     
@@ -99,7 +101,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
 
     public void listarEmergencias() {
         if (listaEmergencias.isEmpty()) {
-            System.out.println(" No hay emergencias activas.");
+            System.out.println("\nNo hay emergencias activas.");
         } else {
             System.out.println("\n--- Emergencias Activas ---");
             for (Emergencia emergencia : listaEmergencias) {
@@ -111,7 +113,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
 
     public void mostrarRecursos() {
         if (listaRecursos.isEmpty()) {
-            System.out.println(" No hay recursos disponibles.");
+            System.out.println("\nNo hay recursos disponibles.");
         } else {
             for (IServicioEmergencia recurso : listaRecursos) {
                 System.out.println("- " + recurso.getId() + " (Disponible: " + recurso.estaDisponible() + ")");
@@ -154,15 +156,15 @@ public class SistemaEmergencias implements SujetoEmergencias {
         System.out.println("Emergencias atendidas: " + emergenciasAtendidas);
         if (emergenciasAtendidas > 0) {
             System.out.println(
-                    "Tiempo promedio de respuesta: " + (tiempoTotalAtencion / emergenciasAtendidas) + " minutos");
+                    "\nTiempo promedio de respuesta: " + (tiempoTotalAtencion / emergenciasAtendidas) + " minutos");
         } else {
-            System.out.println("No se han atendido emergencias aún.");
+            System.out.println("\nNo se han atendido emergencias aún.");
         }
-        System.out.println("Recursos disponibles: " + listaRecursos.size());
+        System.out.println("\nRecursos disponibles: " + listaRecursos.size());
     }
 
     private String obtenerEstacionCercana(CityMap mapa, String ubicacion, String tipoEstacion) {
-        System.out.println("🔍 Buscando estación más cercana a: " + ubicacion);
+        System.out.println("\nBuscando estación más cercana a: " + ubicacion);
 
         String estacionCercana = null;
                 for (String estacion : mapa.getUbicaciones()) {
