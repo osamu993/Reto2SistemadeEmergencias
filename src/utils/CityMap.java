@@ -23,14 +23,17 @@ public class CityMap {
      */
     private void inicializarMapa() {
         // Ejemplo de datos ficticios de distancias entre ubicaciones
-        agregarUbicacion("Estación Bomberos", "Centro", 5.0);
-        agregarUbicacion("Estación Bomberos", "Zona Norte", 10.0);
-        agregarUbicacion("Hospital", "Centro", 3.0);
-        agregarUbicacion("Hospital", "Zona Sur", 7.0);
-        agregarUbicacion("Estación Policía", "Centro", 4.0);
-        agregarUbicacion("Estación Policía", "Zona Oeste", 8.0);
-        agregarUbicacion("Base de Ambulancias", "Centro", 2.0);
-        agregarUbicacion("Base de Ambulancias", "Zona Este", 6.0);
+        agregarUbicacion("Bomberos", "CENTRO", 5.0);
+        agregarUbicacion("Bomberos", "NORTE", 10.0);
+        agregarUbicacion("Bomberos", "SUR", 15.0);        
+        agregarUbicacion("Bomberos", "OESTE", 20.0);
+        agregarUbicacion("Hospital", "CENTRO", 2.0);
+        agregarUbicacion("Hospital", "NORTE", 9.0);        
+        agregarUbicacion("Hospital", "SUR", 16.0);
+        agregarUbicacion("Policia", "CENTRO", 4.0);
+        agregarUbicacion("Policia", "ESTE", 8.0);
+        agregarUbicacion("Policia", "OESTE", 18.0);
+        agregarUbicacion("Rescate", "CENTRO", 2.0);
     }
 
     /**
@@ -63,16 +66,17 @@ public class CityMap {
      * @param ubicacionEmergencia Ubicación de la emergencia.
      * @return Nombre de la estación más cercana o null si no hay datos.
      */
-    public String obtenerEstacionCercana(String ubicacionEmergencia) {
-        String estacionCercana = null;
+    public String obtenerEstacionCercana(String ubicacionEmergencia, String recursoRequerido) {
+
+        String tipoEstacion = recursoRequerido;
         double distanciaMinima = Double.MAX_VALUE;
         String estacionMasCercana = null;
     
-        String tipoEstacion = null;
-                System.out.println("🔍 Buscando estación de tipo " + tipoEstacion + " más cercana a: " + ubicacionEmergencia);
+        
+                System.out.println("\nBuscando estación de tipo " + recursoRequerido + " más cercana a la zona: " + ubicacionEmergencia);
     
         if (!mapa.containsKey(tipoEstacion)) {
-            System.out.println("⚠️ No hay estaciones de tipo " + tipoEstacion + " registradas en el mapa.");
+            System.out.println("\nNo hay estaciones de tipo " + tipoEstacion + " registradas en el mapa.");
             return null;
         }
     
@@ -80,30 +84,28 @@ public class CityMap {
             String estacion = entry.getKey();
             Map<String, Double> destinos = entry.getValue();
     
-            // 📌 🔍 Filtrar solo estaciones del tipo correcto
+            //Filtrar solo estaciones del tipo correcto
             if (!estacion.equalsIgnoreCase(tipoEstacion)) {
                 continue; // Ignorar estaciones que no sean del tipo correcto
             }
-    
-            System.out.println("   ➜ Revisando estación: " + estacion);
-    
+        
             if (destinos.containsKey(ubicacionEmergencia)) {
                 double distancia = destinos.get(ubicacionEmergencia);
-                System.out.println("     ✅ Estación " + estacion + " tiene una distancia de: " + distancia);
+                System.out.println("   -->Estación de: " + estacion + " más cercana tiene una distancia de: " + distancia + " km.");
     
                 if (distancia < distanciaMinima) {
                     distanciaMinima = distancia;
                     estacionMasCercana = estacion;
                 }
             } else {
-                System.out.println("     ❌ La estación " + estacion + " NO tiene conexión con " + ubicacionEmergencia);
+                System.out.println("La estación " + estacion + " NO tiene conexión con " + ubicacionEmergencia);
             }
         }
     
         if (estacionMasCercana == null) {
-            System.out.println("⚠️ No se encontró una estación adecuada para el recurso.");
+            System.out.println("No se encontró una estación adecuada para el recurso.");
         } else {
-            System.out.println("✅ Estación más cercana encontrada: " + estacionMasCercana);
+            System.out.println("Estación más cercana encontrada: " + estacionMasCercana);
         }
     
         return estacionMasCercana;
