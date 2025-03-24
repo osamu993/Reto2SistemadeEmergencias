@@ -90,7 +90,7 @@ public class MenuSistemaEmergencia {
 
         NivelGravedad nivelGravedad;
         do {
-            System.out.print("Ingrese el nivel de gravedad (BAJO, MEDIO, ALTO): ");
+            System.out.print("\nIngrese el nivel de gravedad (BAJO, MEDIO, ALTO): ");
             gravedad = scanner.nextLine().toUpperCase();
             nivelGravedad = NivelGravedad.fromString(gravedad);
             if (nivelGravedad == null) {
@@ -99,7 +99,7 @@ public class MenuSistemaEmergencia {
         } while (nivelGravedad == null);
 
         do {
-            System.out.print("Ingrese el tiempo estimado de respuesta en minutos: ");
+            System.out.print("\nIngrese el tiempo estimado de respuesta en minutos: ");
             while (!scanner.hasNextInt()) {
                 System.out.println("Entrada inválida. Ingrese un número válido.");
                 scanner.next();
@@ -112,7 +112,7 @@ public class MenuSistemaEmergencia {
         } while (tiempo <= 0);
 
         sistemaEmergencias.registrarEmergencia(tipo, ubicacion, nivelGravedad, tiempo);
-        System.out.println("Emergencia registrada correctamente.");
+        System.out.println("\nEmergencia registrada correctamente.");
     }
 
     private void mostrarEmergencias() {
