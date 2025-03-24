@@ -25,15 +25,19 @@ public class CityMap {
         // Ejemplo de datos ficticios de distancias entre ubicaciones
         agregarUbicacion("Bomberos", "CENTRO", 5.0);
         agregarUbicacion("Bomberos", "NORTE", 10.0);
-        agregarUbicacion("Bomberos", "SUR", 15.0);        
+        agregarUbicacion("Bomberos", "SUR", 15.0); 
+        agregarUbicacion("Bomberos", "ESTE", 12.0);        
         agregarUbicacion("Bomberos", "OESTE", 20.0);
         agregarUbicacion("Hospital", "CENTRO", 2.0);
         agregarUbicacion("Hospital", "NORTE", 9.0);        
         agregarUbicacion("Hospital", "SUR", 16.0);
+        agregarUbicacion("Hospital", "ESTE", 16.0);
+        agregarUbicacion("Hospital", "OESTE", 16.0);
         agregarUbicacion("Policia", "CENTRO", 4.0);
         agregarUbicacion("Policia", "ESTE", 8.0);
         agregarUbicacion("Policia", "OESTE", 18.0);
         agregarUbicacion("Rescate", "CENTRO", 2.0);
+        agregarUbicacion("Rescate", "Norte", 6.0);
     }
 
     /**
@@ -66,50 +70,46 @@ public class CityMap {
      * @param ubicacionEmergencia Ubicación de la emergencia.
      * @return Nombre de la estación más cercana o null si no hay datos.
      */
-    public String obtenerEstacionCercana(String ubicacionEmergencia, String recursoRequerido) {
-
-        String tipoEstacion = recursoRequerido;
-        double distanciaMinima = Double.MAX_VALUE;
-        String estacionMasCercana = null;
-    
+    public String obtenerEstacionCercana(String zona, String tipoEstacion) {
+        System.out.println("\nBuscando estación de tipo " + tipoEstacion + " más cercana a la zona: " + zona);
         
-                System.out.println("\nBuscando estación de tipo " + recursoRequerido + " más cercana a la zona: " + ubicacionEmergencia);
+        Map<String, Double> posiblesEstaciones = mapa.get(tipoEstacion);
     
-        if (!mapa.containsKey(tipoEstacion)) {
-            System.out.println("\nNo hay estaciones de tipo " + tipoEstacion + " registradas en el mapa.");
+        if (posiblesEstaciones == null || posiblesEstaciones.isEmpty()) {
+            System.out.println("No hay estaciones de tipo " + tipoEstacion + " registradas en el mapa.");
             return null;
         }
     
-        for (Map.Entry<String, Map<String, Double>> entry : mapa.entrySet()) {
-            String estacion = entry.getKey();
-            Map<String, Double> destinos = entry.getValue();
+        // 1. Verificar si hay conexión directa con la zona
+        if (posiblesEstaciones.containsKey(zona)) {
+            double distancia = posiblesEstaciones.get(zona);
+            System.out.println("   -->Estación de: " + tipoEstacion + " más cercana tiene una distancia de: " + distancia + " km.");
+            return tipoEstacion;
+        }
+
+        System.out.println("\nNo se encontro una estacion en la zona: " + zona + ", buscando la mas cercana de otra zona.");
     
-            //Filtrar solo estaciones del tipo correcto
-            if (!estacion.equalsIgnoreCase(tipoEstacion)) {
-                continue; // Ignorar estaciones que no sean del tipo correcto
-            }
-        
-            if (destinos.containsKey(ubicacionEmergencia)) {
-                double distancia = destinos.get(ubicacionEmergencia);
-                System.out.println("   -->Estación de: " + estacion + " más cercana tiene una distancia de: " + distancia + " km.");
+        // 2. Si no hay conexión directa, buscar la estación más cercana
+        double menorDistancia = Double.MAX_VALUE;
+        String estacionCercana = null;
     
-                if (distancia < distanciaMinima) {
-                    distanciaMinima = distancia;
-                    estacionMasCercana = estacion;
-                }
-            } else {
-                System.out.println("La estación " + estacion + " NO tiene conexión con " + ubicacionEmergencia);
+        for (Map.Entry<String, Double> entry : posiblesEstaciones.entrySet()) {
+            double distancia = entry.getValue();
+            if (distancia < menorDistancia) {
+                menorDistancia = distancia;
+                estacionCercana = tipoEstacion;
             }
         }
     
-        if (estacionMasCercana == null) {
-            System.out.println("No se encontró una estación adecuada para el recurso.");
+        if (estacionCercana != null) {
+            System.out.println("   -->Estación alternativa de: " + tipoEstacion + " con distancia: " + menorDistancia + " km.");
         } else {
-            System.out.println("Estación más cercana encontrada: " + estacionMasCercana);
+            System.out.println("No se encontró una estación cercana a " + zona);
         }
     
-        return estacionMasCercana;
+        return estacionCercana;
     }
+    
 
     /**
      * Método para determinar la zona de una ubicación.
