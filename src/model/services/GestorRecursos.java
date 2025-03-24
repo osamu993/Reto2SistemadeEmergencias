@@ -120,6 +120,5 @@ public class GestorRecursos {
         // Usamos la versión del método que solo recibe `ubicacionEmergencia`
         return cityMap.obtenerEstacionCercana(ubicacionEmergencia);
     }
-    
 
 }

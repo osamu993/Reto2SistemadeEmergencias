@@ -80,7 +80,7 @@ public abstract class Emergencia {
     }
 
     public String getDescripcion() {
-        return tipo + " en " + ubicacion + " (Nivel: " + nivelGravedad + ")";
+        return tipo + " (Gravedad: " + nivelGravedad + ")";
     }
 
     /**

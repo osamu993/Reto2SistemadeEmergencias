@@ -20,7 +20,7 @@ public class Policia implements IServicioEmergencia {
     public void desplegarUnidad(String ubicacion) {
         this.disponible = false;
         this.ubicacion = ubicacion; // Actualizamos la ubicación
-        System.out.println("🚔 Policía " + id + " en camino a " + ubicacion);
+        System.out.println("Policía " + id + " en camino a la zona: " + ubicacion);
     }
 
     @Override

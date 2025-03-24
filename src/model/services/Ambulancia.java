@@ -21,7 +21,7 @@ public class Ambulancia implements IServicioEmergencia {
     public void desplegarUnidad(String ubicacion) {
         this.disponible = false;
         this.ubicacion = ubicacion; // Actualizamos la ubicación
-        System.out.println("🚑 Ambulancia " + id + " en camino a " + ubicacion);
+        System.out.println("Ambulancia " + id + " en camino a la zona: " + ubicacion);
     }
 
     @Override

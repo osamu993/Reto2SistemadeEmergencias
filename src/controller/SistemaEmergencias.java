@@ -52,16 +52,16 @@ public class SistemaEmergencias implements SujetoEmergencias {
 
     public void registrarEmergencia(String tipo, String ubicacion, NivelGravedad nivel, int tiempoRespuesta) {
         System.out.println("\nIniciando registro de emergencia...");
-        
+
         Emergencia emergencia = FactoryEmergencias.crearEmergencia(tipo, ubicacion, nivel, tiempoRespuesta);
         if (emergencia == null) {
             System.out.println("\nError: No se pudo registrar la emergencia.");
             return;
         }
-    
+
         listaEmergencias.add(emergencia);
-        System.out.println("\nEmergencia registrada: " + tipo + " en zona: " + ubicacion);
-    
+        System.out.println("\nEmergencia registrada: " + tipo + " en zona " + ubicacion);
+
         // Determinar qué recursos se requieren según el tipo de emergencia
         List<String> recursosRequeridos = new ArrayList<>();
         if (tipo.equalsIgnoreCase("INCENDIO")) {
@@ -77,27 +77,25 @@ public class SistemaEmergencias implements SujetoEmergencias {
         }
 
         System.out.println("Recursos requeridos: " + recursosRequeridos);
-    
+
         // Asignar cada recurso requerido desde la estación correcta
         for (String recurso : recursosRequeridos) {
             String estacionTipo = obtenerTipoEstacion(recurso);
             String estacionAsignada = mapa.obtenerEstacionCercana(ubicacion, estacionTipo);
-    
-            System.out.println("Estación asignada para la amergencia: " + tipo + ": " + estacionAsignada);
-    
+
             if (estacionAsignada != null) {
-                IServicioEmergencia unidadAsignada = gestorRecursos.asignarRecursoDesde(estacionAsignada, recurso);
+                IServicioEmergencia unidadAsignada = gestorRecursos.asignarRecursoDesde(ubicacion,estacionAsignada, recurso);
                 if (unidadAsignada == null) {
-                    System.out.println("\nNo hay suficientes recursos de: " + recurso + " en la estación: " + estacionAsignada);
+                    System.out.println(
+                            "\nNo hay suficientes recursos de: " + recurso + " en la estación: " + estacionAsignada);
                 }
             } else {
                 System.out.println("\nNo se encontró una estación cercana para el recurso: " + recurso);
             }
         }
-    
+
         notificarObservers(emergencia);
     }
-    
 
     public void listarEmergencias() {
         if (listaEmergencias.isEmpty()) {
@@ -105,8 +103,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
         } else {
             System.out.println("\n--- Emergencias Activas ---");
             for (Emergencia emergencia : listaEmergencias) {
-                System.out.println("- " + emergencia.getDescripcion() + " en " + emergencia.getUbicacion() + " ("
-                        + emergencia.getNivelGravedad() + ")");
+                System.out.println("\n- " + emergencia.getDescripcion() + " en zona " + emergencia.getUbicacion());
             }
         }
     }
@@ -167,12 +164,12 @@ public class SistemaEmergencias implements SujetoEmergencias {
         System.out.println("\nBuscando estación más cercana a: " + ubicacion);
 
         String estacionCercana = null;
-                for (String estacion : mapa.getUbicaciones()) {
-                    double distancia = mapa.obtenerDistancia(estacion, ubicacion);
-                    double menorDistancia = 0;
-                                        if (distancia < menorDistancia) {
-                        menorDistancia = distancia;
-                        estacionCercana = estacion;
+        for (String estacion : mapa.getUbicaciones()) {
+            double distancia = mapa.obtenerDistancia(estacion, ubicacion);
+            double menorDistancia = 0;
+            if (distancia < menorDistancia) {
+                menorDistancia = distancia;
+                estacionCercana = estacion;
             }
         }
 
@@ -222,7 +219,6 @@ public class SistemaEmergencias implements SujetoEmergencias {
                 return null;
         }
     }
-    
 
     public CityMap getCityMap() {
         return mapa;
