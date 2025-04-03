@@ -25,4 +25,5 @@ public class StrategyPrioridadGravedad implements StrategyPrioridad {
                 return 1;
         }
     }
+
 }

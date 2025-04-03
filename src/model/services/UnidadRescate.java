@@ -2,30 +2,31 @@ package model.services;
 
 import model.interfaces.IServicioEmergencia;
 
-public class Policia implements IServicioEmergencia {
+public class UnidadRescate implements IServicioEmergencia {
     private String id;
     private boolean disponible;
     private int combustible;
     private int personalDisponible;
     private String ubicacion;
 
-    public Policia(String id, String ubicacion) {
+    public UnidadRescate(String id, String ubicacion) {
         this.id = id;
         this.disponible = true;
         this.ubicacion = ubicacion;
-        this.combustible = 100; // Inicializamos el combustible
+        this.combustible = 100;
+        this.personalDisponible = 6;
     }
 
     @Override
     public void desplegarUnidad(String ubicacion) {
         this.disponible = false;
-        this.ubicacion = ubicacion; // Actualizamos la ubicación
-        System.out.println("Policía " + id + " en camino a la zona: " + ubicacion);
+        this.ubicacion = ubicacion;
+        System.out.println("Unidad de Rescate " + id + " en camino a la zona: " + ubicacion);
     }
 
     @Override
     public void evaluarSituacion() {
-        System.out.println("📋 Evaluando la situación del incidente.");
+        System.out.println("Evaluando situación en la zona de rescate.");
     }
 
     @Override
@@ -41,12 +42,12 @@ public class Policia implements IServicioEmergencia {
     @Override
     public void liberarRecurso() {
         this.disponible = true;
-        System.out.println("✅ La unidad de policía " + id + " ha sido liberada y está disponible nuevamente.");
+        System.out.println("✅ La unidad de rescate " + id + " ha sido liberada.");
     }
 
     @Override
     public void liberarPersonal(int cantidad) {
-        System.out.println("🚔 Policía " + id + " ha liberado " + cantidad + " oficiales.");
+        System.out.println("🚑 Unidad de rescate " + id + " ha liberado " + cantidad + " miembros del equipo.");
     }
 
     @Override
@@ -62,13 +63,13 @@ public class Policia implements IServicioEmergencia {
     @Override
     public void gastarCombustible(int cantidad) {
         this.combustible = Math.max(0, this.combustible - cantidad);
-        System.out.println("⛽ Policía " + id + " ha gastado " + cantidad + " de combustible. Restante: " + this.combustible);
+        System.out.println("⛽ Unidad de rescate " + id + " ha gastado " + cantidad + ". Restante: " + this.combustible);
     }
 
     @Override
     public void tanquearCombustible(int cantidad) {
         this.combustible = Math.min(100, this.combustible + cantidad);
-        System.out.println("⛽ Policía " + id + " ha tanqueado " + cantidad + " de combustible. Total: " + this.combustible);
+        System.out.println("⛽ Unidad de rescate " + id + " ha recargado " + cantidad + ". Total: " + this.combustible);
     }
 
     @Override
@@ -80,9 +81,9 @@ public class Policia implements IServicioEmergencia {
     public void asignarPersonal(int cantidad) {
         if (personalDisponible >= cantidad) {
             personalDisponible -= cantidad;
-            System.out.println("👮‍♂️ Se han asignado " + cantidad + " oficiales. Restantes: " + personalDisponible);
+            System.out.println("🧑‍🚒 Se han asignado " + cantidad + " rescatistas. Restantes: " + personalDisponible);
         } else {
-            System.out.println("⚠️ No hay suficiente personal disponible en la policía.");
+            System.out.println("⚠️ No hay suficiente personal disponible en la unidad de rescate.");
         }
     }
 
@@ -91,13 +92,9 @@ public class Policia implements IServicioEmergencia {
         return ubicacion;
     }
 
-    /**
-     * Método para actualizar la ubicación de la unidad de policía.
-     * @param ubicacion Nueva ubicación.
-     */
     @Override
     public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
-        System.out.println("📍 La unidad de policía " + id + " ahora está en " + ubicacion);
+        System.out.println("📍 La unidad de rescate " + id + " ahora está en " + ubicacion);
     }
 }

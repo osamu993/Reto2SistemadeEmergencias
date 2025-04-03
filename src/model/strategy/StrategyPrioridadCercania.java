@@ -1,5 +1,7 @@
 package model.strategy;
 
+import java.util.List;
+
 import model.Emergencia;
 import java.util.HashMap;
 import java.util.Map;

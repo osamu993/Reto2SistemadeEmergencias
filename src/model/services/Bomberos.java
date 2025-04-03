@@ -20,7 +20,7 @@ public class Bomberos implements IServicioEmergencia {
     public void desplegarUnidad(String ubicacion) {
         this.disponible = false;
         this.ubicacion = ubicacion; // Actualizamos la ubicación
-        System.out.println("🚒 Bomberos " + id + " en camino a " + ubicacion);
+        System.out.println("Bomberos " + id + " en camino a la zona: " + ubicacion);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class Bomberos implements IServicioEmergencia {
 
     @Override
     public void liberarPersonal(int cantidad) {
-        System.out.println("🚒 Bomberos " + id + " ha liberado " + cantidad + " bomberos.");
+        System.out.println("Bomberos " + id + " ha liberado " + cantidad + " bomberos.");
     }
 
     @Override

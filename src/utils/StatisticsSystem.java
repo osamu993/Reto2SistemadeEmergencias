@@ -9,6 +9,7 @@ public class StatisticsSystem {
 
     /**
      * Calcula el tiempo promedio de respuesta a emergencias.
+     * 
      * @param tiempos Lista de tiempos de respuesta en minutos.
      * @return Tiempo promedio o 0.0 si la lista está vacía.
      */
@@ -26,7 +27,8 @@ public class StatisticsSystem {
 
     /**
      * Calcula la eficiencia del uso de recursos en el sistema.
-     * @param recursosUsados Cantidad de recursos utilizados.
+     * 
+     * @param recursosUsados      Cantidad de recursos utilizados.
      * @param recursosDisponibles Cantidad total de recursos.
      * @return Porcentaje de uso de recursos o 0.0 si recursosDisponibles es 0.
      */

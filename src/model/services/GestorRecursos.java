@@ -1,16 +1,24 @@
 package model.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import model.Emergencia;
 import model.interfaces.IServicioEmergencia;
+import model.strategy.IEstrategyAsignacion;
 import utils.CityMap;
 
 public class GestorRecursos {
     private List<IServicioEmergencia> recursosDisponibles = new ArrayList<>();
     private CityMap cityMap;
+    private IEstrategyAsignacion estrategiaAsignacion;
+    
 
     public GestorRecursos(CityMap cityMap) {
         this.cityMap = cityMap;
+        inicializarRecursos();
     }
 
     public void agregarRecursos(IServicioEmergencia recurso) {
@@ -19,7 +27,8 @@ public class GestorRecursos {
 
     public IServicioEmergencia asignarRecurso(int personalRequerido, int combustibleRequerido) {
         for (IServicioEmergencia recurso : recursosDisponibles) {
-            if (recurso.estaDisponible() && recurso.getPersonalDisponible() >= personalRequerido && recurso.getCombustible() >= combustibleRequerido) {
+            if (recurso.estaDisponible() && recurso.getPersonalDisponible() >= personalRequerido
+                    && recurso.getCombustible() >= combustibleRequerido) {
                 recurso.asignarPersonal(personalRequerido);
                 recurso.gastarCombustible(combustibleRequerido);
                 recurso.desplegarUnidad(recurso.getUbicacion()); // Enviar recurso correctamente
@@ -44,23 +53,25 @@ public class GestorRecursos {
         return null; // No hay recursos disponibles
     }
 
-    public IServicioEmergencia asignarRecursoDesde(String ubicacionEmergencia, String tipoRecurso) {
-        String estacionCercana = cityMap.obtenerEstacionCercana(ubicacionEmergencia);
-    
-        if (estacionCercana == null || estacionCercana.isEmpty()) {
-            System.out.println("⚠️ No se encontró una estación cercana a " + ubicacionEmergencia);
+    public IServicioEmergencia asignarRecursoDesde(String ubicacion, String estacionAsignada, String tipoRecurso) {
+
+        if (estacionAsignada == null) {
+            System.out.println("No se puede asignar recurso.");
             return null;
         }
-    
+        
+
         for (IServicioEmergencia recurso : recursosDisponibles) {
-            if (recurso.estaDisponible() && recurso.getUbicacion().equalsIgnoreCase(estacionCercana)
-                    && recurso.getClass().getSimpleName().equalsIgnoreCase(tipoRecurso)) {
-                recurso.desplegarUnidad(estacionCercana);
+            if (recurso.estaDisponible() &&
+                    recurso.getUbicacion().equalsIgnoreCase(estacionAsignada) &&
+                    recurso.getClass().getSimpleName().toUpperCase().contains(tipoRecurso.toUpperCase())) {
+
+                recurso.desplegarUnidad(ubicacion);
                 return recurso;
             }
         }
-    
-        System.out.println("⚠️ No hay recursos disponibles en " + estacionCercana);
+
+        System.out.println("No hay suficientes recursos de: " + tipoRecurso + " en la estación: " + estacionAsignada);
         return null;
     }
 
@@ -71,7 +82,55 @@ public class GestorRecursos {
 
     public void mostrarRecursos() {
         for (IServicioEmergencia recurso : recursosDisponibles) {
-            System.out.println("ID: " + recurso.getId() + " (Personal: " + recurso.getPersonalDisponible() + ", Combustible: " + recurso.getCombustible() + " galones)");
+            System.out.println("ID: " + recurso.getId() + " (Personal: " + recurso.getPersonalDisponible()
+                    + ", Combustible: " + recurso.getCombustible() + " galones)");
         }
     }
+
+    public void setEstrategiaAsignacion(IEstrategyAsignacion estrategia) {
+        this.estrategiaAsignacion = estrategia;
+    }
+
+    // Aplicar la estrategia en la asignación de recursos
+    public IServicioEmergencia asignarRecurso(Emergencia emergencia) {
+        if (estrategiaAsignacion != null) {
+            List<IServicioEmergencia> recursos = new ArrayList<>(recursosDisponibles);
+            return estrategiaAsignacion.asignarRecurso(recursos, emergencia);
+        }
+        return null; // No se asigna recurso
+    }
+
+    private void inicializarRecursos() {
+        recursosDisponibles.add(new Bomberos("B1", "Bomberos"));
+        recursosDisponibles.add(new Bomberos("B2", "Bomberos"));
+    
+        recursosDisponibles.add(new Policia("P1", "Policia"));
+        recursosDisponibles.add(new Policia("P2", "Policia"));
+    
+        recursosDisponibles.add(new Ambulancia("A1", "Hospital"));
+        recursosDisponibles.add(new Ambulancia("A2", "Hospital"));
+    
+        recursosDisponibles.add(new UnidadRescate("R1", "Rescate"));
+        recursosDisponibles.add(new UnidadRescate("R2", "Rescate"));
+    }
+    
+
+    private String obtenerEstacionPorTipoRecurso(String ubicacionEmergencia, String tipoRecurso) {
+
+        Map<String, String> estacionesPorRecurso = new HashMap<>();
+        estacionesPorRecurso.put("BOMBEROS", "Bomberos");
+        estacionesPorRecurso.put("AMBULANCIA", "Hospital");
+        estacionesPorRecurso.put("POLICIA", "Policia");
+        estacionesPorRecurso.put("RESCATE", "Rescate");
+
+        String estacionTipo = estacionesPorRecurso.get(tipoRecurso.toUpperCase());
+
+        if (estacionTipo == null) {
+            return null; // Si el recurso no existe, no hay estación
+        }
+
+        // Usamos la versión del método que solo recibe `ubicacionEmergencia`
+        return cityMap.obtenerEstacionCercana(ubicacionEmergencia, estacionTipo);
+    }
+
 }

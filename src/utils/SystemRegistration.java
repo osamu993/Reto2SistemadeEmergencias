@@ -4,11 +4,14 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Emergencia;
+
 /**
  * Clase para gestionar el registro de emergencias en el sistema.
  */
 public class SystemRegistration {
     private static final String NOMBRE_ARCHIVO = "registro_emergencias.txt";
+    private static List<Emergencia> historialEmergencias = new ArrayList<>();
 
     /**
      * Guarda una emergencia en el archivo de registro.
