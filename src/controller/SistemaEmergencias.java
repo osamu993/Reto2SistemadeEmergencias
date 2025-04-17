@@ -110,7 +110,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
                 System.out.println("\nNo se encontró una estación cercana para el recurso: " + recurso);
             }
         }
-
+        emergencia.setAtendida(true);
         notificarObservers(emergencia);
     }
 
@@ -176,6 +176,37 @@ public class SistemaEmergencias implements SujetoEmergencias {
         }
         System.out.println("\nRecursos disponibles: " + listaRecursos.size());
     }
+
+    public List<Emergencia> getListaEmergencias() {
+        return this.listaEmergencias;
+    }  
+    
+    public void mostrarRecursosDisponibles() {
+        gestorRecursos.mostrarRecursosDisponibles();
+    }
+
+    public void reasignarRecursosEmergencia(Emergencia emergencia) {
+        List<String> recursosNecesarios = determinarRecursosPorEmergencia(emergencia.getTipo(), mapa.obtenerZona(emergencia.getUbicacion())).keySet().stream().toList();
+    
+        for (String tipoRecurso : recursosNecesarios) {
+            System.out.println("Intentando reasignar recurso de tipo: " + tipoRecurso);
+    
+            String estacionAlternativa = mapa.obtenerEstacionCercana(emergencia.getUbicacion(), tipoRecurso);
+    
+            if (estacionAlternativa != null) {
+                IServicioEmergencia nuevoRecurso = gestorRecursos.asignarRecursoDesde(emergencia.getUbicacion(),estacionAlternativa, tipoRecurso);
+    
+                if (nuevoRecurso != null) {
+                    System.out.println("Recurso " + nuevoRecurso.getId() + " reasignado desde " + estacionAlternativa);
+                } else {
+                    System.out.println("No fue posible reasignar recurso de tipo: " + tipoRecurso);
+                }
+            } else {
+                System.out.println("No se encontró una estación alternativa para tipo: " + tipoRecurso);
+            }
+        }
+    }
+    
 
     private String obtenerEstacionCercana(CityMap mapa, String ubicacion, String tipoEstacion) {
         System.out.println("\nBuscando estación más cercana a: " + ubicacion);
