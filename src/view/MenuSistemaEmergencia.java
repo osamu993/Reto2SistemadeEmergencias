@@ -23,11 +23,10 @@ public class MenuSistemaEmergencia {
         do {
             System.out.println("\n\n--- Sistema de Emergencias ---\n");
             System.out.println("1. Registrar emergencia");
-            System.out.println("2. Mostrar emergencias activas");
+            System.out.println("2. Gestionar emergencias");
             System.out.println("3. Mostrar recursos disponibles");
-            System.out.println("4. Reasignar recursos");
-            System.out.println("5. Mostrar estadísticas del día");
-            System.out.println("6. Salir");
+            System.out.println("4. Mostrar estadísticas del día");
+            System.out.println("5. Salir");
             System.out.print("\nSeleccione una opción: ");
 
             while (!scanner.hasNextInt()) {
@@ -42,28 +41,48 @@ public class MenuSistemaEmergencia {
                     registrarEmergencia();
                     break;
                 case 2:
-                    mostrarEmergencias();
+                    mostrarSubmenuGestionarEmergencias();
                     break;
                 case 3:
                     sistemaEmergencias.mostrarRecursosDisponibles();
                     break;
-
                 case 4:
-                    reasignarRecursos();
-                    break;
-                case 5:
                     mostrarEstadisticas();
                     break;
-                case 6:
-                    mostrarEmergenciasAtendidas();
-                    break;
-                case 7:
+                case 5:
                     System.out.println("Saliendo del sistema...");
                     break;
                 default:
                     System.out.println("Opción no válida, intente nuevamente.");
             }
-        } while (opcion != 6);
+        } while (opcion != 5);
+    }
+
+    private void mostrarSubmenuGestionarEmergencias() {
+        int opcionSubmenu;
+        do {
+            System.out.println("\n\n--- Gestionar Emergencias ---");
+            System.out.println("1. Mostrar emergencias activas");
+            System.out.println("2. Reasignar recursos");
+            System.out.println("3. Volver al menú principal");
+            System.out.print("Seleccione una opción: ");
+            opcionSubmenu = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcionSubmenu) {
+                case 1:
+                    mostrarEmergencias();
+                    break;
+                case 2:
+                    reasignarRecursos();
+                    break;
+                case 3:
+                    System.out.println("Volviendo al menú principal...");
+                    break;
+                default:
+                    System.out.println("Opción inválida.");
+            }
+        } while (opcionSubmenu != 3);
     }
 
     private void registrarEmergencia() {
@@ -139,7 +158,7 @@ public class MenuSistemaEmergencia {
                 .toList();
 
         if (emergencias.isEmpty()) {
-            System.out.println("No hay emergencias activas para reasignar recursos.");
+            System.out.println("\nNo hay emergencias activas para reasignar recursos.");
             return;
         }
 
@@ -163,12 +182,12 @@ public class MenuSistemaEmergencia {
     }
 
     private void mostrarEmergenciasAtendidas() {
-        System.out.println("\n📋 Emergencias Atendidas:");
+        System.out.println("\nEmergencias Atendidas:");
         boolean hayAtendidas = false;
         for (Emergencia e : sistemaEmergencias.getListaEmergencias()) {
             if (e.isAtendida()) {
-                System.out
-                        .println(e.getTipo() + " - Zona: " + e.getUbicacion() + " - Gravedad: " + e.getNivelGravedad());
+                System.out.println("\n" + e.getTipo() + " - Zona: " + e.getUbicacion() +
+                        " - Gravedad: " + e.getNivelGravedad());
                 hayAtendidas = true;
             }
         }
