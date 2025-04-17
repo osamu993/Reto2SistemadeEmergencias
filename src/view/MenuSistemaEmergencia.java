@@ -1,6 +1,7 @@
 package view;
 
 import controller.SistemaEmergencias;
+import model.Emergencia;
 import utils.NivelGravedad;
 import utils.TipoEmergencia;
 
@@ -44,8 +45,9 @@ public class MenuSistemaEmergencia {
                     mostrarEmergencias();
                     break;
                 case 3:
-                    mostrarRecursos();
+                    sistemaEmergencias.mostrarRecursosDisponibles();
                     break;
+
                 case 4:
                     reasignarRecursos();
                     break;
@@ -53,6 +55,9 @@ public class MenuSistemaEmergencia {
                     mostrarEstadisticas();
                     break;
                 case 6:
+                    mostrarEmergenciasAtendidas();
+                    break;
+                case 7:
                     System.out.println("Saliendo del sistema...");
                     break;
                 default:
@@ -70,8 +75,8 @@ public class MenuSistemaEmergencia {
         do {
             System.out.print("Ingrese el tipo de emergencia " + TipoEmergencia.getListaTipos() + ": ");
             tipo = scanner.nextLine().toUpperCase();
-            TipoEmergencia.fromString(tipo); 
-                
+            TipoEmergencia.fromString(tipo);
+
         } while (TipoEmergencia.fromString(tipo) == null);
 
         System.out.println("\nZonas disponibles: Centro, Norte, Sur, Este, Oeste");
@@ -79,7 +84,7 @@ public class MenuSistemaEmergencia {
         while (!entradaUbicacionValida) {
             System.out.print("Ingrese la ubicación de la emergencia: ");
             ubicacion = scanner.nextLine().trim().toUpperCase();
-        
+
             if (zonasValidas.contains(ubicacion)) {
                 entradaUbicacionValida = true;
             } else {
@@ -126,11 +131,49 @@ public class MenuSistemaEmergencia {
     }
 
     private void reasignarRecursos() {
-        System.out.println("\nIntentando reasignar recursos...");
-        if (sistemaEmergencias.reasignarRecursos()) {
-            System.out.println("Recursos reasignados correctamente.");
-        } else {
-            System.out.println("No hay recursos disponibles para reasignar.");
+        System.out.println("\nReasignación de Recursos:");
+
+        List<Emergencia> emergencias = sistemaEmergencias.getListaEmergencias()
+                .stream()
+                .filter(e -> !e.isAtendida())
+                .toList();
+
+        if (emergencias.isEmpty()) {
+            System.out.println("No hay emergencias activas para reasignar recursos.");
+            return;
+        }
+
+        for (int i = 0; i < emergencias.size(); i++) {
+            Emergencia e = emergencias.get(i);
+            System.out.println((i + 1) + ". " + e.getTipo() + " en " + e.getUbicacion() + " (Gravedad: "
+                    + e.getNivelGravedad() + ")");
+        }
+
+        System.out.print("Seleccione el número de la emergencia para reasignar recursos: ");
+        int seleccion = scanner.nextInt();
+        scanner.nextLine(); // Limpiar buffer
+
+        if (seleccion < 1 || seleccion > emergencias.size()) {
+            System.out.println("Selección inválida.");
+            return;
+        }
+
+        Emergencia seleccionada = emergencias.get(seleccion - 1);
+        sistemaEmergencias.reasignarRecursosEmergencia(seleccionada);
+    }
+
+    private void mostrarEmergenciasAtendidas() {
+        System.out.println("\n📋 Emergencias Atendidas:");
+        boolean hayAtendidas = false;
+        for (Emergencia e : sistemaEmergencias.getListaEmergencias()) {
+            if (e.isAtendida()) {
+                System.out
+                        .println(e.getTipo() + " - Zona: " + e.getUbicacion() + " - Gravedad: " + e.getNivelGravedad());
+                hayAtendidas = true;
+            }
+        }
+        if (!hayAtendidas) {
+            System.out.println("No hay emergencias atendidas por el momento.");
         }
     }
 
