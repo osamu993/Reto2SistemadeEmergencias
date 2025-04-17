@@ -10,7 +10,7 @@ public abstract class Emergencia {
     private String ubicacion;
     private NivelGravedad nivelGravedad;
     private int tiempoReespuesta;
-    private boolean atendida;
+    private boolean atendida = false;
     private long tiempoInicioAtencion;
     private long tiempoFinAtencion;
     private List<IServicioEmergencia> recursosAsignados = new ArrayList<>();
@@ -58,10 +58,11 @@ public abstract class Emergencia {
     public boolean isAtendida() {
         return atendida;
     }
-
+    
     public void setAtendida(boolean atendida) {
         this.atendida = atendida;
     }
+    
 
     public long getTiempoInicioAtencion() {
         return tiempoInicioAtencion;
@@ -135,6 +136,7 @@ public abstract class Emergencia {
         this.tiempoFinAtencion = System.currentTimeMillis();
         System.out.println("🏁 Emergencia resuelta: " + this.getDescripcion() + " en " + ubicacion);
     }
+    
 
     @Override
     public String toString() {
