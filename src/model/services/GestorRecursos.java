@@ -87,6 +87,24 @@ public class GestorRecursos {
         }
     }
 
+    public void mostrarRecursosDisponibles() {
+        System.out.println("\nRecursos disponibles:");
+    
+        boolean hayDisponibles = false;
+    
+        for (IServicioEmergencia recurso : recursosDisponibles) {
+            if (recurso.estaDisponible()) {
+                System.out.println("ID: " + recurso.getId() + " | Tipo: " + recurso.getClass().getSimpleName() + " | Ubicación: " + recurso.getUbicacion());
+                hayDisponibles = true;
+            }
+        }
+    
+        if (!hayDisponibles) {
+            System.out.println("No hay recursos disponibles en este momento.");
+        }
+    }
+    
+
     public void setEstrategiaAsignacion(IEstrategyAsignacion estrategia) {
         this.estrategiaAsignacion = estrategia;
     }
