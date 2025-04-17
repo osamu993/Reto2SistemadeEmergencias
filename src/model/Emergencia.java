@@ -60,7 +60,7 @@ public abstract class Emergencia {
     }
     
     public void setAtendida(boolean atendida) {
-        this.atendida = atendida;
+        this.atendida = true;
     }
     
 

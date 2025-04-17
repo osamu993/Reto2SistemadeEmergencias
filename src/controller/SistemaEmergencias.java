@@ -120,7 +120,9 @@ public class SistemaEmergencias implements SujetoEmergencias {
         } else {
             System.out.println("\n--- Emergencias Activas ---");
             for (Emergencia emergencia : listaEmergencias) {
-                System.out.println("\n- " + emergencia.getDescripcion() + " en zona " + emergencia.getUbicacion());
+                if(!emergencia.isAtendida()){
+                    System.out.println("\n- " + emergencia.getDescripcion() + " en zona " + emergencia.getUbicacion());
+                }            
             }
         }
     }
