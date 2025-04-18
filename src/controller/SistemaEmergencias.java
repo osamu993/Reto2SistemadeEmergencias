@@ -30,11 +30,10 @@ public class SistemaEmergencias implements SujetoEmergencias {
     }
 
     public void inicializarRecursos() {
-    listaRecursos.add(new Ambulancia("AMB1", "Centro"));
-    listaRecursos.add(new Bomberos("BOM1", "Zona Norte"));
-    listaRecursos.add(new Policia("POL1", "Centro"));
-}
-
+        listaRecursos.add(new Ambulancia("AMB1", "Centro"));
+        listaRecursos.add(new Bomberos("BOM1", "Zona Norte"));
+        listaRecursos.add(new Policia("POL1", "Centro"));
+    }
 
     private static SistemaEmergencias instancia;
     private List<Emergencia> listaEmergencias;
@@ -42,23 +41,17 @@ public class SistemaEmergencias implements SujetoEmergencias {
     private List<ObserverEmergencias> observadores;
     private CityMap mapa = new CityMap();
     private GestorRecursos gestorRecursos = new GestorRecursos(mapa);
-    private int emergenciasAtendidas;
-    private long tiempoTotalAtencion;
+ 
 
     public SistemaEmergencias() {
         listaEmergencias = new ArrayList<>();
         listaRecursos = new ArrayList<>();
         observadores = new ArrayList<>();
-        emergenciasAtendidas = 0;
-        tiempoTotalAtencion = 0;
         listaEmergencias = new ArrayList<>();
         listaRecursos = new ArrayList<>();
         observadores = new ArrayList<>();
-        emergenciasAtendidas = 0;
-        tiempoTotalAtencion = 0;
         inicializarRecursos(); // Agregar recursos al sistema
-        }
-
+    }
 
     public static SistemaEmergencias getInstance() {
         if (instancia == null) {
@@ -101,7 +94,8 @@ public class SistemaEmergencias implements SujetoEmergencias {
             String estacionAsignada = mapa.obtenerEstacionCercana(ubicacion, estacionTipo);
 
             if (estacionAsignada != null) {
-                IServicioEmergencia unidadAsignada = gestorRecursos.asignarRecursoDesde(ubicacion,estacionAsignada, recurso);
+                IServicioEmergencia unidadAsignada = gestorRecursos.asignarRecursoDesde(ubicacion, estacionAsignada,
+                        recurso);
                 if (unidadAsignada == null) {
                     System.out.println(
                             "\nNo hay suficientes recursos de: " + recurso + " en la estación: " + estacionAsignada);
@@ -110,7 +104,6 @@ public class SistemaEmergencias implements SujetoEmergencias {
                 System.out.println("\nNo se encontró una estación cercana para el recurso: " + recurso);
             }
         }
-        emergencia.setAtendida(true);
         notificarObservers(emergencia);
     }
 
@@ -120,9 +113,9 @@ public class SistemaEmergencias implements SujetoEmergencias {
         } else {
             System.out.println("\n--- Emergencias Activas ---");
             for (Emergencia emergencia : listaEmergencias) {
-                if(!emergencia.isAtendida()){
+                if (!emergencia.isAtendida()) {
                     System.out.println("\n- " + emergencia.getDescripcion() + " en zona " + emergencia.getUbicacion());
-                }            
+                }
             }
         }
     }
@@ -167,37 +160,68 @@ public class SistemaEmergencias implements SujetoEmergencias {
         return false; // no se pudo reasignar ningun recurso
     }
 
-    public void mostrarEstadisticas() {
-        System.out.println("\n--- Estadísticas del Día ---");
-        System.out.println("Emergencias atendidas: " + emergenciasAtendidas);
-        if (emergenciasAtendidas > 0) {
-            System.out.println(
-                    "\nTiempo promedio de respuesta: " + (tiempoTotalAtencion / emergenciasAtendidas) + " minutos");
-        } else {
-            System.out.println("\nNo se han atendido emergencias aún.");
+    // Archivo: SistemaEmergencias.java
+    // Clase: SistemaEmergencias
+
+    public void mostrarEstadisticasDelDia() {
+        int totalEmergencias = listaEmergencias.size();
+        int atendidas = 0;
+        int pendientes = 0;
+        Map<String, Integer> recursosUsados = new HashMap<>();
+    
+        for (Emergencia emergencia : listaEmergencias) {
+            if (emergencia.isAtendida()) {
+                atendidas++;
+            } else {
+                pendientes++;
+            }
+    
+            // Obtener recursos según tipo de emergencia y zona
+            Map<String, Integer> recursos = determinarRecursosPorEmergencia(
+                    emergencia.getTipo(),
+                    mapa.obtenerZona(emergencia.getUbicacion()));
+    
+            for (Map.Entry<String, Integer> entry : recursos.entrySet()) {
+                String recurso = entry.getKey();
+                int cantidad = entry.getValue();
+    
+                recursosUsados.put(recurso, recursosUsados.getOrDefault(recurso, 0) + cantidad);
+            }
         }
-        System.out.println("\nRecursos disponibles: " + listaRecursos.size());
+    
+        System.out.println("\n---Estadísticas del Día ---\n\n");
+        System.out.println("Total emergencias registradas: " + totalEmergencias);
+        System.out.println("-Atendidas: " + atendidas);
+        System.out.println("-Pendientes: " + pendientes);
+    
+        System.out.println("\nRecursos desplegados:");
+        for (Map.Entry<String, Integer> entry : recursosUsados.entrySet()) {
+            System.out.println("- " + entry.getKey() + ": " + entry.getValue());
+        }
     }
+    
 
     public List<Emergencia> getListaEmergencias() {
         return this.listaEmergencias;
-    }  
-    
+    }
+
     public void mostrarRecursosDisponibles() {
         gestorRecursos.mostrarRecursosDisponibles();
     }
 
     public void reasignarRecursosEmergencia(Emergencia emergencia) {
-        List<String> recursosNecesarios = determinarRecursosPorEmergencia(emergencia.getTipo(), mapa.obtenerZona(emergencia.getUbicacion())).keySet().stream().toList();
-    
+        List<String> recursosNecesarios = determinarRecursosPorEmergencia(emergencia.getTipo(),
+                mapa.obtenerZona(emergencia.getUbicacion())).keySet().stream().toList();
+
         for (String tipoRecurso : recursosNecesarios) {
             System.out.println("Intentando reasignar recurso de tipo: " + tipoRecurso);
-    
+
             String estacionAlternativa = mapa.obtenerEstacionCercana(emergencia.getUbicacion(), tipoRecurso);
-    
+
             if (estacionAlternativa != null) {
-                IServicioEmergencia nuevoRecurso = gestorRecursos.asignarRecursoDesde(emergencia.getUbicacion(),estacionAlternativa, tipoRecurso);
-    
+                IServicioEmergencia nuevoRecurso = gestorRecursos.asignarRecursoDesde(emergencia.getUbicacion(),
+                        estacionAlternativa, tipoRecurso);
+
                 if (nuevoRecurso != null) {
                     System.out.println("Recurso " + nuevoRecurso.getId() + " reasignado desde " + estacionAlternativa);
                 } else {
@@ -208,23 +232,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
             }
         }
     }
-    
 
-    private String obtenerEstacionCercana(CityMap mapa, String ubicacion, String tipoEstacion) {
-        System.out.println("\nBuscando estación más cercana a: " + ubicacion);
-
-        String estacionCercana = null;
-        for (String estacion : mapa.getUbicaciones()) {
-            double distancia = mapa.obtenerDistancia(estacion, ubicacion);
-            double menorDistancia = 0;
-            if (distancia < menorDistancia) {
-                menorDistancia = distancia;
-                estacionCercana = estacion;
-            }
-        }
-
-        return estacionCercana;
-    }
 
     private Map<String, Integer> determinarRecursosPorEmergencia(String tipoEmergencia, String zona) {
         Map<String, Integer> recursosNecesarios = new HashMap<>();
@@ -291,5 +299,4 @@ public class SistemaEmergencias implements SujetoEmergencias {
         }
     }
 
-    
 }

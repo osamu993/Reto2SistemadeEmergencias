@@ -34,7 +34,7 @@ public class MenuSistemaEmergencia {
                 scanner.next();
             }
             opcion = scanner.nextInt();
-            scanner.nextLine(); // Limpiar buffer
+            scanner.nextLine();
 
             switch (opcion) {
                 case 1:
@@ -63,8 +63,9 @@ public class MenuSistemaEmergencia {
         do {
             System.out.println("\n\n--- Gestionar Emergencias ---");
             System.out.println("1. Mostrar emergencias activas");
-            System.out.println("2. Reasignar recursos");
-            System.out.println("3. Volver al menú principal");
+            System.out.println("2. Mostrar emergencias atendidas y cerradas");
+            System.out.println("3. Reasignar recursos");
+            System.out.println("4. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
             opcionSubmenu = scanner.nextInt();
             scanner.nextLine();
@@ -74,9 +75,12 @@ public class MenuSistemaEmergencia {
                     mostrarEmergencias();
                     break;
                 case 2:
-                    reasignarRecursos();
+                    mostrarEmergenciasAtendidas();
                     break;
                 case 3:
+                    reasignarRecursos();
+                    break;
+                case 4:
                     System.out.println("Volviendo al menú principal...");
                     break;
                 default:
@@ -144,11 +148,6 @@ public class MenuSistemaEmergencia {
         sistemaEmergencias.listarEmergencias();
     }
 
-    private void mostrarRecursos() {
-        System.out.println("\nRecursos disponibles:");
-        sistemaEmergencias.mostrarRecursos();
-    }
-
     private void reasignarRecursos() {
         System.out.println("\nReasignación de Recursos:");
 
@@ -197,7 +196,6 @@ public class MenuSistemaEmergencia {
     }
 
     private void mostrarEstadisticas() {
-        System.out.println("\nEstadísticas del día:");
-        sistemaEmergencias.mostrarEstadisticas();
+        sistemaEmergencias.mostrarEstadisticasDelDia();
     }
 }

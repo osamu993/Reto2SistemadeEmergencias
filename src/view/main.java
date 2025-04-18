@@ -8,11 +8,11 @@ import controller.SistemaEmergencias;
 public class main {
     public static void main(String[] args) {
         
-        System.out.println("🚨 Iniciando el Sistema de Emergencias...\n");
+        System.out.println("Iniciando el Sistema de Emergencias...\n");
         SistemaEmergencias sistemaEmergencias = SistemaEmergencias.getInstance();
         MenuSistemaEmergencia menu = new MenuSistemaEmergencia(sistemaEmergencias);
         menu.mostrarMenu();
 
-        System.out.println("🔥 Gracias por usar el Sistema de Emergencias. ¡Hasta luego!");
+        System.out.println("\nGracias por usar el Sistema de Emergencias. ¡Hasta luego!\n");
     }
 }
