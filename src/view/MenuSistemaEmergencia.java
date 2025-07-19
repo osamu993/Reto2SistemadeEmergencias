@@ -6,6 +6,8 @@ import model.strategy.StrategyPrioridadGravedad;
 import model.strategy.StrategyPrioridadCercania;
 import utils.NivelGravedad;
 import utils.TipoEmergencia;
+import utils.SystemReport;
+import utils.SystemRegistration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +31,9 @@ public class MenuSistemaEmergencia {
             System.out.println("3. Mostrar recursos disponibles");
             System.out.println("4. Mostrar estadísticas del día");
             System.out.println("5. Configurar estrategia de asignación");
-            System.out.println("6. Salir");
+            System.out.println("6. Ver reportes históricos");
+            System.out.println("7. Cerrar jornada");
+            System.out.println("8. Salir");
             System.out.print("\nSeleccione una opción: ");
 
             while (!scanner.hasNextInt()) {
@@ -56,12 +60,18 @@ public class MenuSistemaEmergencia {
                     configurarEstrategiaAsignacion();
                     break;
                 case 6:
+                    mostrarReportesHistoricos();
+                    break;
+                case 7:
+                    cerrarJornada();
+                    break;
+                case 8:
                     System.out.println("Saliendo del sistema...");
                     break;
                 default:
                     System.out.println("Opción no válida, intente nuevamente.");
             }
-        } while (opcion != 6);
+        } while (opcion != 8);
     }
 
     private void mostrarSubmenuGestionarEmergencias() {
@@ -261,6 +271,60 @@ public class MenuSistemaEmergencia {
 
         Emergencia seleccionada = emergencias.get(seleccion - 1);
         sistemaEmergencias.finalizarEmergencia(seleccionada);
+    }
+
+    private void mostrarReportesHistoricos() {
+        System.out.println("\n--- Reportes Históricos ---");
+        System.out.println("1. Ver último reporte del sistema");
+        System.out.println("2. Ver historial de emergencias");
+        System.out.println("3. Volver al menú principal");
+        System.out.print("Seleccione una opción: ");
+        
+        int opcion = scanner.nextInt();
+        scanner.nextLine(); // Limpiar buffer
+        
+        switch (opcion) {
+            case 1:
+                SystemReport.leerReporte();
+                break;
+            case 2:
+                mostrarHistorialEmergencias();
+                break;
+            case 3:
+                System.out.println("Volviendo al menú principal...");
+                break;
+            default:
+                System.out.println("Opción no válida.");
+        }
+    }
+    
+    private void mostrarHistorialEmergencias() {
+        System.out.println("\n--- Historial de Emergencias ---");
+        List<String> historial = SystemRegistration.leerRegistros();
+        
+        if (historial.isEmpty()) {
+            System.out.println("No hay registros históricos disponibles.");
+        } else {
+            System.out.println("Total de registros: " + historial.size());
+            System.out.println("\nÚltimos registros:");
+            for (int i = Math.max(0, historial.size() - 10); i < historial.size(); i++) {
+                System.out.println((i + 1) + ". " + historial.get(i));
+            }
+        }
+    }
+    
+    private void cerrarJornada() {
+        System.out.println("\n⚠️ ¿Está seguro de que desea cerrar la jornada?");
+        System.out.println("Esto guardará las estadísticas y preparará el sistema para el siguiente ciclo.");
+        System.out.print("Ingrese 'SI' para confirmar: ");
+        
+        String confirmacion = scanner.nextLine().trim().toUpperCase();
+        
+        if ("SI".equals(confirmacion)) {
+            sistemaEmergencias.cerrarJornada();
+        } else {
+            System.out.println("Cierre de jornada cancelado.");
+        }
     }
 }
 

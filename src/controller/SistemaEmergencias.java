@@ -19,6 +19,9 @@ import model.strategy.IEstrategyAsignacion;
 import utils.CityMap;
 import utils.NivelGravedad;
 import model.observer.NotificadorEmergencias;
+import utils.StatisticsSystem;
+import utils.SystemReport;
+import utils.SystemRegistration;
 
 public class SistemaEmergencias implements SujetoEmergencias {
 
@@ -154,10 +157,19 @@ public class SistemaEmergencias implements SujetoEmergencias {
         int atendidas = 0;
         int pendientes = 0;
         Map<String, Integer> recursosUsados = new HashMap<>();
+        List<Double> tiemposRespuesta = new ArrayList<>();
+        List<String> emergenciasAtendidas = new ArrayList<>();
     
         for (Emergencia emergencia : listaEmergencias) {
             if (emergencia.isAtendida()) {
                 atendidas++;
+                emergenciasAtendidas.add(emergencia.getDescripcion() + " en " + emergencia.getUbicacion());
+                
+                // Calcular tiempo de respuesta real
+                if (emergencia.getTiempoFinAtencion() > 0 && emergencia.getTiempoInicioAtencion() > 0) {
+                    double tiempoReal = (emergencia.getTiempoFinAtencion() - emergencia.getTiempoInicioAtencion()) / 1000.0 / 60.0; // en minutos
+                    tiemposRespuesta.add(tiempoReal);
+                }
             } else {
                 pendientes++;
             }
@@ -175,14 +187,46 @@ public class SistemaEmergencias implements SujetoEmergencias {
             }
         }
     
-        System.out.println("\n---Estadísticas del Día ---\n\n");
-        System.out.println("Total emergencias registradas: " + totalEmergencias);
-        System.out.println("-Atendidas: " + atendidas);
-        System.out.println("-Pendientes: " + pendientes);
+        // Calcular métricas usando StatisticsSystem
+        double tiempoPromedio = StatisticsSystem.calcularTiempoPromedio(tiemposRespuesta);
+        double tasaExito = StatisticsSystem.calcularTasaExitoEmergencias(atendidas, totalEmergencias);
+        
+        // Calcular eficiencia de recursos
+        int totalRecursosDisponibles = listaRecursos.size();
+        int recursosUtilizados = recursosUsados.values().stream().mapToInt(Integer::intValue).sum();
+        double eficienciaRecursos = StatisticsSystem.calcularEficienciaRecursos(recursosUtilizados, totalRecursosDisponibles);
     
-        System.out.println("\nRecursos desplegados:");
-        for (Map.Entry<String, Integer> entry : recursosUsados.entrySet()) {
-            System.out.println("- " + entry.getKey() + ": " + entry.getValue());
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("📊 ESTADÍSTICAS DEL DÍA");
+        System.out.println("=".repeat(60));
+        
+        System.out.println("\n🚨 EMERGENCIAS:");
+        System.out.println("   • Total registradas: " + totalEmergencias);
+        System.out.println("   • Atendidas: " + atendidas);
+        System.out.println("   • Pendientes: " + pendientes);
+        System.out.println("   • Tasa de éxito: " + String.format("%.1f", tasaExito) + "%");
+        
+        System.out.println("\n⏱️ TIEMPOS DE RESPUESTA:");
+        System.out.println("   • Tiempo promedio: " + String.format("%.1f", tiempoPromedio) + " minutos");
+        System.out.println("   • Emergencias con tiempo registrado: " + tiemposRespuesta.size());
+        
+        System.out.println("\n🛠️ RECURSOS:");
+        System.out.println("   • Total disponibles: " + totalRecursosDisponibles);
+        System.out.println("   • Utilizados: " + recursosUtilizados);
+        System.out.println("   • Eficiencia: " + String.format("%.1f", eficienciaRecursos) + "%");
+        
+        if (!recursosUsados.isEmpty()) {
+            System.out.println("   • Desglose por tipo:");
+            for (Map.Entry<String, Integer> entry : recursosUsados.entrySet()) {
+                System.out.println("     - " + entry.getKey() + ": " + entry.getValue());
+            }
+        }
+        
+        System.out.println("\n" + "=".repeat(60));
+        
+        // Generar y guardar reporte
+        if (!emergenciasAtendidas.isEmpty()) {
+            SystemReport.generarReporte(emergenciasAtendidas);
         }
     }
     
@@ -294,5 +338,56 @@ public class SistemaEmergencias implements SujetoEmergencias {
             // Notificar a los observadores sobre la emergencia resuelta
             notificarEmergenciaResuelta(emergencia);
         }
+    }
+
+    public void cerrarJornada() {
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("🏁 CERRANDO JORNADA DEL SISTEMA DE EMERGENCIAS");
+        System.out.println("=".repeat(60));
+        
+        // Mostrar estadísticas finales
+        mostrarEstadisticasDelDia();
+        
+        // Registrar todas las emergencias del día
+        List<String> registrosEmergencias = new ArrayList<>();
+        for (Emergencia emergencia : listaEmergencias) {
+            String registro = String.format("Emergencia: %s | Ubicación: %s | Gravedad: %s | Estado: %s | Tiempo: %d min",
+                emergencia.getTipo(),
+                emergencia.getUbicacion(),
+                emergencia.getNivelGravedad(),
+                emergencia.isAtendida() ? "Atendida" : "Pendiente",
+                emergencia.getTiempoReespuesta());
+            registrosEmergencias.add(registro);
+        }
+        
+        if (!registrosEmergencias.isEmpty()) {
+            SystemRegistration.registrarEmergencias(registrosEmergencias);
+            System.out.println("\n📝 Registros guardados en el archivo de historial.");
+        }
+        
+        // Preparar sistema para siguiente ciclo
+        prepararSiguienteCiclo();
+        
+        System.out.println("\n✅ Jornada cerrada exitosamente.");
+        System.out.println("🔄 Sistema preparado para el siguiente ciclo.");
+        System.out.println("=".repeat(60));
+    }
+    
+    private void prepararSiguienteCiclo() {
+        // Liberar todos los recursos
+        for (IServicioEmergencia recurso : listaRecursos) {
+            if (!recurso.estaDisponible()) {
+                recurso.liberarRecurso();
+            }
+        }
+        
+        // Marcar emergencias pendientes como no atendidas para el siguiente ciclo
+        for (Emergencia emergencia : listaEmergencias) {
+            if (!emergencia.isAtendida()) {
+                emergencia.setAtendida(false);
+            }
+        }
+        
+        System.out.println("🔄 Recursos liberados y sistema reinicializado.");
     }
 }
