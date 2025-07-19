@@ -1,11 +1,12 @@
-package view;
+package utils;
 
 import controller.SistemaEmergencias;
+import view.MenuSistemaEmergencia;
 
 /**
  * Clase principal que ejecuta el sistema de emergencias.
  */
-public class main {
+public class Main {
     public static void main(String[] args) {
         
         System.out.println("Iniciando el Sistema de Emergencias...\n");
@@ -15,4 +16,4 @@ public class main {
 
         System.out.println("\nGracias por usar el Sistema de Emergencias. ¡Hasta luego!\n");
     }
-}
+} 
