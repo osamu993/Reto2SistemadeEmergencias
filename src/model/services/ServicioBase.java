@@ -83,6 +83,17 @@ public abstract class ServicioBase implements IServicioEmergencia {
         System.out.println("✅ La unidad " + id + " ha sido liberada y está disponible nuevamente.");
     }
 
+    @Override
+    public void desplegarUnidad(String ubicacion) {
+        this.ubicacion = ubicacion;
+        System.out.println("Unidad " + id + " en camino a la zona: " + ubicacion);
+    }
+
+    @Override
+    public String getEstado() {
+        return personalDisponible > 0 && combustible > 0 ? "Disponible" : "Ocupado";
+    }
+
     /**
      * Método abstracto que cada tipo de servicio debe implementar para atender una emergencia.
      * @param emergencia Emergencia a atender.
