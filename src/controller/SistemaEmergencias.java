@@ -18,6 +18,7 @@ import model.strategy.StrategyPrioridadGravedad;
 import model.strategy.IEstrategyAsignacion;
 import utils.CityMap;
 import utils.NivelGravedad;
+import model.observer.NotificadorEmergencias;
 
 public class SistemaEmergencias implements SujetoEmergencias {
 
@@ -56,6 +57,9 @@ public class SistemaEmergencias implements SujetoEmergencias {
         
         // Configurar estrategia de asignación por defecto
         gestorRecursos.setEstrategiaAsignacion(new StrategyPrioridadGravedad());
+        
+        // Registrar observador para notificaciones
+        agregarObserver(new NotificadorEmergencias());
     }
 
     public static SistemaEmergencias getInstance() {
@@ -192,27 +196,24 @@ public class SistemaEmergencias implements SujetoEmergencias {
     }
 
     public void reasignarRecursosEmergencia(Emergencia emergencia) {
-        List<String> recursosNecesarios = determinarRecursosPorEmergencia(emergencia.getTipo(),
-                mapa.obtenerZona(emergencia.getUbicacion())).keySet().stream().toList();
-
-        for (String tipoRecurso : recursosNecesarios) {
-            System.out.println("Intentando reasignar recurso de tipo: " + tipoRecurso);
-
-            String estacionAlternativa = mapa.obtenerEstacionCercana(emergencia.getUbicacion(), tipoRecurso);
-
-            if (estacionAlternativa != null) {
-                IServicioEmergencia nuevoRecurso = gestorRecursos.asignarRecursoDesde(emergencia.getUbicacion(),
-                        estacionAlternativa, tipoRecurso);
-
-                if (nuevoRecurso != null) {
-                    System.out.println("Recurso " + nuevoRecurso.getId() + " reasignado desde " + estacionAlternativa);
-                } else {
-                    System.out.println("No fue posible reasignar recurso de tipo: " + tipoRecurso);
-                }
-            } else {
-                System.out.println("No se encontró una estación alternativa para tipo: " + tipoRecurso);
-            }
+        System.out.println("\nReasignando recursos para emergencia: " + emergencia.getDescripcion());
+        
+        // Liberar recursos actuales si los hay
+        if (emergencia.tieneRecursosAsignados()) {
+            emergencia.liberarRecurso();
         }
+        
+        // Asignar nuevo recurso usando la estrategia configurada
+        IServicioEmergencia nuevoRecurso = gestorRecursos.asignarRecurso(emergencia);
+        if (nuevoRecurso != null) {
+            emergencia.asignarRecurso(nuevoRecurso);
+            System.out.println("Recurso reasignado: " + nuevoRecurso.getId());
+        } else {
+            System.out.println("No se pudo reasignar ningún recurso.");
+        }
+        
+        // Notificar a los observadores sobre la reasignación
+        notificarRecursosReasignados();
     }
 
     public void setEstrategiaAsignacion(IEstrategyAsignacion estrategia) {
@@ -284,4 +285,14 @@ public class SistemaEmergencias implements SujetoEmergencias {
         }
     }
 
+    public void finalizarEmergencia(Emergencia emergencia) {
+        if (emergencia != null && !emergencia.isAtendida()) {
+            emergencia.setTiempoInicioAtencion(System.currentTimeMillis());
+            emergencia.finalizarAtencion();
+            System.out.println("Emergencia finalizada: " + emergencia.getDescripcion());
+            
+            // Notificar a los observadores sobre la emergencia resuelta
+            notificarEmergenciaResuelta(emergencia);
+        }
+    }
 }

@@ -71,7 +71,8 @@ public class MenuSistemaEmergencia {
             System.out.println("1. Mostrar emergencias activas");
             System.out.println("2. Mostrar emergencias atendidas y cerradas");
             System.out.println("3. Reasignar recursos");
-            System.out.println("4. Volver al menú principal");
+            System.out.println("4. Finalizar emergencia");
+            System.out.println("5. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
             opcionSubmenu = scanner.nextInt();
             scanner.nextLine();
@@ -87,12 +88,15 @@ public class MenuSistemaEmergencia {
                     reasignarRecursos();
                     break;
                 case 4:
+                    finalizarEmergencia();
+                    break;
+                case 5:
                     System.out.println("Volviendo al menú principal...");
                     break;
                 default:
                     System.out.println("Opción inválida.");
             }
-        } while (opcionSubmenu != 3);
+        } while (opcionSubmenu != 5);
     }
 
     private void registrarEmergencia() {
@@ -225,6 +229,38 @@ public class MenuSistemaEmergencia {
             default:
                 System.out.println("Opción no válida.");
         }
+    }
+
+    private void finalizarEmergencia() {
+        System.out.println("\nFinalizar Emergencia:");
+
+        List<Emergencia> emergencias = sistemaEmergencias.getListaEmergencias()
+                .stream()
+                .filter(e -> !e.isAtendida())
+                .toList();
+
+        if (emergencias.isEmpty()) {
+            System.out.println("\nNo hay emergencias activas para finalizar.");
+            return;
+        }
+
+        for (int i = 0; i < emergencias.size(); i++) {
+            Emergencia e = emergencias.get(i);
+            System.out.println((i + 1) + ". " + e.getTipo() + " en " + e.getUbicacion() + " (Gravedad: "
+                    + e.getNivelGravedad() + ")");
+        }
+
+        System.out.print("Seleccione el número de la emergencia para finalizar: ");
+        int seleccion = scanner.nextInt();
+        scanner.nextLine(); // Limpiar buffer
+
+        if (seleccion < 1 || seleccion > emergencias.size()) {
+            System.out.println("Selección inválida.");
+            return;
+        }
+
+        Emergencia seleccionada = emergencias.get(seleccion - 1);
+        sistemaEmergencias.finalizarEmergencia(seleccionada);
     }
 }
 
