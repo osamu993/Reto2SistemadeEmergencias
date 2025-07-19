@@ -14,6 +14,8 @@ import model.services.Bomberos;
 import model.services.GestorRecursos;
 import model.services.Policia;
 import model.factory.FactoryEmergencias;
+import model.strategy.StrategyPrioridadGravedad;
+import model.strategy.IEstrategyAsignacion;
 import utils.CityMap;
 import utils.NivelGravedad;
 
@@ -51,6 +53,9 @@ public class SistemaEmergencias implements SujetoEmergencias {
         listaRecursos = new ArrayList<>();
         observadores = new ArrayList<>();
         inicializarRecursos(); // Agregar recursos al sistema
+        
+        // Configurar estrategia de asignación por defecto
+        gestorRecursos.setEstrategiaAsignacion(new StrategyPrioridadGravedad());
     }
 
     public static SistemaEmergencias getInstance() {
@@ -72,38 +77,15 @@ public class SistemaEmergencias implements SujetoEmergencias {
         listaEmergencias.add(emergencia);
         System.out.println("\nEmergencia registrada: " + tipo + " en zona " + ubicacion);
 
-        // Determinar qué recursos se requieren según el tipo de emergencia
-        List<String> recursosRequeridos = new ArrayList<>();
-        if (tipo.equalsIgnoreCase("INCENDIO")) {
-            recursosRequeridos.add("BOMBEROS");
-            recursosRequeridos.add("AMBULANCIA");
-        } else if (tipo.equalsIgnoreCase("ROBO")) {
-            recursosRequeridos.add("POLICIA");
-            recursosRequeridos.add("RESCATE");
-        } else if (tipo.equalsIgnoreCase("ACCIDENTE_VEHICULAR")) {
-            recursosRequeridos.add("BOMBEROS");
-            recursosRequeridos.add("AMBULANCIA");
-            recursosRequeridos.add("POLICIA");
+        // Usar la estrategia de asignación configurada
+        IServicioEmergencia recursoAsignado = gestorRecursos.asignarRecurso(emergencia);
+        if (recursoAsignado != null) {
+            emergencia.asignarRecurso(recursoAsignado);
+            System.out.println("Recurso asignado: " + recursoAsignado.getId());
+        } else {
+            System.out.println("No se pudo asignar ningún recurso a la emergencia.");
         }
 
-        System.out.println("Recursos requeridos: " + recursosRequeridos);
-
-        // Asignar cada recurso requerido desde la estación correcta
-        for (String recurso : recursosRequeridos) {
-            String estacionTipo = obtenerTipoEstacion(recurso);
-            String estacionAsignada = mapa.obtenerEstacionCercana(ubicacion, estacionTipo);
-
-            if (estacionAsignada != null) {
-                IServicioEmergencia unidadAsignada = gestorRecursos.asignarRecursoDesde(ubicacion, estacionAsignada,
-                        recurso);
-                if (unidadAsignada == null) {
-                    System.out.println(
-                            "\nNo hay suficientes recursos de: " + recurso + " en la estación: " + estacionAsignada);
-                }
-            } else {
-                System.out.println("\nNo se encontró una estación cercana para el recurso: " + recurso);
-            }
-        }
         notificarObservers(emergencia);
     }
 
@@ -233,6 +215,9 @@ public class SistemaEmergencias implements SujetoEmergencias {
         }
     }
 
+    public void setEstrategiaAsignacion(IEstrategyAsignacion estrategia) {
+        gestorRecursos.setEstrategiaAsignacion(estrategia);
+    }
 
     private Map<String, Integer> determinarRecursosPorEmergencia(String tipoEmergencia, String zona) {
         Map<String, Integer> recursosNecesarios = new HashMap<>();

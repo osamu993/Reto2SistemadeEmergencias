@@ -2,6 +2,8 @@ package view;
 
 import controller.SistemaEmergencias;
 import model.Emergencia;
+import model.strategy.StrategyPrioridadGravedad;
+import model.strategy.StrategyPrioridadCercania;
 import utils.NivelGravedad;
 import utils.TipoEmergencia;
 
@@ -26,7 +28,8 @@ public class MenuSistemaEmergencia {
             System.out.println("2. Gestionar emergencias");
             System.out.println("3. Mostrar recursos disponibles");
             System.out.println("4. Mostrar estadísticas del día");
-            System.out.println("5. Salir");
+            System.out.println("5. Configurar estrategia de asignación");
+            System.out.println("6. Salir");
             System.out.print("\nSeleccione una opción: ");
 
             while (!scanner.hasNextInt()) {
@@ -50,12 +53,15 @@ public class MenuSistemaEmergencia {
                     mostrarEstadisticas();
                     break;
                 case 5:
+                    configurarEstrategiaAsignacion();
+                    break;
+                case 6:
                     System.out.println("Saliendo del sistema...");
                     break;
                 default:
                     System.out.println("Opción no válida, intente nuevamente.");
             }
-        } while (opcion != 5);
+        } while (opcion != 6);
     }
 
     private void mostrarSubmenuGestionarEmergencias() {
@@ -198,4 +204,30 @@ public class MenuSistemaEmergencia {
     private void mostrarEstadisticas() {
         sistemaEmergencias.mostrarEstadisticasDelDia();
     }
+
+    private void configurarEstrategiaAsignacion() {
+        System.out.println("\nConfiguración de Estrategia de Asignación:");
+        System.out.println("1. Asignar por gravedad");
+        System.out.println("2. Asignar por cercanía");
+        System.out.print("Seleccione una opción: ");
+        int opcion = scanner.nextInt();
+        scanner.nextLine(); // Limpiar buffer
+
+        switch (opcion) {
+            case 1:
+                sistemaEmergencias.setEstrategiaAsignacion(new StrategyPrioridadGravedad());
+                System.out.println("Estrategia de asignación configurada a 'Asignar por gravedad'.");
+                break;
+            case 2:
+                sistemaEmergencias.setEstrategiaAsignacion(new StrategyPrioridadCercania());
+                System.out.println("Estrategia de asignación configurada a 'Asignar por cercanía'.");
+                break;
+            default:
+                System.out.println("Opción no válida.");
+        }
+    }
 }
+
+
+
+
