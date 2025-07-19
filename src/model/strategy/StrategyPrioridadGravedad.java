@@ -13,7 +13,7 @@ public class StrategyPrioridadGravedad implements StrategyPrioridad, IEstrategyA
     @Override
     public int calcularPrioridad(Emergencia emergencia) {
         if (emergencia.getNivelGravedad() == null) {
-            System.out.println("⚠️ Advertencia: La emergencia no tiene nivel de gravedad definido. Se asigna prioridad mínima.");
+            System.out.println("Advertencia: La emergencia no tiene nivel de gravedad definido. Se asigna prioridad mínima.");
             return 1; // Valor por defecto si no hay información de gravedad
         }
 

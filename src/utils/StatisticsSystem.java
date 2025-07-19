@@ -15,7 +15,7 @@ public class StatisticsSystem {
      */
     public static double calcularTiempoPromedio(List<Double> tiempos) {
         if (tiempos.isEmpty()) {
-            System.out.println("⚠️ Advertencia: No hay tiempos de respuesta registrados.");
+            System.out.println("Advertencia: No hay tiempos de respuesta registrados.");
             return 0.0;
         }
         double suma = 0;
@@ -34,7 +34,7 @@ public class StatisticsSystem {
      */
     public static double calcularEficienciaRecursos(int recursosUsados, int recursosDisponibles) {
         if (recursosDisponibles == 0) {
-            System.out.println("⚠️ Advertencia: No hay recursos disponibles para calcular eficiencia.");
+            System.out.println("Advertencia: No hay recursos disponibles para calcular eficiencia.");
             return 0.0;
         }
         return (recursosUsados / (double) recursosDisponibles) * 100;
@@ -48,7 +48,7 @@ public class StatisticsSystem {
      */
     public static double calcularTasaExitoEmergencias(int emergenciasAtendidas, int totalEmergencias) {
         if (totalEmergencias == 0) {
-            System.out.println("⚠️ Advertencia: No hay emergencias registradas para calcular la tasa de éxito.");
+            System.out.println("Advertencia: No hay emergencias registradas para calcular la tasa de éxito.");
             return 0.0;
         }
         return (emergenciasAtendidas / (double) totalEmergencias) * 100;

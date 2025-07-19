@@ -9,7 +9,7 @@ public class Ambulancia extends ServicioBase {
 
     @Override
     public void evaluarSituacion() {
-        System.out.println("📋 Evaluando la situación en el lugar del incidente.");
+        System.out.println("Evaluando la situación en el lugar del incidente.");
     }
 
     @Override

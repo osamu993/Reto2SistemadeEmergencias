@@ -11,12 +11,12 @@ public class AccidenteVehicular extends Emergencia implements Responder {
 
     @Override
     public void atenderEmergencia() {
-        System.out.println("🚑 Paramedicos en camino al accidente vehicular en " + getUbicacion() + "!!!");
+        System.out.println("Paramedicos en camino al accidente vehicular en " + getUbicacion() + "!!!");
     }
 
     @Override
     public void evaluarEstado() {
-        System.out.println("📋 Evaluando signos vitales de los involucrados en el accidente.");
+        System.out.println("Evaluando signos vitales de los involucrados en el accidente.");
     }
 }
 

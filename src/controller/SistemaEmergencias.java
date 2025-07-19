@@ -46,7 +46,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
     private List<IServicioEmergencia> listaRecursos;
     private List<ObserverEmergencias> observadores;
     private CityMap mapa = new CityMap();
-    private GestorRecursos gestorRecursos = new GestorRecursos(mapa);
+    private GestorRecursos gestorRecursos = new GestorRecursos();
  
 
     public SistemaEmergencias() {
@@ -88,7 +88,10 @@ public class SistemaEmergencias implements SujetoEmergencias {
         IServicioEmergencia recursoAsignado = gestorRecursos.asignarRecurso(emergencia);
         if (recursoAsignado != null) {
             emergencia.asignarRecurso(recursoAsignado);
+            emergencia.setAtendida(true); // Marcar como atendida
+            emergencia.setTiempoInicioAtencion(System.currentTimeMillis()); // Registrar tiempo de inicio
             System.out.println("Recurso asignado: " + recursoAsignado.getId());
+            System.out.println("Emergencia marcada como atendida.");
         } else {
             System.out.println("No se pudo asignar ningún recurso a la emergencia.");
         }
@@ -197,20 +200,20 @@ public class SistemaEmergencias implements SujetoEmergencias {
         double eficienciaRecursos = StatisticsSystem.calcularEficienciaRecursos(recursosUtilizados, totalRecursosDisponibles);
     
         System.out.println("\n" + "=".repeat(60));
-        System.out.println("📊 ESTADÍSTICAS DEL DÍA");
+        System.out.println("ESTADÍSTICAS DEL DÍA");
         System.out.println("=".repeat(60));
         
-        System.out.println("\n🚨 EMERGENCIAS:");
+        System.out.println("\nEMERGENCIAS:");
         System.out.println("   • Total registradas: " + totalEmergencias);
         System.out.println("   • Atendidas: " + atendidas);
         System.out.println("   • Pendientes: " + pendientes);
         System.out.println("   • Tasa de éxito: " + String.format("%.1f", tasaExito) + "%");
         
-        System.out.println("\n⏱️ TIEMPOS DE RESPUESTA:");
+        System.out.println("\nTIEMPOS DE RESPUESTA:");
         System.out.println("   • Tiempo promedio: " + String.format("%.1f", tiempoPromedio) + " minutos");
         System.out.println("   • Emergencias con tiempo registrado: " + tiemposRespuesta.size());
         
-        System.out.println("\n🛠️ RECURSOS:");
+        System.out.println("\nRECURSOS:");
         System.out.println("   • Total disponibles: " + totalRecursosDisponibles);
         System.out.println("   • Utilizados: " + recursosUtilizados);
         System.out.println("   • Eficiencia: " + String.format("%.1f", eficienciaRecursos) + "%");
@@ -291,21 +294,6 @@ public class SistemaEmergencias implements SujetoEmergencias {
         }
 
         return recursosNecesarios;
-    }
-
-    private String obtenerTipoEstacion(String recurso) {
-        switch (recurso.toUpperCase()) {
-            case "BOMBEROS":
-                return "Bomberos";
-            case "POLICIA":
-                return "Policia";
-            case "RESCATE":
-                return "Rescate";
-            case "AMBULANCIA":
-                return "Hospital";
-            default:
-                return null;
-        }
     }
 
     public CityMap getCityMap() {

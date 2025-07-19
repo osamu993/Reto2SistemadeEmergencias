@@ -1,23 +1,18 @@
 package model.services;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import model.Emergencia;
 import model.interfaces.IServicioEmergencia;
 import model.strategy.IEstrategyAsignacion;
-import utils.CityMap;
+
 
 public class GestorRecursos {
     private List<IServicioEmergencia> recursosDisponibles = new ArrayList<>();
-    private CityMap cityMap;
     private IEstrategyAsignacion estrategiaAsignacion;
     
 
-    public GestorRecursos(CityMap cityMap) {
-        this.cityMap = cityMap;
+    public GestorRecursos() {
         inicializarRecursos();
     }
 
@@ -131,24 +126,4 @@ public class GestorRecursos {
         recursosDisponibles.add(new UnidadRescate("R1", "Rescate"));
         recursosDisponibles.add(new UnidadRescate("R2", "Rescate"));
     }
-    
-
-    private String obtenerEstacionPorTipoRecurso(String ubicacionEmergencia, String tipoRecurso) {
-
-        Map<String, String> estacionesPorRecurso = new HashMap<>();
-        estacionesPorRecurso.put("BOMBEROS", "Bomberos");
-        estacionesPorRecurso.put("AMBULANCIA", "Hospital");
-        estacionesPorRecurso.put("POLICIA", "Policia");
-        estacionesPorRecurso.put("RESCATE", "Rescate");
-
-        String estacionTipo = estacionesPorRecurso.get(tipoRecurso.toUpperCase());
-
-        if (estacionTipo == null) {
-            return null; // Si el recurso no existe, no hay estación
-        }
-
-        // Usamos la versión del método que solo recibe `ubicacionEmergencia`
-        return cityMap.obtenerEstacionCercana(ubicacionEmergencia, estacionTipo);
-    }
-
 }

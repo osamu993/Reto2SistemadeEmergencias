@@ -11,11 +11,11 @@ public class Incendio extends Emergencia implements Responder {
 
     @Override
     public void atenderEmergencia() {
-        System.out.println("🚒 Bomberos en camino al incendio en " + getUbicacion() + "!!!");
+        System.out.println("Bomberos en camino al incendio en " + getUbicacion() + "!!!");
     }
 
     @Override
     public void evaluarEstado() {
-        System.out.println("📋 Evaluando la situación del incendio y verificando personas afectadas.");
+        System.out.println("Evaluando la situación del incendio y verificando personas afectadas.");
     }
 }

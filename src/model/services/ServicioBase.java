@@ -56,7 +56,7 @@ public abstract class ServicioBase implements IServicioEmergencia {
         if (cantidad <= personalDisponible) {
             personalDisponible -= cantidad;
         } else {
-            System.out.println("⚠️ No hay suficiente personal disponible en " + id);
+            System.out.println("No hay suficiente personal disponible en " + id);
         }
     }
 

@@ -94,7 +94,7 @@ public abstract class Emergencia {
             recursosAsignados.add(recurso);
             System.out.println("🚨 Se asignó " + recurso.getId() + " a la emergencia en " + ubicacion);
         } else {
-            System.out.println("⚠️ No se pudo asignar el recurso a la emergencia en " + ubicacion);
+            System.out.println("No se pudo asignar el recurso a la emergencia en " + ubicacion);
         }
     }
 

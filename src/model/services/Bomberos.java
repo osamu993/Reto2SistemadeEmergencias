@@ -9,23 +9,11 @@ public class Bomberos extends ServicioBase {
 
     @Override
     public void evaluarSituacion() {
-        System.out.println("🔥 Evaluando la situación del incendio.");
+        System.out.println("Evaluando la situación del incendio.");
     }
 
     @Override
     public void atenderEmergencia(Emergencia emergencia) {
         System.out.println("Bomberos " + getId() + " atendiendo emergencia: " + emergencia.getDescripcion());
-    }
-
-    @Override
-    public void desplegarUnidad(String ubicacion) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'desplegarUnidad'");
-    }
-
-    @Override
-    public String getEstado() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEstado'");
     }
 }

@@ -9,7 +9,7 @@ public class Policia extends ServicioBase {
 
     @Override
     public void evaluarSituacion() {
-        System.out.println("📋 Evaluando la situación del incidente.");
+        System.out.println("Evaluando la situación del incidente.");
     }
 
     @Override

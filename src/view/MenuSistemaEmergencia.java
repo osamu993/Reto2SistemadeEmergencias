@@ -223,7 +223,13 @@ public class MenuSistemaEmergencia {
         System.out.println("\nConfiguración de Estrategia de Asignación:");
         System.out.println("1. Asignar por gravedad");
         System.out.println("2. Asignar por cercanía");
+        System.out.println("3. Volver al menú principal");
         System.out.print("Seleccione una opción: ");
+        
+        while (!scanner.hasNextInt()) {
+            System.out.println("Entrada inválida. Ingrese un número.");
+            scanner.next();
+        }
         int opcion = scanner.nextInt();
         scanner.nextLine(); // Limpiar buffer
 
@@ -235,6 +241,9 @@ public class MenuSistemaEmergencia {
             case 2:
                 sistemaEmergencias.setEstrategiaAsignacion(new StrategyPrioridadCercania());
                 System.out.println("Estrategia de asignación configurada a 'Asignar por cercanía'.");
+                break;
+            case 3:
+                System.out.println("Volviendo al menú principal...");
                 break;
             default:
                 System.out.println("Opción no válida.");
@@ -277,9 +286,14 @@ public class MenuSistemaEmergencia {
         System.out.println("\n--- Reportes Históricos ---");
         System.out.println("1. Ver último reporte del sistema");
         System.out.println("2. Ver historial de emergencias");
-        System.out.println("3. Volver al menú principal");
+        System.out.println("3. Limpiar y reescribir reportes");
+        System.out.println("4. Volver al menú principal");
         System.out.print("Seleccione una opción: ");
         
+        while (!scanner.hasNextInt()) {
+            System.out.println("Entrada inválida. Ingrese un número.");
+            scanner.next();
+        }
         int opcion = scanner.nextInt();
         scanner.nextLine(); // Limpiar buffer
         
@@ -291,6 +305,15 @@ public class MenuSistemaEmergencia {
                 mostrarHistorialEmergencias();
                 break;
             case 3:
+                System.out.println("¿Está seguro de que desea limpiar y reescribir los reportes? (SI/NO): ");
+                String confirmacion = scanner.nextLine().trim().toUpperCase();
+                if ("SI".equals(confirmacion)) {
+                    SystemReport.limpiarYReescribirReportes();
+                } else {
+                    System.out.println("Operación cancelada.");
+                }
+                break;
+            case 4:
                 System.out.println("Volviendo al menú principal...");
                 break;
             default:
@@ -305,16 +328,23 @@ public class MenuSistemaEmergencia {
         if (historial.isEmpty()) {
             System.out.println("No hay registros históricos disponibles.");
         } else {
-            System.out.println("Total de registros: " + historial.size());
+            // Eliminar duplicados usando un Set
+            List<String> historialUnico = historial.stream()
+                    .distinct()
+                    .toList();
+            
+            System.out.println("Total de registros únicos: " + historialUnico.size());
             System.out.println("\nÚltimos registros:");
-            for (int i = Math.max(0, historial.size() - 10); i < historial.size(); i++) {
-                System.out.println((i + 1) + ". " + historial.get(i));
+            
+            int inicio = Math.max(0, historialUnico.size() - 10);
+            for (int i = inicio; i < historialUnico.size(); i++) {
+                System.out.println((i - inicio + 1) + ". " + historialUnico.get(i));
             }
         }
     }
     
     private void cerrarJornada() {
-        System.out.println("\n⚠️ ¿Está seguro de que desea cerrar la jornada?");
+        System.out.println("\n¿Está seguro de que desea cerrar la jornada?");
         System.out.println("Esto guardará las estadísticas y preparará el sistema para el siguiente ciclo.");
         System.out.print("Ingrese 'SI' para confirmar: ");
         
