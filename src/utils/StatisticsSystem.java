@@ -15,7 +15,7 @@ public class StatisticsSystem {
      */
     public static double calcularTiempoPromedio(List<Double> tiempos) {
         if (tiempos.isEmpty()) {
-            System.out.println("Advertencia: No hay tiempos de respuesta registrados.");
+            System.out.println("\nAdvertencia: No hay tiempos de respuesta registrados.");
             return 0.0;
         }
         double suma = 0;
