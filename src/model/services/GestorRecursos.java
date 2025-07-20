@@ -75,6 +75,16 @@ public class GestorRecursos {
         recurso.liberarRecurso(); // Se encarga de marcar el recurso como disponible
     }
 
+    /**
+     * Libera un recurso completamente
+     */
+    public void liberarRecursoCompleto(IServicioEmergencia recurso) {
+        // Liberar todo el personal que estaba asignado
+        int personalTotal = 5; // Asumimos que cada unidad tiene 5 personas por defecto
+        recurso.liberarPersonal(personalTotal);
+        recurso.liberarRecurso();
+    }
+
     public void mostrarRecursos() {
         for (IServicioEmergencia recurso : recursosDisponibles) {
             System.out.println("ID: " + recurso.getId() + " (Personal: " + recurso.getPersonalDisponible()
@@ -111,6 +121,45 @@ public class GestorRecursos {
             return estrategiaAsignacion.asignarRecurso(recursos, emergencia);
         }
         return null; // No se asigna recurso
+    }
+
+    /**
+     * Asigna un recurso específico por tipo
+     */
+    public IServicioEmergencia asignarRecursoPorTipo(String tipoRecurso) {
+        for (IServicioEmergencia recurso : recursosDisponibles) {
+            if (recurso.estaDisponible() && 
+                recurso.getClass().getSimpleName().equalsIgnoreCase(tipoRecurso)) {
+                // Marcar el recurso como ocupado asignando todo el personal disponible
+                recurso.asignarPersonal(recurso.getPersonalDisponible());
+                recurso.desplegarUnidad("Emergencia");
+                return recurso;
+            }
+        }
+        return null; // No hay recursos disponibles de ese tipo
+    }
+
+    /**
+     * Asigna múltiples recursos de un tipo específico
+     */
+    public List<IServicioEmergencia> asignarRecursosPorTipo(String tipoRecurso, int cantidad) {
+        List<IServicioEmergencia> recursosAsignados = new ArrayList<>();
+        int asignados = 0;
+        
+        for (IServicioEmergencia recurso : recursosDisponibles) {
+            if (asignados >= cantidad) break;
+            
+            if (recurso.estaDisponible() && 
+                recurso.getClass().getSimpleName().equalsIgnoreCase(tipoRecurso)) {
+                // Marcar el recurso como ocupado asignando todo el personal disponible
+                recurso.asignarPersonal(recurso.getPersonalDisponible());
+                recurso.desplegarUnidad("Emergencia");
+                recursosAsignados.add(recurso);
+                asignados++;
+            }
+        }
+        
+        return recursosAsignados;
     }
 
     private void inicializarRecursos() {

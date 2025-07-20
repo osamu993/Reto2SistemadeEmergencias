@@ -9,6 +9,8 @@ import java.util.Set;
  */
 public class CityMap {
     private Map<String, Map<String, Double>> mapa;
+    private Map<String, String> zonas;
+    private Map<String, Integer> tiemposRespuesta; // Tiempos en minutos por zona
 
     /**
      * Constructor que inicializa el mapa de la ciudad.
@@ -16,6 +18,8 @@ public class CityMap {
     public CityMap() {
         this.mapa = new HashMap<>();
         inicializarMapa();
+        inicializarZonas();
+        inicializarTiemposRespuesta();
     }
 
     /**
@@ -117,14 +121,47 @@ public class CityMap {
      * @return Tipo de zona (URBANA, RURAL, INDUSTRIAL).
      */
     public String obtenerZona(String ubicacion) {
-        // Definir zonas por ubicación de forma flexible
-        Map<String, String> zonas = new HashMap<>();
-        zonas.put("Centro", "URBANA");
-        zonas.put("Sur", "RURAL");
-        zonas.put("Norte", "URBANA");
-        zonas.put("Oeste", "INDUSTRIAL");
-        zonas.put("Este", "URBANA");
+        return zonas.getOrDefault(ubicacion.toUpperCase(), "URBANA");
+    }
 
-        return zonas.getOrDefault(ubicacion, "URBANA"); // Retorna URBANA por defecto
+    private void inicializarZonas() {
+        zonas = new HashMap<>();
+        zonas.put("CENTRO", "URBANA");
+        zonas.put("NORTE", "URBANA");
+        zonas.put("SUR", "RURAL");
+        zonas.put("ESTE", "URBANA");
+        zonas.put("OESTE", "RURAL");
+    }
+
+    private void inicializarTiemposRespuesta() {
+        tiemposRespuesta = new HashMap<>();
+        tiemposRespuesta.put("CENTRO", 5);  // 5 minutos
+        tiemposRespuesta.put("NORTE", 8);   // 8 minutos
+        tiemposRespuesta.put("SUR", 15);    // 15 minutos (rural)
+        tiemposRespuesta.put("ESTE", 7);    // 7 minutos
+        tiemposRespuesta.put("OESTE", 12);  // 12 minutos (rural)
+    }
+
+    public int obtenerTiempoRespuesta(String ubicacion) {
+        return tiemposRespuesta.getOrDefault(ubicacion.toUpperCase(), 10);
+    }
+
+    /**
+     * Calcula el tiempo total de atención basado en la ubicación y tipo de emergencia
+     */
+    public int calcularTiempoAtencion(String ubicacion, String tipoEmergencia) {
+        int tiempoBase = obtenerTiempoRespuesta(ubicacion);
+        
+        // Ajustar según tipo de emergencia
+        switch (tipoEmergencia.toUpperCase()) {
+            case "INCENDIO":
+                return tiempoBase + 10; // Incendios requieren más tiempo
+            case "ACCIDENTE_VEHICULAR":
+                return tiempoBase + 8;  // Accidentes requieren tiempo adicional
+            case "ROBO":
+                return tiempoBase + 5;  // Robos requieren tiempo moderado
+            default:
+                return tiempoBase + 5;
+        }
     }
 }

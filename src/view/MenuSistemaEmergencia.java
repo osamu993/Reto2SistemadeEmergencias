@@ -34,10 +34,10 @@ public class MenuSistemaEmergencia {
             System.out.println("6. Ver reportes históricos");
             System.out.println("7. Cerrar jornada");
             System.out.println("8. Salir");
-            System.out.print("\nSeleccione una opción: ");
+            System.out.print("\n\nSeleccione una opción: ");
 
             while (!scanner.hasNextInt()) {
-                System.out.println("Entrada inválida. Ingrese un número.");
+                System.out.println("\nEntrada inválida. Ingrese un número.");
                 scanner.next();
             }
             opcion = scanner.nextInt();
@@ -77,13 +77,13 @@ public class MenuSistemaEmergencia {
     private void mostrarSubmenuGestionarEmergencias() {
         int opcionSubmenu;
         do {
-            System.out.println("\n\n--- Gestionar Emergencias ---");
+            System.out.println("\n\n--- Gestionar Emergencias ---\n");
             System.out.println("1. Mostrar emergencias activas");
             System.out.println("2. Mostrar emergencias atendidas y cerradas");
             System.out.println("3. Reasignar recursos");
             System.out.println("4. Finalizar emergencia");
             System.out.println("5. Volver al menú principal");
-            System.out.print("Seleccione una opción: ");
+            System.out.print("\nSeleccione una opción: ");
             opcionSubmenu = scanner.nextInt();
             scanner.nextLine();
 
@@ -113,13 +113,13 @@ public class MenuSistemaEmergencia {
         String tipo, ubicacion = "", gravedad;
         boolean entradaUbicacionValida = false;
         List<String> zonasValidas = Arrays.asList("CENTRO", "NORTE", "SUR", "ESTE", "OESTE");
-        int tiempo = -1;
 
         do {
             System.out.print("Ingrese el tipo de emergencia " + TipoEmergencia.getListaTipos() + ": ");
             tipo = scanner.nextLine().toUpperCase();
-            TipoEmergencia.fromString(tipo);
-
+            if (TipoEmergencia.fromString(tipo) == null) {
+                System.out.println("Tipo de emergencia inválido. Intente de nuevo.");
+            }
         } while (TipoEmergencia.fromString(tipo) == null);
 
         System.out.println("\nZonas disponibles: Centro, Norte, Sur, Este, Oeste");
@@ -132,7 +132,7 @@ public class MenuSistemaEmergencia {
                 entradaUbicacionValida = true;
             } else {
                 System.out.println("\nError: Ubicación no válida. Debe ser una de las siguientes opciones:");
-                System.out.println("Centro, Norte, Sur, Este, Oeste");
+                System.out.println("Centro, Norte, Sur, Este, Oeste\n");
             }
         }
 
@@ -142,24 +142,17 @@ public class MenuSistemaEmergencia {
             gravedad = scanner.nextLine().toUpperCase();
             nivelGravedad = NivelGravedad.fromString(gravedad);
             if (nivelGravedad == null) {
-                System.out.println("Nivel de gravedad inválido. Intente de nuevo.");
+                System.out.println("Nivel de gravedad inválido. Debe ser BAJO, MEDIO o ALTO. Intente de nuevo.");
             }
         } while (nivelGravedad == null);
 
-        do {
-            System.out.print("\nIngrese el tiempo estimado de respuesta en minutos: ");
-            while (!scanner.hasNextInt()) {
-                System.out.println("Entrada inválida. Ingrese un número válido.");
-                scanner.next();
-            }
-            tiempo = scanner.nextInt();
-            scanner.nextLine(); // Limpiar buffer
-            if (tiempo <= 0) {
-                System.out.println("El tiempo debe ser mayor a 0.");
-            }
-        } while (tiempo <= 0);
+        // Calcular tiempo automáticamente
+        int tiempoCalculado = sistemaEmergencias.getCityMap().calcularTiempoAtencion(ubicacion, tipo);
+        
+        System.out.println("\nTiempo calculado automáticamente: " + tiempoCalculado + " minutos");
+        System.out.println("(Basado en ubicación: " + ubicacion + " y tipo: " + tipo + ")");
 
-        sistemaEmergencias.registrarEmergencia(tipo, ubicacion, nivelGravedad, tiempo);
+        sistemaEmergencias.registrarEmergencia(tipo, ubicacion, nivelGravedad, tiempoCalculado);
         System.out.println("\nEmergencia registrada correctamente.");
     }
 
@@ -224,10 +217,10 @@ public class MenuSistemaEmergencia {
         System.out.println("1. Asignar por gravedad");
         System.out.println("2. Asignar por cercanía");
         System.out.println("3. Volver al menú principal");
-        System.out.print("Seleccione una opción: ");
+        System.out.print("\nSeleccione una opción: ");
         
         while (!scanner.hasNextInt()) {
-            System.out.println("Entrada inválida. Ingrese un número.");
+            System.out.println("\nEntrada inválida. Ingrese un número.");
             scanner.next();
         }
         int opcion = scanner.nextInt();
@@ -236,17 +229,17 @@ public class MenuSistemaEmergencia {
         switch (opcion) {
             case 1:
                 sistemaEmergencias.setEstrategiaAsignacion(new StrategyPrioridadGravedad());
-                System.out.println("Estrategia de asignación configurada a 'Asignar por gravedad'.");
+                System.out.println("\nEstrategia de asignación configurada a 'Asignar por gravedad'.");
                 break;
             case 2:
                 sistemaEmergencias.setEstrategiaAsignacion(new StrategyPrioridadCercania());
-                System.out.println("Estrategia de asignación configurada a 'Asignar por cercanía'.");
+                System.out.println("\nEstrategia de asignación configurada a 'Asignar por cercanía'.");
                 break;
             case 3:
-                System.out.println("Volviendo al menú principal...");
+                System.out.println("\nVolviendo al menú principal...");
                 break;
             default:
-                System.out.println("Opción no válida.");
+                System.out.println("\nOpción no válida.");
         }
     }
 
@@ -283,15 +276,14 @@ public class MenuSistemaEmergencia {
     }
 
     private void mostrarReportesHistoricos() {
-        System.out.println("\n--- Reportes Históricos ---");
+        System.out.println("\n    --- Reportes Históricos ---\n");
         System.out.println("1. Ver último reporte del sistema");
         System.out.println("2. Ver historial de emergencias");
-        System.out.println("3. Limpiar y reescribir reportes");
-        System.out.println("4. Volver al menú principal");
-        System.out.print("Seleccione una opción: ");
+        System.out.println("3. Volver al menú principal");
+        System.out.print("\nSeleccione una opción: ");
         
         while (!scanner.hasNextInt()) {
-            System.out.println("Entrada inválida. Ingrese un número.");
+            System.out.println("\nEntrada inválida. Ingrese un número.");
             scanner.next();
         }
         int opcion = scanner.nextInt();
@@ -305,19 +297,10 @@ public class MenuSistemaEmergencia {
                 mostrarHistorialEmergencias();
                 break;
             case 3:
-                System.out.println("¿Está seguro de que desea limpiar y reescribir los reportes? (SI/NO): ");
-                String confirmacion = scanner.nextLine().trim().toUpperCase();
-                if ("SI".equals(confirmacion)) {
-                    SystemReport.limpiarYReescribirReportes();
-                } else {
-                    System.out.println("Operación cancelada.");
-                }
-                break;
-            case 4:
-                System.out.println("Volviendo al menú principal...");
+                System.out.println("\nVolviendo al menú principal...");
                 break;
             default:
-                System.out.println("Opción no válida.");
+                System.out.println("\nOpción no válida.");
         }
     }
     
@@ -334,11 +317,10 @@ public class MenuSistemaEmergencia {
                     .toList();
             
             System.out.println("Total de registros únicos: " + historialUnico.size());
-            System.out.println("\nÚltimos registros:");
+            System.out.println("\nTodos los registros:");
             
-            int inicio = Math.max(0, historialUnico.size() - 10);
-            for (int i = inicio; i < historialUnico.size(); i++) {
-                System.out.println((i - inicio + 1) + ". " + historialUnico.get(i));
+            for (int i = 0; i < historialUnico.size(); i++) {
+                System.out.println((i + 1) + ". " + historialUnico.get(i));
             }
         }
     }

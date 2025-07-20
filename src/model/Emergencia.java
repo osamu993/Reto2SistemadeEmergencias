@@ -60,7 +60,8 @@ public abstract class Emergencia {
     }
     
     public void setAtendida(boolean atendida) {
-        this.atendida = true;
+        System.out.println("DEBUG: Marcando emergencia " + this.tipo + " como atendida: " + atendida);
+        this.atendida = atendida;
     }
     
 
@@ -92,7 +93,7 @@ public abstract class Emergencia {
         if (recurso != null && recurso.estaDisponible()) {
             recurso.desplegarUnidad(this.ubicacion);
             recursosAsignados.add(recurso);
-            System.out.println("🚨 Se asignó " + recurso.getId() + " a la emergencia en " + ubicacion);
+            System.out.println("Se asignó " + recurso.getId() + " a la emergencia en " + ubicacion);
         } else {
             System.out.println("No se pudo asignar el recurso a la emergencia en " + ubicacion);
         }
@@ -106,7 +107,7 @@ public abstract class Emergencia {
         if (!recursosAsignados.isEmpty()) {
             IServicioEmergencia recurso = recursosAsignados.remove(recursosAsignados.size() - 1);
             recurso.liberarRecurso();
-            System.out.println("✅ Se liberó el recurso " + recurso.getId() + " de la emergencia en " + ubicacion);
+            System.out.println("Se liberó el recurso " + recurso.getId() + " de la emergencia en " + ubicacion);
             return recurso;
         }
         return null; // No hay recursos para liberar
@@ -134,7 +135,7 @@ public abstract class Emergencia {
     public void finalizarAtencion() {
         this.atendida = true;
         this.tiempoFinAtencion = System.currentTimeMillis();
-        System.out.println("🏁 Emergencia resuelta: " + this.getDescripcion() + " en " + ubicacion);
+        System.out.println("Emergencia resuelta: " + this.getDescripcion() + " en " + ubicacion);
     }
     
 
