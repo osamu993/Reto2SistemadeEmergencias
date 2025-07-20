@@ -33,8 +33,6 @@ public class SistemaEmergencias implements SujetoEmergencias {
     @Override
     public void notificarEmergenciaResuelta(Emergencia emergencia) {
         System.out.println("Emergencia resuelta: " + emergencia.getDescripcion());
-        // emergencia.setTiempoFinAtencion(System.currentTimeMillis());
-        // emergencia.setAtendida(true);
     }
 
     public void inicializarRecursos() {
@@ -205,17 +203,29 @@ public class SistemaEmergencias implements SujetoEmergencias {
             } else {
                 pendientes++;
             }
-    
-            // Obtener recursos según tipo de emergencia y zona
-            Map<String, Integer> recursos = determinarRecursosPorEmergencia(
-                    emergencia.getTipo(),
-                    mapa.obtenerZona(emergencia.getUbicacion()));
-    
-            for (Map.Entry<String, Integer> entry : recursos.entrySet()) {
-                String recurso = entry.getKey();
-                int cantidad = entry.getValue();
-    
-                recursosUsados.put(recurso, recursosUsados.getOrDefault(recurso, 0) + cantidad);
+        }
+        
+        // Contar recursos reales utilizados (solo de emergencias atendidas)
+        for (Emergencia emergencia : listaEmergencias) {
+            if (emergencia.isAtendida()) {
+                // Contar recursos reales asignados a esta emergencia
+                // Como no tenemos acceso directo a los recursos asignados, usamos el tipo de emergencia
+                String tipoEmergencia = emergencia.getTipo().toUpperCase();
+                switch (tipoEmergencia) {
+                    case "INCENDIO":
+                        recursosUsados.put("BOMBEROS", recursosUsados.getOrDefault("BOMBEROS", 0) + 2);
+                        recursosUsados.put("AMBULANCIA", recursosUsados.getOrDefault("AMBULANCIA", 0) + 1);
+                        break;
+                    case "ROBO":
+                        recursosUsados.put("POLICIA", recursosUsados.getOrDefault("POLICIA", 0) + 2);
+                        recursosUsados.put("AMBULANCIA", recursosUsados.getOrDefault("AMBULANCIA", 0) + 1);
+                        break;
+                    case "ACCIDENTE_VEHICULAR":
+                        recursosUsados.put("POLICIA", recursosUsados.getOrDefault("POLICIA", 0) + 1);
+                        recursosUsados.put("AMBULANCIA", recursosUsados.getOrDefault("AMBULANCIA", 0) + 2);
+                        recursosUsados.put("UNIDADRESCATE", recursosUsados.getOrDefault("UNIDADRESCATE", 0) + 1);
+                        break;
+                }
             }
         }
     
@@ -341,12 +351,9 @@ public class SistemaEmergencias implements SujetoEmergencias {
 
     @Override
     public void notificarObservers(Emergencia emergencia) {
-        System.out.println("DEBUG: Notificando a " + observadores.size() + " observadores");
         for (ObserverEmergencias observerEmergencias : observadores) {
-            System.out.println("DEBUG: Llamando observer: " + observerEmergencias.getClass().getSimpleName());
             observerEmergencias.onNuevasEmergencias(emergencia);
         }
-        System.out.println("DEBUG: Fin de notificación");
     }
 
     public void finalizarEmergencia(Emergencia emergencia) {
@@ -458,8 +465,6 @@ public class SistemaEmergencias implements SujetoEmergencias {
                 int tiempoCalculado = emergencia.getTiempoReespuesta() * 1000; // Convertir minutos a milisegundos
                 int tiempoTotal = Math.max(tiempoMinimoReal, tiempoCalculado);
                 
-                System.out.println("\nLa emergencia permanecerá PENDIENTE por " + (tiempoTotal / 1000) + " segundos...");
-                
                 // La emergencia permanece PENDIENTE durante todo este tiempo
                 Thread.sleep(tiempoTotal);
                 
@@ -472,8 +477,8 @@ public class SistemaEmergencias implements SujetoEmergencias {
                     gestorRecursos.liberarRecursoCompleto(recurso);
                 }
                 
-                System.out.println("\nEMERGENCIA ATENDIDA: " + emergencia.getTipo() + " en " + emergencia.getUbicacion());
-                System.out.println("Recursos liberados:\n");
+                System.out.println("\nEMERGENCIA ATENDIDA: " + emergencia.getTipo() + " en zona:" + emergencia.getUbicacion());
+                System.out.println("nRecursos liberados:\n");
                 for (IServicioEmergencia recurso : recursos) {
                     System.out.println(recurso.getId());
                 }

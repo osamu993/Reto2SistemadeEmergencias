@@ -19,7 +19,6 @@ public class NotificadorEmergencias implements ObserverEmergencias {
         System.out.println("   Gravedad: " + emergencia.getNivelGravedad());
         System.out.println("   Tiempo de respuesta estimado: " + emergencia.getTiempoReespuesta() + " minutos");
         System.out.println("   Estado: " + (emergencia.isAtendida() ? "Atendida" : "Pendiente"));
-        System.out.println("   DEBUG: isAtendida() = " + emergencia.isAtendida());
         System.out.println("   " + "=".repeat(50));
     }
 

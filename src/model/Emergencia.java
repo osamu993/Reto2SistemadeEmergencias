@@ -60,7 +60,6 @@ public abstract class Emergencia {
     }
     
     public void setAtendida(boolean atendida) {
-        System.out.println("DEBUG: Marcando emergencia " + this.tipo + " como atendida: " + atendida);
         this.atendida = atendida;
     }
     

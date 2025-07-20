@@ -80,7 +80,7 @@ public abstract class ServicioBase implements IServicioEmergencia {
      */
     @Override
     public void liberarRecurso() {
-        System.out.println("✅ La unidad " + id + " ha sido liberada y está disponible nuevamente.");
+        System.out.println("La unidad " + id + " ha sido liberada y está disponible nuevamente.");
     }
 
     @Override

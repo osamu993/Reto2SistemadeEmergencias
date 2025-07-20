@@ -58,3 +58,14 @@ Total de emergencias atendidas: 4
 - Accidente Vehicular (Gravedad: BAJO) en NORTE
 - Robo (Gravedad: BAJO) en SUR
 =========================================
+
+--- Reporte del Sistema de Emergencias ---
+
+Total de emergencias atendidas: 6
+- Incendio (Gravedad: ALTO) en ESTE
+- Robo (Gravedad: ALTO) en SUR
+- Accidente Vehicular (Gravedad: BAJO) en NORTE
+- Incendio (Gravedad: MEDIO) en CENTRO
+- Incendio (Gravedad: ALTO) en NORTE
+- Robo (Gravedad: ALTO) en SUR
+=========================================
