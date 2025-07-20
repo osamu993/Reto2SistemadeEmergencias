@@ -15,3 +15,4 @@ Emergencia: Incendio | Ubicación: OESTE | Gravedad: ALTO | Estado: Atendida | T
 Emergencia: Robo | Ubicación: SUR | Gravedad: ALTO | Estado: Atendida | Tiempo: 20 min
 Emergencia: Accidente Vehicular | Ubicación: NORTE | Gravedad: BAJO | Estado: Atendida | Tiempo: 16 min
 Emergencia: Robo | Ubicación: SUR | Gravedad: BAJO | Estado: Atendida | Tiempo: 20 min
+Emergencia: Robo | Ubicación: CENTRO | Gravedad: ALTO | Estado: Atendida | Tiempo: 10 min

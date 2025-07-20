@@ -338,6 +338,7 @@ public class MenuSistemaEmergencia {
             System.out.println("Cierre de jornada cancelado.");
         }
     }
+
 }
 
 
