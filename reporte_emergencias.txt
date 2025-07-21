@@ -84,3 +84,9 @@ Total de emergencias atendidas: 4
 Total de emergencias atendidas: 1
 - Robo (Gravedad: ALTO) en CENTRO
 =========================================
+
+--- Reporte del Sistema de Emergencias ---
+
+Total de emergencias atendidas: 1
+- Robo (Gravedad: MEDIO) en NORTE
+=========================================
