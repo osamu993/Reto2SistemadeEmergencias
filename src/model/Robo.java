@@ -11,12 +11,12 @@ public class Robo extends Emergencia implements Responder {
 
     @Override
     public void atenderEmergencia() {
-        System.out.println("🚓 Policía en camino al robo en " + getUbicacion() + "!!!");
+        System.out.println(" Policía en camino al robo en " + getUbicacion() + "!!!");
     }
 
     @Override
     public void evaluarEstado() {
-        System.out.println("📋 Evaluando la escena del crimen y verificando el estado de los afectados.");
+        System.out.println(" Evaluando la escena del crimen y verificando el estado de los afectados.");
     }
 }
 

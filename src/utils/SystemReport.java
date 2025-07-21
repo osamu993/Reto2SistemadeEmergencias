@@ -18,7 +18,7 @@ public class SystemReport {
         System.out.println("Total de emergencias atendidas: " + emergenciasAtendidas.size());
 
         if (emergenciasAtendidas.isEmpty()) {
-            System.out.println("⚠️ No se atendieron emergencias en este período.");
+            System.out.println(" No se atendieron emergencias en este período.");
         } else {
             for (String emergencia : emergenciasAtendidas) {
                 System.out.println("- " + emergencia);
@@ -41,7 +41,7 @@ public class SystemReport {
             pw.println("Total de emergencias atendidas: " + emergenciasAtendidas.size());
 
             if (emergenciasAtendidas.isEmpty()) {
-                pw.println("⚠️ No se atendieron emergencias en este período.");
+                pw.println(" No se atendieron emergencias en este período.");
             } else {
                 for (String emergencia : emergenciasAtendidas) {
                     pw.println("- " + emergencia);
@@ -52,7 +52,7 @@ public class SystemReport {
             System.out.println("📄 Reporte guardado en " + NOMBRE_ARCHIVO);
 
         } catch (IOException e) {
-            System.err.println("❌ Error al guardar el reporte: " + e.getMessage());
+            System.err.println(" Error al guardar el reporte: " + e.getMessage());
         }
     }
 
@@ -67,7 +67,7 @@ public class SystemReport {
                 System.out.println(linea);
             }
         } catch (IOException e) {
-            System.err.println("❌ Error al leer el reporte: " + e.getMessage());
+            System.err.println(" Error al leer el reporte: " + e.getMessage());
         }
     }
 
@@ -76,9 +76,9 @@ public class SystemReport {
      */
     public static void limpiarReportes() {
         try (FileWriter fw = new FileWriter(NOMBRE_ARCHIVO, false)) { // Modo sobrescritura
-            System.out.println("🗑️ Reportes de emergencias eliminados correctamente.");
+            System.out.println(" Reportes de emergencias eliminados correctamente.");
         } catch (IOException e) {
-            System.err.println("❌ Error al limpiar los reportes: " + e.getMessage());
+            System.err.println(" Error al limpiar los reportes: " + e.getMessage());
         }
     }
 }

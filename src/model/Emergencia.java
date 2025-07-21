@@ -92,9 +92,9 @@ public abstract class Emergencia {
         if (recurso != null && recurso.estaDisponible()) {
             recurso.desplegarUnidad(this.ubicacion);
             recursosAsignados.add(recurso);
-            System.out.println("🚨 Se asignó " + recurso.getId() + " a la emergencia en " + ubicacion);
+            System.out.println(" Se asignó " + recurso.getId() + " a la emergencia en " + ubicacion);
         } else {
-            System.out.println("⚠️ No se pudo asignar el recurso a la emergencia en " + ubicacion);
+            System.out.println(" No se pudo asignar el recurso a la emergencia en " + ubicacion);
         }
     }
 
@@ -106,7 +106,7 @@ public abstract class Emergencia {
         if (!recursosAsignados.isEmpty()) {
             IServicioEmergencia recurso = recursosAsignados.remove(recursosAsignados.size() - 1);
             recurso.liberarRecurso();
-            System.out.println("✅ Se liberó el recurso " + recurso.getId() + " de la emergencia en " + ubicacion);
+            System.out.println(" Se liberó el recurso " + recurso.getId() + " de la emergencia en " + ubicacion);
             return recurso;
         }
         return null; // No hay recursos para liberar
