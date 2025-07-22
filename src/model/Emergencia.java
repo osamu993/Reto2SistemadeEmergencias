@@ -5,6 +5,11 @@ import utils.NivelGravedad;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Clase abstracta que representa una emergencia genérica dentro del sistema.
+ * Define los atributos comunes a cualquier tipo de emergencia (como incendios, accidentes, robos),
+ * así como métodos para asignación y liberación de recursos.
+ */
 public abstract class Emergencia {
     private String tipo;
     private String ubicacion;
@@ -14,7 +19,13 @@ public abstract class Emergencia {
     private long tiempoInicioAtencion;
     private long tiempoFinAtencion;
     private List<IServicioEmergencia> recursosAsignados = new ArrayList<>();
-
+    /**
+     * Constructor de la clase Emergencia.
+     * @param tipo Tipo de emergencia (ej: incendio, accidente).
+     * @param ubicacion Lugar donde ocurre.
+     * @param nivelGravedad Gravedad del incidente.
+     * @param tiempoReespuesta Tiempo estimado de respuesta en minutos.
+     */
     public Emergencia(String tipo, String ubicacion, NivelGravedad nivelGravedad, int tiempoReespuesta) {
         this.tipo = tipo;
         this.ubicacion = ubicacion;
@@ -83,7 +94,6 @@ public abstract class Emergencia {
     public String getDescripcion() {
         return tipo + " (Gravedad: " + nivelGravedad + ")";
     }
-
     /**
      * Asigna un recurso a la emergencia y lo marca como desplegado.
      * @param recurso Recurso de emergencia a asignar.
@@ -97,7 +107,6 @@ public abstract class Emergencia {
             System.out.println("No se pudo asignar el recurso a la emergencia en " + ubicacion);
         }
     }
-
     /**
      * Libera el recurso asignado más recientemente.
      * @return Recurso liberado o null si no hay recursos.
@@ -111,7 +120,6 @@ public abstract class Emergencia {
         }
         return null; // No hay recursos para liberar
     }
-
     /**
      * Verifica si la emergencia necesita recursos adicionales.
      * @return true si no tiene recursos asignados, false en caso contrario.
@@ -119,7 +127,6 @@ public abstract class Emergencia {
     public boolean necesitaRecursos() {
         return recursosAsignados.isEmpty();
     }
-
     /**
      * Indica si la emergencia tiene recursos asignados.
      * @return true si tiene al menos un recurso asignado, false en caso contrario.
@@ -127,7 +134,6 @@ public abstract class Emergencia {
     public boolean tieneRecursosAsignados() {
         return !recursosAsignados.isEmpty();
     }
-
     /**
      * Finaliza la atención de la emergencia y registra el tiempo de finalización.
      */
@@ -136,8 +142,9 @@ public abstract class Emergencia {
         this.tiempoFinAtencion = System.currentTimeMillis();
         System.out.println("Emergencia resuelta: " + this.getDescripcion() + " en " + ubicacion);
     }
-    
-
+      /**
+     * Devuelve toda la información de la emergencia en formato legible.
+     */
     @Override
     public String toString() {
         return "Emergencia [tipo=" + tipo + ", ubicacion=" + ubicacion + ", nivelGravedad=" + nivelGravedad

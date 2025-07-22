@@ -1,3 +1,7 @@
+// Esta clase representa un observador concreto dentro del patrón Observer.
+// Su función es recibir notificaciones cuando ocurre un evento importante
+// en el sistema: una nueva emergencia, una emergencia resuelta o una reasignación de recursos.
+
 package model.observer;
 
 import model.Emergencia;
@@ -10,7 +14,10 @@ import model.interfaces.IServicioEmergencia;
 public class NotificadorEmergencias implements ObserverEmergencias {
 
     IServicioEmergencia recurso;
-
+/**
+     * Se llama automáticamente cuando se registra una nueva emergencia.
+     * Imprime en consola todos los detalles de la emergencia.
+     */
     @Override
     public void onNuevasEmergencias(Emergencia emergencia) {
         System.out.println("\nNUEVA EMERGENCIA REGISTRADA:");
@@ -21,7 +28,10 @@ public class NotificadorEmergencias implements ObserverEmergencias {
         System.out.println("   Estado: " + (emergencia.isAtendida() ? "Atendida" : "Pendiente"));
         System.out.println("   " + "=".repeat(50));
     }
-
+     /**
+     * Se ejecuta cuando una emergencia ha sido resuelta con éxito.
+     * Muestra los detalles del evento y el tiempo total que tardó en ser atendida.
+     */
     @Override
     public void onEmergenciaResuelta(Emergencia emergencia) {
         System.out.println("\nEMERGENCIA RESUELTA:");
@@ -35,7 +45,10 @@ public class NotificadorEmergencias implements ObserverEmergencias {
         }
         System.out.println("   " + "=".repeat(50));
     }
-
+     /**
+     * Notificación cuando el sistema ha reasignado recursos de una emergencia a otra.
+     * Útil para alertar al usuario que debe revisar el nuevo estado de disponibilidad.
+     */
     @Override
     public void onRecursosReasignados() {
         System.out.println("\nRECURSOS REASIGNADOS:");

@@ -1,3 +1,7 @@
+// Esta clase representa el núcleo del sistema de gestión de emergencias urbanas.
+// Aquí se concentran las operaciones de registro, asignación, seguimiento y estadísticas.
+// Implementa el patrón Singleton (solo puede haber una instancia del sistema).
+// También implementa el patrón Observer (para notificar eventos) y usa Strategy (para asignar recursos).
 package controller;
 
 import java.util.ArrayList;
@@ -44,20 +48,21 @@ public class SistemaEmergencias implements SujetoEmergencias {
         System.out.println("8. Salir");
         System.out.print("\n\nSeleccione una opción: ");
     }
-
+// Agrega recursos iniciales al sistema (solo una vez al inicio)
     public void inicializarRecursos() {
         listaRecursos.add(new Ambulancia("AMB1", "Centro"));
         listaRecursos.add(new Bomberos("BOM1", "Zona Norte"));
         listaRecursos.add(new Policia("POL1", "Centro"));
     }
 
-    private static SistemaEmergencias instancia;
-    private List<Emergencia> listaEmergencias;
-    private List<IServicioEmergencia> listaRecursos;
-    private List<ObserverEmergencias> observadores;
-    private CityMap mapa = new CityMap();
-    private GestorRecursos gestorRecursos = new GestorRecursos();
+    private static SistemaEmergencias instancia; // Singleton
+    private List<Emergencia> listaEmergencias;// Lista global de emergencias registradas
+    private List<IServicioEmergencia> listaRecursos;// Lista global de recursos disponibles (bomberos, policía, etc.)
+    private List<ObserverEmergencias> observadores;  // Lista de objetos que escuchan eventos (patrón Observer)
+    private CityMap mapa = new CityMap();// Mapa de la ciudad que ayuda a calcular distancias y tiempos
+    private GestorRecursos gestorRecursos = new GestorRecursos();// Controlador de asignación y disponibilidad de recursos
 
+// Constructor privado para asegurar Singleton
     public SistemaEmergencias() {
         listaEmergencias = new ArrayList<>();
         listaRecursos = new ArrayList<>();
@@ -65,22 +70,23 @@ public class SistemaEmergencias implements SujetoEmergencias {
         listaEmergencias = new ArrayList<>();
         listaRecursos = new ArrayList<>();
         observadores = new ArrayList<>();
-        inicializarRecursos(); // Agregar recursos al sistema
+        inicializarRecursos(); // Agrega los recursos iniciales disponibles
 
-        // Configurar estrategia de asignación por defecto
+        
+    // Estrategia por defecto: prioridad según gravedad
         gestorRecursos.setEstrategiaAsignacion(new StrategyPrioridadGravedad());
 
-        // Registrar observador para notificaciones
+        // Registrar observador del sistema
         agregarObserver(new NotificadorEmergencias());
     }
-
+// Devuelve la única instancia del sistema (Singleton)
     public static SistemaEmergencias getInstance() {
         if (instancia == null) {
             instancia = new SistemaEmergencias();
         }
         return instancia;
     }
-
+// Registra una nueva emergencia en el sistema
     public void registrarEmergencia(String tipo, String ubicacion, NivelGravedad nivel, int tiempoRespuesta) {
         System.out.println("\nIniciando registro de emergencia...");
 
@@ -98,7 +104,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
 
         // Notificar a los observadores ANTES de asignar recursos
         notificarObservers(emergencia);
-
+  // Se informa al usuario
         System.out.println("\n" + "=".repeat(60));
         System.out.println("EMERGENCIA REGISTRADA EXITOSAMENTE");
         System.out.println("=".repeat(60));
@@ -157,7 +163,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
             }
         }
     }
-
+// Intenta reasignar recursos de emergencias leves a una emergencia grave
     public boolean reasignarRecursos() {
 
         Emergencia emergenciaGrave = null;
@@ -190,8 +196,19 @@ public class SistemaEmergencias implements SujetoEmergencias {
 
     // Archivo: SistemaEmergencias.java
     // Clase: SistemaEmergencias
-
+// Muestra estadísticas del sistema y genera reporte
     public void mostrarEstadisticasDelDia() {
+        /*
+     * Se calcula:
+     * - Total de emergencias registradas
+     * - Cantidad de atendidas y pendientes
+     * - Tasa de éxito
+     * - Tiempos promedio de atención
+     * - Recursos utilizados
+     * - Eficiencia operativa
+     * 
+     * También se genera un archivo de reporte si hubo emergencias atendidas.
+     */
         int totalEmergencias = listaEmergencias.size();
         int atendidas = 0;
         int pendientes = 0;
@@ -337,7 +354,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
             observerEmergencias.onNuevasEmergencias(emergencia);
         }
     }
-
+// Marca una emergencia como finalizada manualmente (opcional desde el menú)
     public void finalizarEmergencia(Emergencia emergencia) {
         if (emergencia != null && !emergencia.isAtendida()) {
             emergencia.setTiempoInicioAtencion(System.currentTimeMillis());
@@ -348,7 +365,7 @@ public class SistemaEmergencias implements SujetoEmergencias {
             notificarEmergenciaResuelta(emergencia);
         }
     }
-
+// Cierra la jornada: genera estadísticas, guarda el historial y reinicia el sistema
     public void cerrarJornada() {
         System.out.println("\n" + "=".repeat(60));
         System.out.println("CERRANDO JORNADA DEL SISTEMA DE EMERGENCIAS");

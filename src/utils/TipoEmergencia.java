@@ -4,13 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Enumeración que representa los tipos de emergencias disponibles.
+ * Enumeración que representa los distintos tipos de emergencias
+ * que pueden ser gestionadas por el sistema.
  */
+
 public enum TipoEmergencia {
     ACCIDENTE_VEHICULAR,
     ROBO,
     INCENDIO;
-
     /**
      * Convierte una cadena de texto en un TipoEmergencia, manejando errores.
      * @param tipo Texto que representa el tipo de emergencia (puede ser en minúsculas o mayúsculas).
@@ -27,7 +28,6 @@ public enum TipoEmergencia {
             return null; // Retorna null si el tipo no es válido
         }
     }
-
     /**
      * Obtiene una lista de todos los tipos de emergencias disponibles.
      * @return Lista con los nombres de los tipos de emergencias.

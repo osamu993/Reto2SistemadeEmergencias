@@ -6,11 +6,12 @@ import java.util.List;
 
 
 /**
- * Clase para gestionar el registro de emergencias en el sistema.
+ * Clase utilitaria encargada de gestionar el registro persistente de emergencias.
+ * Permite guardar, leer y limpiar registros de emergencias en un archivo de texto.
  */
 public class SystemRegistration {
+    // Nombre del archivo donde se almacenan los registros
     private static final String NOMBRE_ARCHIVO = "registro_emergencias.txt";
-
     /**
      * Guarda una emergencia en el archivo de registro.
      * @param emergencia Información de la emergencia.
@@ -27,7 +28,6 @@ public class SystemRegistration {
             System.err.println("Error al escribir en el archivo: " + e.getMessage());
         }
     }
-
     /**
      * Guarda una lista de emergencias en el archivo de registro.
      * @param emergencias Lista de emergencias a registrar.
@@ -48,7 +48,6 @@ public class SystemRegistration {
             System.err.println("Error al escribir en el archivo: " + e.getMessage());
         }
     }
-
     /**
      * Lee y devuelve todas las emergencias registradas en el archivo.
      * @return Lista de emergencias registradas.
@@ -65,7 +64,6 @@ public class SystemRegistration {
         }
         return registros;
     }
-
     /**
      * Limpia el contenido del archivo de registro.
      */

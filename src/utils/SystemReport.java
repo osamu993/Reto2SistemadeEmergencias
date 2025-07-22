@@ -4,11 +4,11 @@ import java.io.*;
 import java.util.List;
 
 /**
- * Clase para generar y guardar reportes sobre el desempeño del sistema de emergencias.
+ * Clase utilitaria responsable de generar, guardar y mostrar reportes
+ * relacionados con las emergencias atendidas por el sistema.
  */
 public class SystemReport {
     private static final String NOMBRE_ARCHIVO = "reporte_emergencias.txt";
-
     /**
      * Genera un reporte con el resumen de emergencias atendidas.
      * @param emergenciasAtendidas Lista de emergencias resueltas.
@@ -28,7 +28,6 @@ public class SystemReport {
         // Guardar el reporte en un archivo
         guardarReporte(emergenciasAtendidas);
     }
-
     /**
      * Guarda el reporte en un archivo de texto.
      * @param emergenciasAtendidas Lista de emergencias resueltas.
@@ -55,7 +54,6 @@ public class SystemReport {
             System.err.println("Error al guardar el reporte: " + e.getMessage());
         }
     }
-
     /**
      * Lee y muestra el contenido del último reporte guardado.
      */
@@ -89,7 +87,6 @@ public class SystemReport {
             System.err.println("Error al leer el reporte: " + e.getMessage());
         }
     }
-
     /**
      * Lee y muestra todo el historial de reportes guardados.
      */
@@ -104,7 +101,6 @@ public class SystemReport {
             System.err.println("Error al leer el historial: " + e.getMessage());
         }
     }
-
     /**
      * Limpia el archivo de reportes.
      */

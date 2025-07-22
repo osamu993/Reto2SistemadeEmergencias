@@ -3,15 +3,17 @@ package utils;
 import java.util.List;
 
 /**
- * Clase para calcular métricas del desempeño del sistema de emergencias.
+ * Clase utilitaria para calcular métricas clave sobre el desempeño del sistema de emergencias.
+ * Permite obtener indicadores como tiempo promedio de respuesta, eficiencia de uso de recursos
+ * y tasa de éxito en la atención de emergencias.
  */
 public class StatisticsSystem {
-
     /**
-     * Calcula el tiempo promedio de respuesta a emergencias.
-     * 
-     * @param tiempos Lista de tiempos de respuesta en minutos.
-     * @return Tiempo promedio o 0.0 si la lista está vacía.
+     * Calcula el tiempo promedio de respuesta a las emergencias registradas.
+     * Este valor permite medir la agilidad del sistema frente a eventos críticos.
+     *
+     * @param tiempos Lista con los tiempos de respuesta (en minutos) de cada emergencia.
+     * @return Tiempo promedio de respuesta o 0.0 si no hay datos registrados.
      */
     public static double calcularTiempoPromedio(List<Double> tiempos) {
         if (tiempos.isEmpty()) {
@@ -24,13 +26,13 @@ public class StatisticsSystem {
         }
         return suma / tiempos.size();
     }
-
-    /**
-     * Calcula la eficiencia del uso de recursos en el sistema.
-     * 
-     * @param recursosUsados      Cantidad de recursos utilizados.
-     * @param recursosDisponibles Cantidad total de recursos.
-     * @return Porcentaje de uso de recursos o 0.0 si recursosDisponibles es 0.
+  /**
+     * Calcula la eficiencia en el uso de los recursos del sistema.
+     * Se interpreta como el porcentaje de recursos que han sido efectivamente utilizados.
+     *
+     * @param recursosUsados Cantidad de recursos que fueron utilizados en la jornada.
+     * @param recursosDisponibles Cantidad total de recursos disponibles en el sistema.
+     * @return Porcentaje de eficiencia o 0.0 si no hay recursos disponibles.
      */
     public static double calcularEficienciaRecursos(int recursosUsados, int recursosDisponibles) {
         if (recursosDisponibles == 0) {
@@ -39,12 +41,13 @@ public class StatisticsSystem {
         }
         return (recursosUsados / (double) recursosDisponibles) * 100;
     }
-
-    /**
-     * Calcula la tasa de éxito en la atención de emergencias.
+     /**
+     * Calcula el porcentaje de emergencias que fueron atendidas con éxito.
+     * Esta métrica permite evaluar la cobertura y efectividad del sistema.
+     *
      * @param emergenciasAtendidas Número de emergencias que fueron resueltas.
-     * @param totalEmergencias Número total de emergencias registradas.
-     * @return Porcentaje de emergencias atendidas con éxito o 0.0 si totalEmergencias es 0.
+     * @param totalEmergencias Número total de emergencias que se registraron.
+     * @return Porcentaje de éxito o 0.0 si no hubo emergencias.
      */
     public static double calcularTasaExitoEmergencias(int emergenciasAtendidas, int totalEmergencias) {
         if (totalEmergencias == 0) {

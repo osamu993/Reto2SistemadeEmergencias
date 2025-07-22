@@ -12,19 +12,23 @@ import utils.SystemRegistration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+// Esta clase representa el menú principal del sistema de emergencias.
+// Se encarga de interactuar con el usuario, capturar sus decisiones y delegar tareas al controlador del sistema.
 
 public class MenuSistemaEmergencia {
     private Scanner scanner;
     private SistemaEmergencias sistemaEmergencias;
 
+ // Constructor que recibe el sistema de emergencias y prepara el escáner de consola.
     public MenuSistemaEmergencia(SistemaEmergencias sistemaEmergencias) {
         this.scanner = new Scanner(System.in);
         this.sistemaEmergencias = sistemaEmergencias;
     }
-
+ // Método principal del menú. Muestra las opciones y espera la interacción del usuario.
     public void mostrarMenu() {
         int opcion;
         do {
+// Despliegue del menú principal
             System.out.println("\n\n--- Sistema de Emergencias ---\n");
             System.out.println("1. Registrar emergencia");
             System.out.println("2. Gestionar emergencias");
@@ -35,14 +39,14 @@ public class MenuSistemaEmergencia {
             System.out.println("7. Cerrar jornada");
             System.out.println("8. Salir");
             System.out.print("\n\nSeleccione una opción: ");
-
+// Validación de entrada (solo números)
             while (!scanner.hasNextInt()) {
                 System.out.println("\nEntrada inválida. Ingrese un número.");
                 scanner.next();
             }
             opcion = scanner.nextInt();
             scanner.nextLine();
-
+// Ejecución de la opción seleccionada
             switch (opcion) {
                 case 1:
                     registrarEmergencia();
@@ -71,9 +75,9 @@ public class MenuSistemaEmergencia {
                 default:
                     System.out.println("Opción no válida, intente nuevamente.");
             }
-        } while (opcion != 8);
+        } while (opcion != 8); // El sistema se repite hasta que el usuario elige salir.
     }
-
+ // --- Submenú para acciones específicas sobre emergencias ---
     private void mostrarSubmenuGestionarEmergencias() {
         int opcionSubmenu;
         do {
@@ -109,11 +113,13 @@ public class MenuSistemaEmergencia {
         } while (opcionSubmenu != 5);
     }
 
+    // --- Registro de una nueva emergencia ---
     private void registrarEmergencia() {
+        // Captura del tipo, ubicación y gravedad de la emergencia
         String tipo, ubicacion = "", gravedad;
         boolean entradaUbicacionValida = false;
         List<String> zonasValidas = Arrays.asList("CENTRO", "NORTE", "SUR", "ESTE", "OESTE");
-
+ // Validación del tipo de emergencia
         do {
             System.out.print("Ingrese el tipo de emergencia " + TipoEmergencia.getListaTipos() + ": ");
             tipo = scanner.nextLine().toUpperCase();
@@ -121,7 +127,7 @@ public class MenuSistemaEmergencia {
                 System.out.println("Tipo de emergencia inválido. Intente de nuevo.");
             }
         } while (TipoEmergencia.fromString(tipo) == null);
-
+// Validación de la ubicación ingresada
         System.out.println("\nZonas disponibles: Centro, Norte, Sur, Este, Oeste");
 
         while (!entradaUbicacionValida) {
@@ -135,7 +141,7 @@ public class MenuSistemaEmergencia {
                 System.out.println("Centro, Norte, Sur, Este, Oeste\n");
             }
         }
-
+// Validación del nivel de gravedad
         NivelGravedad nivelGravedad;
         do {
             System.out.print("\nIngrese el nivel de gravedad (BAJO, MEDIO, ALTO): ");
@@ -146,7 +152,7 @@ public class MenuSistemaEmergencia {
             }
         } while (nivelGravedad == null);
 
-        // Calcular tiempo automáticamente
+// Se calcula automáticamente el tiempo estimado de atención basado en la zona y el tipo
         int tiempoCalculado = sistemaEmergencias.getCityMap().calcularTiempoAtencion(ubicacion, tipo);
         
         System.out.println("\nTiempo calculado automáticamente: " + tiempoCalculado + " minutos");
@@ -155,15 +161,15 @@ public class MenuSistemaEmergencia {
         sistemaEmergencias.registrarEmergencia(tipo, ubicacion, nivelGravedad, tiempoCalculado);
         System.out.println("\nEmergencia registrada correctamente.");
     }
-
+ // Muestra en consola todas las emergencias que aún están activas (no atendidas)
     private void mostrarEmergencias() {
         System.out.println("\nListado de emergencias activas:");
         sistemaEmergencias.listarEmergencias();
     }
-
+// Permite reasignar recursos de una emergencia activa a otra más urgente
     private void reasignarRecursos() {
         System.out.println("\nReasignación de Recursos:");
-
+ // Filtra solo emergencias que no han sido atendidas
         List<Emergencia> emergencias = sistemaEmergencias.getListaEmergencias()
                 .stream()
                 .filter(e -> !e.isAtendida())
@@ -173,7 +179,7 @@ public class MenuSistemaEmergencia {
             System.out.println("\nNo hay emergencias activas para reasignar recursos.");
             return;
         }
-
+// Se listan las emergencias activas para que el usuario elija
         for (int i = 0; i < emergencias.size(); i++) {
             Emergencia e = emergencias.get(i);
             System.out.println((i + 1) + ". " + e.getTipo() + " en " + e.getUbicacion() + " (Gravedad: "
@@ -192,7 +198,7 @@ public class MenuSistemaEmergencia {
         Emergencia seleccionada = emergencias.get(seleccion - 1);
         sistemaEmergencias.reasignarRecursosEmergencia(seleccionada);
     }
-
+// Muestra únicamente las emergencias que ya fueron atendidas
     private void mostrarEmergenciasAtendidas() {
         System.out.println("\nEmergencias Atendidas:");
         boolean hayAtendidas = false;
@@ -207,11 +213,11 @@ public class MenuSistemaEmergencia {
             System.out.println("No hay emergencias atendidas por el momento.");
         }
     }
-
+// Muestra las estadísticas acumuladas del día actual
     private void mostrarEstadisticas() {
         sistemaEmergencias.mostrarEstadisticasDelDia();
     }
-
+ // Permite elegir cómo se asignarán los recursos: por gravedad o por cercanía
     private void configurarEstrategiaAsignacion() {
         System.out.println("\nConfiguración de Estrategia de Asignación:");
         System.out.println("1. Asignar por gravedad");
@@ -242,7 +248,7 @@ public class MenuSistemaEmergencia {
                 System.out.println("\nOpción no válida.");
         }
     }
-
+ // Permite marcar una emergencia como finalizada
     private void finalizarEmergencia() {
         System.out.println("\nFinalizar Emergencia:");
 
@@ -274,7 +280,7 @@ public class MenuSistemaEmergencia {
         Emergencia seleccionada = emergencias.get(seleccion - 1);
         sistemaEmergencias.finalizarEmergencia(seleccionada);
     }
-
+  // Permite al usuario consultar reportes y registros de días anteriores
     private void mostrarReportesHistoricos() {
         System.out.println("\n    --- Reportes Históricos ---\n");
         System.out.println("1. Ver último reporte del sistema");
@@ -303,7 +309,7 @@ public class MenuSistemaEmergencia {
                 System.out.println("\nOpción no válida.");
         }
     }
-    
+   // Muestra todos los registros históricos de emergencias guardados en archivos  
     private void mostrarHistorialEmergencias() {
         System.out.println("\n--- Historial de Emergencias ---");
         List<String> historial = SystemRegistration.leerRegistros();
@@ -311,7 +317,7 @@ public class MenuSistemaEmergencia {
         if (historial.isEmpty()) {
             System.out.println("No hay registros históricos disponibles.");
         } else {
-            // Eliminar duplicados usando un Set
+// Elimina duplicados para mostrar solo entradas únicas
             List<String> historialUnico = historial.stream()
                     .distinct()
                     .toList();
@@ -324,7 +330,7 @@ public class MenuSistemaEmergencia {
             }
         }
     }
-    
+  // Finaliza la jornada actual, guarda estadísticas y prepara todo para el siguiente ciclo   
     private void cerrarJornada() {
         System.out.println("\n¿Está seguro de que desea cerrar la jornada?");
         System.out.println("Esto guardará las estadísticas y preparará el sistema para el siguiente ciclo.");
