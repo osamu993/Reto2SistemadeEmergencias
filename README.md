@@ -139,6 +139,6 @@ src/
 ##  Créditos
 
 Desarrollado por: **Marlon Xavier Delgado Ruiz y Kevin Esteban Sanchez Mendez**  
-Carrera: Ingeniería de Sistemas  
-Universidad: Corporación Universitaria Iberoamericana  
+Curso: Java cero senior
+Acamemia: Dev Senior Code  
 Año: 2025
