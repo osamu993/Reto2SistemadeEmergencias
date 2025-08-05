@@ -1,0 +1,92 @@
+
+--- Reporte del Sistema de Emergencias ---
+Total de emergencias atendidas: 1
+- Incendio (Gravedad: MEDIO) en OESTE
+=========================================
+
+--- Reporte del Sistema de Emergencias ---
+Total de emergencias atendidas: 1
+- Accidente Vehicular (Gravedad: ALTO) en ESTE
+=========================================
+
+--- Reporte del Sistema de Emergencias ---
+Total de emergencias atendidas: 1
+- Incendio (Gravedad: MEDIO) en SUR
+=========================================
+
+--- Reporte del Sistema de Emergencias ---
+Total de emergencias atendidas: 1
+- Incendio (Gravedad: MEDIO) en SUR
+=========================================
+
+--- Reporte del Sistema de Emergencias ---
+Total de emergencias atendidas: 1
+- Accidente Vehicular (Gravedad: MEDIO) en NORTE
+=========================================
+
+--- Reporte del Sistema de Emergencias ---
+Total de emergencias atendidas: 2
+- Accidente Vehicular (Gravedad: MEDIO) en NORTE
+- Robo (Gravedad: ALTO) en ESTE
+=========================================
+
+--- Reporte del Sistema de Emergencias ---
+Total de emergencias atendidas: 2
+- Accidente Vehicular (Gravedad: MEDIO) en NORTE
+- Robo (Gravedad: ALTO) en ESTE
+=========================================
+
+--- Reporte del Sistema de Emergencias ---
+Total de emergencias atendidas: 1
+- Incendio (Gravedad: MEDIO) en OESTE
+=========================================
+
+--- Reporte del Sistema de Emergencias ---
+
+Total de emergencias atendidas: 4
+- Incendio (Gravedad: ALTO) en OESTE
+- Robo (Gravedad: ALTO) en SUR
+- Accidente Vehicular (Gravedad: BAJO) en NORTE
+- Robo (Gravedad: BAJO) en SUR
+=========================================
+
+--- Reporte del Sistema de Emergencias ---
+
+Total de emergencias atendidas: 4
+- Incendio (Gravedad: ALTO) en OESTE
+- Robo (Gravedad: ALTO) en SUR
+- Accidente Vehicular (Gravedad: BAJO) en NORTE
+- Robo (Gravedad: BAJO) en SUR
+=========================================
+
+--- Reporte del Sistema de Emergencias ---
+
+Total de emergencias atendidas: 6
+- Incendio (Gravedad: ALTO) en ESTE
+- Robo (Gravedad: ALTO) en SUR
+- Accidente Vehicular (Gravedad: BAJO) en NORTE
+- Incendio (Gravedad: MEDIO) en CENTRO
+- Incendio (Gravedad: ALTO) en NORTE
+- Robo (Gravedad: ALTO) en SUR
+=========================================
+
+--- Reporte del Sistema de Emergencias ---
+
+Total de emergencias atendidas: 4
+- Robo (Gravedad: ALTO) en NORTE
+- Incendio (Gravedad: MEDIO) en SUR
+- Accidente Vehicular (Gravedad: BAJO) en OESTE
+- Incendio (Gravedad: MEDIO) en ESTE
+=========================================
+
+--- Reporte del Sistema de Emergencias ---
+
+Total de emergencias atendidas: 1
+- Robo (Gravedad: ALTO) en CENTRO
+=========================================
+
+--- Reporte del Sistema de Emergencias ---
+
+Total de emergencias atendidas: 1
+- Robo (Gravedad: MEDIO) en NORTE
+=========================================

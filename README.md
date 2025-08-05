@@ -139,6 +139,12 @@ src/
 ##  Créditos
 
 Desarrollado por: **Marlon Xavier Delgado Ruiz y Kevin Esteban Sanchez Mendez**  
+<<<<<<< HEAD
 Curso: Java cero senior
 Acamemia: Dev Senior Code  
 Año: 2025
+=======
+Academia: Dev Senior Code  
+Curso: Java cero senior
+Año: 2025
+>>>>>>> documentacion

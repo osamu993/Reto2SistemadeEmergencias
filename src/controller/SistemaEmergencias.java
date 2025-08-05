@@ -1,3 +1,7 @@
+// Esta clase representa el núcleo del sistema de gestión de emergencias urbanas.
+// Aquí se concentran las operaciones de registro, asignación, seguimiento y estadísticas.
+// Implementa el patrón Singleton (solo puede haber una instancia del sistema).
+// También implementa el patrón Observer (para notificar eventos) y usa Strategy (para asignar recursos).
 package controller;
 
 import java.util.ArrayList;
@@ -9,102 +13,163 @@ import model.Emergencia;
 import model.interfaces.IServicioEmergencia;
 import model.observer.ObserverEmergencias;
 import model.observer.SujetoEmergencias;
+import model.services.Ambulancia;
+import model.services.Bomberos;
 import model.services.GestorRecursos;
+import model.services.Policia;
 import model.factory.FactoryEmergencias;
+import model.strategy.StrategyPrioridadGravedad;
+import model.strategy.IEstrategyAsignacion;
 import utils.CityMap;
 import utils.NivelGravedad;
+import model.observer.NotificadorEmergencias;
+import utils.StatisticsSystem;
+import utils.SystemReport;
+import utils.SystemRegistration;
 
 public class SistemaEmergencias implements SujetoEmergencias {
 
-    private static SistemaEmergencias instancia;
-    private List<Emergencia> listaEmergencias;
-    private List<IServicioEmergencia> listaRecursos;
-    private List<ObserverEmergencias> observadores;
-    private CityMap mapa = new CityMap();
-    private GestorRecursos gestorRecursos = new GestorRecursos(mapa);
-    private int emergenciasAtendidas;
-    private long tiempoTotalAtencion;
+    @Override
+    public void notificarRecursosReasignados() {
+        System.out.println("Recursos han sido reasignados.");
+    }
 
+    @Override
+    public void notificarEmergenciaResuelta(Emergencia emergencia) {
+        System.out.println("Emergencia resuelta: " + emergencia.getDescripcion());
+        System.out.println("\n\n--- Sistema de Emergencias ---\n");
+        System.out.println("1. Registrar emergencia");
+        System.out.println("2. Gestionar emergencias");
+        System.out.println("3. Mostrar recursos disponibles");
+        System.out.println("4. Mostrar estadísticas del día");
+        System.out.println("5. Configurar estrategia de asignación");
+        System.out.println("6. Ver reportes históricos");
+        System.out.println("7. Cerrar jornada");
+        System.out.println("8. Salir");
+        System.out.print("\n\nSeleccione una opción: ");
+    }
+// Agrega recursos iniciales al sistema (solo una vez al inicio)
+    public void inicializarRecursos() {
+        listaRecursos.add(new Ambulancia("AMB1", "Centro"));
+        listaRecursos.add(new Bomberos("BOM1", "Zona Norte"));
+        listaRecursos.add(new Policia("POL1", "Centro"));
+    }
+
+    private static SistemaEmergencias instancia; // Singleton
+    private List<Emergencia> listaEmergencias;// Lista global de emergencias registradas
+    private List<IServicioEmergencia> listaRecursos;// Lista global de recursos disponibles (bomberos, policía, etc.)
+    private List<ObserverEmergencias> observadores;  // Lista de objetos que escuchan eventos (patrón Observer)
+    private CityMap mapa = new CityMap();// Mapa de la ciudad que ayuda a calcular distancias y tiempos
+    private GestorRecursos gestorRecursos = new GestorRecursos();// Controlador de asignación y disponibilidad de recursos
+
+// Constructor privado para asegurar Singleton
     public SistemaEmergencias() {
         listaEmergencias = new ArrayList<>();
         listaRecursos = new ArrayList<>();
         observadores = new ArrayList<>();
-        emergenciasAtendidas = 0;
-        tiempoTotalAtencion = 0;
-    }
+        listaEmergencias = new ArrayList<>();
+        listaRecursos = new ArrayList<>();
+        observadores = new ArrayList<>();
+        inicializarRecursos(); // Agrega los recursos iniciales disponibles
 
+        
+    // Estrategia por defecto: prioridad según gravedad
+        gestorRecursos.setEstrategiaAsignacion(new StrategyPrioridadGravedad());
+
+        // Registrar observador del sistema
+        agregarObserver(new NotificadorEmergencias());
+    }
+// Devuelve la única instancia del sistema (Singleton)
     public static SistemaEmergencias getInstance() {
         if (instancia == null) {
             instancia = new SistemaEmergencias();
         }
         return instancia;
     }
-
+// Registra una nueva emergencia en el sistema
     public void registrarEmergencia(String tipo, String ubicacion, NivelGravedad nivel, int tiempoRespuesta) {
+        System.out.println("\nIniciando registro de emergencia...");
+
         Emergencia emergencia = FactoryEmergencias.crearEmergencia(tipo, ubicacion, nivel, tiempoRespuesta);
-       
-        if (emergencia != null) {
-
-            listaEmergencias.add(emergencia);
-
-            //usamos el mapa para obtener la estacion mas cercana
-            CityMap mapa = new CityMap();
-            String zona = mapa.obtenerZona(ubicacion);
-            String estacionCercana = obtenerEstacionCercana(mapa,ubicacion);
-
-            //asignamos los recursos en la ubicacion mas cercana
-            Map<String, Integer> recursosRequeridos = determinarRecursosPorEmergencia(tipo, zona);
-
-            for (Map.Entry<String, Integer> entry : recursosRequeridos.entrySet()) {
-
-                String tipoRecurso = entry.getKey();
-                int cantidad = entry.getValue();
-
-                for(int i = 0; i < cantidad; i++) {
-                    IServicioEmergencia recurso = gestorRecursos.asignarRecursoDesde(estacionCercana, tipoRecurso);
-                    if(recurso != null) {
-                      System.out.println("Recurso asignado: " + recurso.getId() + "Desde: " + estacionCercana);
-                    }else{
-                        System.out.println("No hay suficientes recursos de: " + tipoRecurso + " en la estacionmás cercana, se procedera a enviar de otra estacion." + estacionCercana);
-                    }
-                }
-
-            notificarObservers(emergencia);
-            System.out.println(" Emergencia registrada: " + tipo + " en " + ubicacion);
-            }
-        } else {
-            System.err.println(" Error: No se pudo registrar la emergencia.");
+        if (emergencia == null) {
+            System.out.println("\nError: No se pudo registrar la emergencia.");
+            return;
         }
+
+        // Asegurar que la emergencia esté marcada como pendiente desde el inicio
+        emergencia.setAtendida(false);
+        emergencia.setTiempoInicioAtencion(System.currentTimeMillis());
+
+        listaEmergencias.add(emergencia);
+
+        // Notificar a los observadores ANTES de asignar recursos
+        notificarObservers(emergencia);
+  // Se informa al usuario
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("EMERGENCIA REGISTRADA EXITOSAMENTE");
+        System.out.println("=".repeat(60));
+        System.out.println("Tipo: " + tipo);
+        System.out.println("Ubicación: " + ubicacion);
+        System.out.println("Gravedad: " + nivel);
+        System.out.println("Tiempo estimado de respuesta: " + tiempoRespuesta + " minutos");
+        System.out.println("Estado: PENDIENTE");
+
+        // Asignar múltiples recursos según el tipo de emergencia
+        List<IServicioEmergencia> recursosAsignados = asignarRecursosSegunTipo(tipo, emergencia);
+        if (!recursosAsignados.isEmpty()) {
+            for (IServicioEmergencia recurso : recursosAsignados) {
+                emergencia.asignarRecurso(recurso);
+            }
+
+            System.out.println("\nRECURSOS ASIGNADOS:\n");
+            for (IServicioEmergencia recurso : recursosAsignados) {
+                System.out.println(recurso.getId() + " (" + recurso.getClass().getSimpleName() + ")");
+                System.out.println("  Estado: EN CAMINO");
+                System.out.println("  Tiempo estimado de llegada: " + tiempoRespuesta + " minutos");
+            }
+            System.out.println("\nLa emergencia está siendo atendida...");
+
+            // Simular el tiempo de atención en un hilo separado
+            simularAtencionEmergencia(emergencia, recursosAsignados);
+        } else {
+            System.out.println("\nERROR: No se pudo asignar ningún recurso a la emergencia.");
+            System.out.println("La emergencia quedará en espera hasta que haya recursos disponibles.");
+        }
+        System.out.println("=".repeat(60));
     }
 
     public void listarEmergencias() {
-        if (listaEmergencias.isEmpty()) {
-            System.out.println(" No hay emergencias activas.");
+        List<Emergencia> emergenciasActivas = listaEmergencias.stream()
+                .filter(e -> !e.isAtendida())
+                .toList();
+
+        if (emergenciasActivas.isEmpty()) {
+            System.out.println("\nNo hay emergencias activas.");
         } else {
             System.out.println("\n--- Emergencias Activas ---");
-            for (Emergencia emergencia : listaEmergencias) {
-                System.out.println("- " + emergencia.getDescripcion() + " en " + emergencia.getUbicacion() + " ("
-                        + emergencia.getNivelGravedad() + ")");
+            for (Emergencia emergencia : emergenciasActivas) {
+                System.out.println("- " + emergencia.getTipo() + " en zona " + emergencia.getUbicacion() +
+                        " (Gravedad: " + emergencia.getNivelGravedad() + ")");
             }
         }
     }
 
     public void mostrarRecursos() {
         if (listaRecursos.isEmpty()) {
-            System.out.println(" No hay recursos disponibles.");
+            System.out.println("\nNo hay recursos disponibles.");
         } else {
             for (IServicioEmergencia recurso : listaRecursos) {
                 System.out.println("- " + recurso.getId() + " (Disponible: " + recurso.estaDisponible() + ")");
             }
         }
     }
-
+// Intenta reasignar recursos de emergencias leves a una emergencia grave
     public boolean reasignarRecursos() {
 
         Emergencia emergenciaGrave = null;
         Emergencia emergenciaLeve = null;
 
-        //Busca la amergencia mas grande que no tenga recursos suficientes
+        // Busca la amergencia mas grande que no tenga recursos suficientes
         for (Emergencia emergencia : listaEmergencias) {
             if (emergencia.getNivelGravedad() == NivelGravedad.ALTO && emergencia.necesitaRecursos()) {
                 emergenciaGrave = emergencia;
@@ -120,68 +185,157 @@ public class SistemaEmergencias implements SujetoEmergencias {
         }
 
         if (emergenciaGrave != null && emergenciaLeve != null) {
-            IServicioEmergencia recurso = emergenciaLeve.liberarRecurso(gestorRecursos);
+            IServicioEmergencia recurso = emergenciaLeve.liberarRecurso();
             if (recurso != null) {
                 emergenciaGrave.asignarRecurso(recurso);
                 return true;
             }
         }
         return false; // no se pudo reasignar ningun recurso
-    }    
-
-    public void mostrarEstadisticas() {
-        System.out.println("\n--- Estadísticas del Día ---");
-        System.out.println("Emergencias atendidas: " + emergenciasAtendidas);
-        if (emergenciasAtendidas > 0) {
-            System.out.println(
-                    "Tiempo promedio de respuesta: " + (tiempoTotalAtencion / emergenciasAtendidas) + " minutos");
-        } else {
-            System.out.println("No se han atendido emergencias aún.");
-        }
-        System.out.println("Recursos disponibles: " + listaRecursos.size());
     }
 
-    private String obtenerEstacionCercana(CityMap mapa, String ubicacion) {
-        String estacionCercana = null;
-        double menorDistancia = Double.MAX_VALUE;
+    // Archivo: SistemaEmergencias.java
+    // Clase: SistemaEmergencias
+// Muestra estadísticas del sistema y genera reporte
+    public void mostrarEstadisticasDelDia() {
+        /*
+     * Se calcula:
+     * - Total de emergencias registradas
+     * - Cantidad de atendidas y pendientes
+     * - Tasa de éxito
+     * - Tiempos promedio de atención
+     * - Recursos utilizados
+     * - Eficiencia operativa
+     * 
+     * También se genera un archivo de reporte si hubo emergencias atendidas.
+     */
+        int totalEmergencias = listaEmergencias.size();
+        int atendidas = 0;
+        int pendientes = 0;
+        Map<String, Integer> recursosUsados = new HashMap<>();
+        List<Double> tiemposRespuesta = new ArrayList<>();
+        List<String> emergenciasAtendidas = new ArrayList<>();
 
-        for (String estacion : mapa.getUbicaciones()) {
-            double distancia = mapa.getDistancia(estacion, ubicacion);
-            if (distancia < menorDistancia) {
-                menorDistancia = distancia;
-                estacionCercana = estacion;
+        for (Emergencia emergencia : listaEmergencias) {
+            if (emergencia.isAtendida()) {
+                atendidas++;
+                emergenciasAtendidas.add(emergencia.getDescripcion() + " en " + emergencia.getUbicacion());
+
+                // Calcular tiempo de respuesta real
+                if (emergencia.getTiempoFinAtencion() > 0 && emergencia.getTiempoInicioAtencion() > 0) {
+                    double tiempoReal = (emergencia.getTiempoFinAtencion() - emergencia.getTiempoInicioAtencion())
+                            / 1000.0 / 60.0; // en minutos
+                    tiemposRespuesta.add(tiempoReal);
+                }
+            } else {
+                pendientes++;
             }
         }
-        return estacionCercana;
+
+        // Contar recursos reales utilizados (solo de emergencias atendidas)
+        for (Emergencia emergencia : listaEmergencias) {
+            if (emergencia.isAtendida()) {
+                // Contar recursos reales asignados a esta emergencia
+                // Como no tenemos acceso directo a los recursos asignados, usamos el tipo de
+                // emergencia
+                String tipoEmergencia = emergencia.getTipo().toUpperCase();
+                switch (tipoEmergencia) {
+                    case "INCENDIO":
+                        recursosUsados.put("BOMBEROS", recursosUsados.getOrDefault("BOMBEROS", 0) + 2);
+                        recursosUsados.put("AMBULANCIA", recursosUsados.getOrDefault("AMBULANCIA", 0) + 1);
+                        break;
+                    case "ROBO":
+                        recursosUsados.put("POLICIA", recursosUsados.getOrDefault("POLICIA", 0) + 2);
+                        recursosUsados.put("AMBULANCIA", recursosUsados.getOrDefault("AMBULANCIA", 0) + 1);
+                        break;
+                    case "ACCIDENTE_VEHICULAR":
+                        recursosUsados.put("POLICIA", recursosUsados.getOrDefault("POLICIA", 0) + 1);
+                        recursosUsados.put("AMBULANCIA", recursosUsados.getOrDefault("AMBULANCIA", 0) + 2);
+                        recursosUsados.put("UNIDADRESCATE", recursosUsados.getOrDefault("UNIDADRESCATE", 0) + 1);
+                        break;
+                }
+            }
+        }
+
+        // Calcular métricas usando StatisticsSystem
+        double tiempoPromedio = StatisticsSystem.calcularTiempoPromedio(tiemposRespuesta);
+        double tasaExito = StatisticsSystem.calcularTasaExitoEmergencias(atendidas, totalEmergencias);
+
+        // Calcular eficiencia de recursos
+        int totalRecursosDisponibles = 8; // Total de recursos en el sistema (B1, B2, P1, P2, A1, A2, R1, R2)
+        int recursosUtilizados = recursosUsados.values().stream().mapToInt(Integer::intValue).sum();
+        double eficienciaRecursos = StatisticsSystem.calcularEficienciaRecursos(recursosUtilizados,
+                totalRecursosDisponibles);
+
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("ESTADÍSTICAS DEL DÍA");
+        System.out.println("=".repeat(60));
+
+        System.out.println("\nEMERGENCIAS:\n");
+        System.out.println("Total registradas: " + totalEmergencias);
+        System.out.println("Atendidas: " + atendidas);
+        System.out.println("Pendientes: " + pendientes);
+        System.out.println("Tasa de éxito: " + String.format("%.1f", tasaExito) + "%");
+
+        System.out.println("\nTIEMPOS DE RESPUESTA:");
+        System.out.println("\nTiempo promedio: " + String.format("%.1f", tiempoPromedio) + " minutos");
+        System.out.println("Emergencias con tiempo registrado: " + tiemposRespuesta.size());
+
+        System.out.println("\nRECURSOS:\n");
+        System.out.println("Total disponibles: " + totalRecursosDisponibles);
+        System.out.println("Utilizados: " + recursosUtilizados);
+        System.out.println("Eficiencia: " + String.format("%.1f", eficienciaRecursos) + "%");
+
+        if (!recursosUsados.isEmpty()) {
+            System.out.println("\nDesglose por tipo:\n");
+            for (Map.Entry<String, Integer> entry : recursosUsados.entrySet()) {
+                System.out.println(entry.getKey() + ": " + entry.getValue());
+            }
+        }
+
+        System.out.println("\n" + "=".repeat(60));
+
+        // Generar y guardar reporte
+        if (!emergenciasAtendidas.isEmpty()) {
+            SystemReport.generarReporte(emergenciasAtendidas);
+        }
     }
 
-    private Map<String, Integer> determinarRecursosPorEmergencia(String tipoEmergencia, String zona) {
-        Map<String, Integer> recursosNecesarios = new HashMap<>();
+    public List<Emergencia> getListaEmergencias() {
+        return this.listaEmergencias;
+    }
 
-        switch (tipoEmergencia.toUpperCase()) {
-            case "INCENDIO":
-                recursosNecesarios.put("BOMBEROS", 2);
-                recursosNecesarios.put("AMBULANCIA", 1);
-                break;
-            case "ROBO":
-                recursosNecesarios.put("POLICIA", 2);
-                break;
-            case "ACCIDENTE_VEHICULAR":
-                recursosNecesarios.put("POLICIA", 1);
-                recursosNecesarios.put("AMBULANCIA", 2);
-                break;
-            default:
-                System.out.println("Tipo de emergencia desconocido, asignando valores predeterminados.");
-                recursosNecesarios.put("POLICIA", 1);
-                recursosNecesarios.put("AMBULANCIA", 1);
+    public void mostrarRecursosDisponibles() {
+        gestorRecursos.mostrarRecursosDisponibles();
+    }
+
+    public void reasignarRecursosEmergencia(Emergencia emergencia) {
+        System.out.println("\nReasignando recursos para emergencia: " + emergencia.getDescripcion());
+
+        // Liberar recursos actuales si los hay
+        if (emergencia.tieneRecursosAsignados()) {
+            emergencia.liberarRecurso();
         }
 
-        // Ajuste según la zona
-        if ("RURAL".equalsIgnoreCase(zona)) {
-            recursosNecesarios.replaceAll((k, v) -> v + 1); // Aumentar recursos en zonas rurales
+        // Asignar nuevo recurso usando la estrategia configurada
+        IServicioEmergencia nuevoRecurso = gestorRecursos.asignarRecurso(emergencia);
+        if (nuevoRecurso != null) {
+            emergencia.asignarRecurso(nuevoRecurso);
+            System.out.println("Recurso reasignado: " + nuevoRecurso.getId());
+        } else {
+            System.out.println("No se pudo reasignar ningún recurso.");
         }
 
-        return recursosNecesarios;
+        // Notificar a los observadores sobre la reasignación
+        notificarRecursosReasignados();
+    }
+
+    public void setEstrategiaAsignacion(IEstrategyAsignacion estrategia) {
+        gestorRecursos.setEstrategiaAsignacion(estrategia);
+    }
+
+    public CityMap getCityMap() {
+        return mapa;
     }
 
     @Override
@@ -199,5 +353,147 @@ public class SistemaEmergencias implements SujetoEmergencias {
         for (ObserverEmergencias observerEmergencias : observadores) {
             observerEmergencias.onNuevasEmergencias(emergencia);
         }
+    }
+// Marca una emergencia como finalizada manualmente (opcional desde el menú)
+    public void finalizarEmergencia(Emergencia emergencia) {
+        if (emergencia != null && !emergencia.isAtendida()) {
+            emergencia.setTiempoInicioAtencion(System.currentTimeMillis());
+            emergencia.finalizarAtencion();
+            System.out.println("Emergencia finalizada: " + emergencia.getDescripcion());
+
+            // Notificar a los observadores sobre la emergencia resuelta
+            notificarEmergenciaResuelta(emergencia);
+        }
+    }
+// Cierra la jornada: genera estadísticas, guarda el historial y reinicia el sistema
+    public void cerrarJornada() {
+        System.out.println("\n" + "=".repeat(60));
+        System.out.println("CERRANDO JORNADA DEL SISTEMA DE EMERGENCIAS");
+        System.out.println("=".repeat(60));
+
+        // Mostrar estadísticas finales
+        mostrarEstadisticasDelDia();
+
+        // Registrar todas las emergencias del día
+        List<String> registrosEmergencias = new ArrayList<>();
+        for (Emergencia emergencia : listaEmergencias) {
+            String registro = String.format(
+                    "Emergencia: %s | Ubicación: %s | Gravedad: %s | Estado: %s | Tiempo: %d min",
+                    emergencia.getTipo(),
+                    emergencia.getUbicacion(),
+                    emergencia.getNivelGravedad(),
+                    emergencia.isAtendida() ? "Atendida" : "Pendiente",
+                    emergencia.getTiempoReespuesta());
+            registrosEmergencias.add(registro);
+        }
+
+        if (!registrosEmergencias.isEmpty()) {
+            SystemRegistration.registrarEmergencias(registrosEmergencias);
+            System.out.println("\nRegistros guardados en el archivo de historial.");
+        }
+
+        // Preparar sistema para siguiente ciclo
+        prepararSiguienteCiclo();
+
+        System.out.println("\nJornada cerrada exitosamente.");
+        System.out.println("Sistema preparado para el siguiente ciclo.");
+        System.out.println("=".repeat(60));
+    }
+
+    private void prepararSiguienteCiclo() {
+        // Liberar todos los recursos
+        for (IServicioEmergencia recurso : listaRecursos) {
+            if (!recurso.estaDisponible()) {
+                recurso.liberarRecurso();
+            }
+        }
+
+        // Marcar emergencias pendientes como no atendidas para el siguiente ciclo
+        for (Emergencia emergencia : listaEmergencias) {
+            if (!emergencia.isAtendida()) {
+                emergencia.setAtendida(false);
+            }
+        }
+
+        System.out.println("Recursos liberados y sistema reinicializado.");
+    }
+
+    /**
+     * Asigna recursos según el tipo de emergencia
+     */
+    private List<IServicioEmergencia> asignarRecursosSegunTipo(String tipo, Emergencia emergencia) {
+        List<IServicioEmergencia> recursosAsignados = new ArrayList<>();
+
+        switch (tipo.toUpperCase()) {
+            case "INCENDIO":
+                // Para incendios: 2 Bomberos + 1 Ambulancia
+                recursosAsignados.addAll(gestorRecursos.asignarRecursosPorTipo("Bomberos", 2));
+                recursosAsignados.addAll(gestorRecursos.asignarRecursosPorTipo("Ambulancia", 1));
+                break;
+
+            case "ROBO":
+                // Para robos: 2 Policía + 1 Ambulancia
+                recursosAsignados.addAll(gestorRecursos.asignarRecursosPorTipo("Policia", 2));
+                recursosAsignados.addAll(gestorRecursos.asignarRecursosPorTipo("Ambulancia", 1));
+                break;
+
+            case "ACCIDENTE_VEHICULAR":
+                // Para accidentes: 1 Policía + 2 Ambulancia + 1 Unidad de Rescate
+                recursosAsignados.addAll(gestorRecursos.asignarRecursosPorTipo("Policia", 1));
+                recursosAsignados.addAll(gestorRecursos.asignarRecursosPorTipo("Ambulancia", 2));
+                recursosAsignados.addAll(gestorRecursos.asignarRecursosPorTipo("UnidadRescate", 1));
+                break;
+
+            default:
+                // Recurso por defecto
+                IServicioEmergencia recursoDefault = gestorRecursos.asignarRecurso(emergencia);
+                if (recursoDefault != null)
+                    recursosAsignados.add(recursoDefault);
+                break;
+        }
+
+        return recursosAsignados;
+    }
+
+    /**
+     * Simula el tiempo de atención de una emergencia en un hilo separado
+     */
+    private void simularAtencionEmergencia(Emergencia emergencia, List<IServicioEmergencia> recursos) {
+        Thread hiloAtencion = new Thread(() -> {
+            try {
+                // Calcular tiempo mínimo real: 80 segundos + tiempo calculado del sistema
+                int tiempoMinimoReal = 80000; // 80 segundos en milisegundos
+                int tiempoCalculado = emergencia.getTiempoReespuesta() * 1000; // Convertir minutos a milisegundos
+                int tiempoTotal = Math.max(tiempoMinimoReal, tiempoCalculado);
+
+                // La emergencia permanece PENDIENTE durante todo este tiempo
+                Thread.sleep(tiempoTotal);
+
+                // SOLO DESPUÉS del tiempo de espera, marcar como atendida
+                emergencia.setAtendida(true);
+                emergencia.setTiempoFinAtencion(System.currentTimeMillis());
+
+                // Liberar recursos
+                for (IServicioEmergencia recurso : recursos) {
+                    gestorRecursos.liberarRecursoCompleto(recurso);
+                }
+
+                System.out.println(
+                        "\nEMERGENCIA ATENDIDA: " + emergencia.getTipo() + " en zona:" + emergencia.getUbicacion());
+                System.out.println("\nRecursos liberados:\n");
+                for (IServicioEmergencia recurso : recursos) {
+                    System.out.println(recurso.getId());
+                }
+                System.out.println("   Tiempo de atención: " + emergencia.getTiempoReespuesta() + " minutos");
+
+                // Notificar a los observadores
+                notificarEmergenciaResuelta(emergencia);
+
+            } catch (InterruptedException e) {
+                System.out.println("Error en la simulación de atención: " + e.getMessage());
+            }
+        });
+
+        hiloAtencion.start();
     }
 }

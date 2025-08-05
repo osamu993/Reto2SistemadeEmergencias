@@ -1,96 +1,39 @@
+// Esta clase representa una unidad de ambulancia dentro del sistema de emergencias.
+// Hereda de ServicioBase, lo que significa que comparte comportamiento común con otros servicios,
+// pero personaliza ciertas acciones como evaluar la situación o atender una emergencia médica.
 package model.services;
 
-import model.interfaces.IServicioEmergencia;
+import model.Emergencia;
 
-public class Ambulancia implements IServicioEmergencia {
-    private String id;
-    private boolean disponible;
-    private int combustible;
-    private int personalDisponible;
-    private String ubicacion;
-    
-
+public class Ambulancia extends ServicioBase {
+       /**
+     * Constructor de Ambulancia.
+     * 
+     * @param id        Identificador único de la unidad (ejemplo: AMB1).
+     * @param ubicacion Zona donde se encuentra ubicada inicialmente la ambulancia.
+     *                  El constructor también establece una configuración inicial:
+     *                  - 6 paramédicos disponibles
+     *                  - 100 unidades de combustible
+     */
     public Ambulancia(String id, String ubicacion) {
-        this.id = id;
-        this.disponible = true;
-        this.ubicacion = ubicacion;
+        super(id, 6, 100, ubicacion); 
     }
-
-    @Override
-    public void desplegarUnidad(String ubicacion) {
-        this.disponible = false;
-        System.out.println(" Ambulancia " + id + " en camino a " + ubicacion);
-    }
-
+      /**
+     * Acción específica que realiza la ambulancia al llegar al lugar del incidente.
+     * En este caso, simula una evaluación médica de la situación.
+     */
     @Override
     public void evaluarSituacion() {
-        System.out.println(" Evaluando la situación en el lugar del incidente.");
+        System.out.println("Evaluando la situación en el lugar del incidente.");
     }
-
+      /**
+     * Método que indica que esta ambulancia está atendiendo una emergencia médica.
+     * Se muestra en consola una descripción de la acción.
+     *
+     * @param emergencia Emergencia que está siendo atendida por esta ambulancia.
+     */
     @Override
-    public String getEstado() {
-        return disponible ? "Disponible" : "Ocupado";
-    }
-
-    @Override
-    public boolean estaDisponible() {
-        return disponible;
-    }
-
-    @Override
-    public void liberarRecurso() {
-        this.disponible = true;
-        System.out.println(" La ambulancia " + id + " ha sido liberada y está disponible nuevamente.");
-    }
-
-    @Override
-    public void liberarPersonal(int cantidad) {
-        System.out.println(" Ambulancia " + id + " ha liberado " + cantidad + " paramédicos.");
-    }
-
-    @Override
-    public int getCombustible() {
-        return this.combustible;
-    }
-    @Override
-    public String getId() {
-        return this.id;
-    }
-
-    @Override
-    public void gastarCombustible(int cantidad) {
-        this.combustible = Math.max(0, this.combustible - cantidad);
-        System.out.println(" Ambulancia " + id + " ha gastado " + cantidad + " de combustible. Restante: " + this.combustible);
-    }
-
-    @Override
-    public void tanquearCombustible(int cantidad) {
-        this.combustible = Math.min(100, this.combustible + cantidad);
-        System.out.println(" Ambulancia " + id + " ha tanqueado " + cantidad + " de combustible. Total: " + this.combustible);
-    }
-
-    @Override
-    public int getPersonalDisponible() {
-        return this.personalDisponible;
-    }
-
-    @Override
-    public void asignarPersonal(int cantidad) {
-        if (personalDisponible >= cantidad) {
-            personalDisponible -= cantidad;
-            System.out.println(" Se han asignado " + cantidad + " paramédicos. Restantes: " + personalDisponible);
-        } else {
-            System.out.println(" No hay suficiente personal disponible en la ambulancia.");
-        }
-    }
-
-    @Override
-    public String getUbicacion() {
-        return ubicacion;
-    }
-
-    @Override
-    public void setDisponible(boolean estado) {
-        this.disponible = estado;
+    public void atenderEmergencia(Emergencia emergencia) {
+        System.out.println("Ambulancia " + getId() + " atendiendo emergencia: " + emergencia.getDescripcion());
     }
 }
