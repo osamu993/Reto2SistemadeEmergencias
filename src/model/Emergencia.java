@@ -1,19 +1,31 @@
 package model;
 
 import model.interfaces.IServicioEmergencia;
-import model.services.GestorRecursos;
 import utils.NivelGravedad;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Clase abstracta que representa una emergencia genérica dentro del sistema.
+ * Define los atributos comunes a cualquier tipo de emergencia (como incendios, accidentes, robos),
+ * así como métodos para asignación y liberación de recursos.
+ */
 public abstract class Emergencia {
     private String tipo;
     private String ubicacion;
     private NivelGravedad nivelGravedad;
     private int tiempoReespuesta;
-    private boolean atendida;
+    private boolean atendida = false;
     private long tiempoInicioAtencion;
     private long tiempoFinAtencion;
-    private int recursosAsignados = 0;
-
+    private List<IServicioEmergencia> recursosAsignados = new ArrayList<>();
+    /**
+     * Constructor de la clase Emergencia.
+     * @param tipo Tipo de emergencia (ej: incendio, accidente).
+     * @param ubicacion Lugar donde ocurre.
+     * @param nivelGravedad Gravedad del incidente.
+     * @param tiempoReespuesta Tiempo estimado de respuesta en minutos.
+     */
     public Emergencia(String tipo, String ubicacion, NivelGravedad nivelGravedad, int tiempoReespuesta) {
         this.tipo = tipo;
         this.ubicacion = ubicacion;
@@ -57,10 +69,11 @@ public abstract class Emergencia {
     public boolean isAtendida() {
         return atendida;
     }
-
+    
     public void setAtendida(boolean atendida) {
         this.atendida = atendida;
     }
+    
 
     public long getTiempoInicioAtencion() {
         return tiempoInicioAtencion;
@@ -79,37 +92,59 @@ public abstract class Emergencia {
     }
 
     public String getDescripcion() {
-        return tipo + " en " + ubicacion + " (Nivel: " + nivelGravedad + ")";
+        return tipo + " (Gravedad: " + nivelGravedad + ")";
     }
-
+    /**
+     * Asigna un recurso a la emergencia y lo marca como desplegado.
+     * @param recurso Recurso de emergencia a asignar.
+     */
     public void asignarRecurso(IServicioEmergencia recurso) {
-        this.recursosAsignados++;
-        recurso.setDisponible(false);
-    }
-
-    public IServicioEmergencia liberarRecurso(GestorRecursos gestorRecursos) {
-    if (this.recursosAsignados > 0) {
-        this.recursosAsignados--;
-
-        // Usar GestorRecursos para obtener un recurso asignado
-        IServicioEmergencia recurso = gestorRecursos.obtenerRecursoDisponible();
-        if (recurso != null) {
-            recurso.setDisponible(true);
-            return recurso; // Retorna el recurso liberado para reasignarlo
+        if (recurso != null && recurso.estaDisponible()) {
+            recurso.desplegarUnidad(this.ubicacion);
+            recursosAsignados.add(recurso);
+            System.out.println("Se asignó " + recurso.getId() + " a la emergencia en " + ubicacion);
+        } else {
+            System.out.println("No se pudo asignar el recurso a la emergencia en " + ubicacion);
         }
     }
-    return null; // No hay recursos para liberar
-}
-
-
+    /**
+     * Libera el recurso asignado más recientemente.
+     * @return Recurso liberado o null si no hay recursos.
+     */
+    public IServicioEmergencia liberarRecurso() {
+        if (!recursosAsignados.isEmpty()) {
+            IServicioEmergencia recurso = recursosAsignados.remove(recursosAsignados.size() - 1);
+            recurso.liberarRecurso();
+            System.out.println("Se liberó el recurso " + recurso.getId() + " de la emergencia en " + ubicacion);
+            return recurso;
+        }
+        return null; // No hay recursos para liberar
+    }
+    /**
+     * Verifica si la emergencia necesita recursos adicionales.
+     * @return true si no tiene recursos asignados, false en caso contrario.
+     */
     public boolean necesitaRecursos() {
-        return this.recursosAsignados == 0; // Si no tiene recursos asignados, necesita recursos
+        return recursosAsignados.isEmpty();
     }
-
+    /**
+     * Indica si la emergencia tiene recursos asignados.
+     * @return true si tiene al menos un recurso asignado, false en caso contrario.
+     */
     public boolean tieneRecursosAsignados() {
-        return this.recursosAsignados > 0; // Si tiene al menos un recurso asignado
+        return !recursosAsignados.isEmpty();
     }
-
+    /**
+     * Finaliza la atención de la emergencia y registra el tiempo de finalización.
+     */
+    public void finalizarAtencion() {
+        this.atendida = true;
+        this.tiempoFinAtencion = System.currentTimeMillis();
+        System.out.println("Emergencia resuelta: " + this.getDescripcion() + " en " + ubicacion);
+    }
+      /**
+     * Devuelve toda la información de la emergencia en formato legible.
+     */
     @Override
     public String toString() {
         return "Emergencia [tipo=" + tipo + ", ubicacion=" + ubicacion + ", nivelGravedad=" + nivelGravedad
@@ -117,4 +152,5 @@ public abstract class Emergencia {
                 + tiempoInicioAtencion + ", tiempoFinAtencion=" + tiempoFinAtencion + "]";
     }
 
+    
 }

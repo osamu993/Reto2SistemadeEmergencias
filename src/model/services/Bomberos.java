@@ -1,95 +1,38 @@
+// Esta clase representa una unidad de bomberos dentro del sistema de emergencias.
+// Hereda de ServicioBase y define su comportamiento específico para incendios.
+// Esta estructura permite reutilizar código común y especializar solo lo necesario.
 package model.services;
 
-import model.interfaces.IServicioEmergencia;
+import model.Emergencia;
 
-public class Bomberos implements IServicioEmergencia {
-    private String id;
-    private boolean disponible;
-    private int combustible;
-    private int personalDisponible;
-    private String ubicacion;
-
+public class Bomberos extends ServicioBase {
+    /**
+     * Constructor de la unidad de bomberos.
+     * 
+     * @param id        Identificador único del recurso (ejemplo: BOM1).
+     * @param ubicacion Ubicación inicial del camión de bomberos.
+     *                  Se configura con:
+     *                  - 10 bomberos disponibles
+     *                  - 100 unidades de combustible
+     */
     public Bomberos(String id, String ubicacion) {
-        this.id = id;
-        this.disponible = true;
-        this.ubicacion = ubicacion;
+        super(id, 10, 100, ubicacion); 
     }
-
-    @Override
-    public void desplegarUnidad(String ubicacion) {
-        this.disponible = false;
-        System.out.println(" Bomberos " + id + " en camino a " + ubicacion);
-    }
-
+    /**
+     * Simula la evaluación de un incendio al llegar al sitio del incidente.
+     */
     @Override
     public void evaluarSituacion() {
-        System.out.println(" Evaluando la situación del incendio.");
+        System.out.println("Evaluando la situación del incendio.");
     }
-
+        /**
+     * Indica que los bomberos están atendiendo una emergencia específica.
+     * Muestra en consola la acción junto con una descripción de la emergencia.
+     *
+     * @param emergencia Emergencia que están atendiendo.
+     */
     @Override
-    public String getEstado() {
-        return disponible ? "Disponible" : "Ocupado";
-    }
-
-    @Override
-    public boolean estaDisponible() {
-        return disponible;
-    }
-
-    @Override
-    public void liberarRecurso() {
-        this.disponible = true;
-        System.out.println(" El equipo de bomberos " + id + " ha sido liberado y está disponible nuevamente.");
-    }
-
-    @Override
-    public void liberarPersonal(int cantidad) {
-        System.out.println(" El equipo de bomberos " + id + " ha liberado " + cantidad + " bomberos.");
-    }
-
-    @Override
-    public int getCombustible() {
-        return this.combustible;
-    }
-    @Override
-    public String getId() {
-        return this.id;
-    }
-
-    @Override
-    public void gastarCombustible(int cantidad) {
-        this.combustible = Math.max(0, this.combustible - cantidad);
-        System.out.println(" Bomberos " + id + " ha gastado " + cantidad + " de combustible. Restante: " + this.combustible);
-    }
-
-    @Override
-    public void tanquearCombustible(int cantidad) {
-        this.combustible = Math.min(100, this.combustible + cantidad);
-        System.out.println(" Bomberos " + id + " ha tanqueado " + cantidad + " de combustible. Total: " + this.combustible);
-    }
-
-    @Override
-    public int getPersonalDisponible() {
-        return this.personalDisponible;
-    }
-
-    @Override
-    public void asignarPersonal(int cantidad) {
-        if (personalDisponible >= cantidad) {
-            personalDisponible -= cantidad;
-            System.out.println(" Se han asignado " + cantidad + " bomberos. Restantes: " + personalDisponible);
-        } else {
-            System.out.println(" No hay suficiente personal disponible en la estación de bomberos.");
-        }
-    }
-
-    @Override
-    public String getUbicacion() {
-        return ubicacion;
-    }
-
-    @Override
-    public void setDisponible(boolean estado) {
-        this.disponible = estado;
+    public void atenderEmergencia(Emergencia emergencia) {
+        System.out.println("Bomberos " + getId() + " atendiendo emergencia: " + emergencia.getDescripcion());
     }
 }

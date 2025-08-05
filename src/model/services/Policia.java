@@ -1,95 +1,38 @@
+// Esta clase representa una unidad policial dentro del sistema de emergencias.
+// Hereda de ServicioBase, por lo que comparte toda la lógica común de los recursos,
+// y solo sobrescribe los métodos que definen su comportamiento específico.
 package model.services;
 
-import model.interfaces.IServicioEmergencia;
+import model.Emergencia;
 
-public class Policia implements IServicioEmergencia {
-    private String id;
-    private boolean disponible;
-    private int combustible;
-    private int personalDisponible;
-    private String ubicacion;
-
+public class Policia extends ServicioBase {
+      /**
+     * Constructor de la unidad de policía.
+     *
+     * @param id        Identificador único de la unidad (por ejemplo: POL1).
+     * @param ubicacion Zona inicial donde se encuentra disponible esta unidad.
+     *                  Se configura con:
+     *                  - 8 policías disponibles
+     *                  - 100 unidades de combustible
+     */
     public Policia(String id, String ubicacion) {
-        this.id = id;
-        this.disponible = true;
-        this.ubicacion = ubicacion;
-    }
-
-    @Override
-    public void desplegarUnidad(String ubicacion) {
-        this.disponible = false;
-        System.out.println(" Policía " + id + " en camino a " + ubicacion);
-    }
-
+        super(id, 8, 100, ubicacion);
+    } 
+    /**
+     * Simula la evaluación de una situación al llegar al lugar del incidente.
+     */
     @Override
     public void evaluarSituacion() {
-        System.out.println(" Evaluando la situación del incidente.");
+        System.out.println("Evaluando la situación del incidente.");
     }
-
+    /**
+     * Acción que realiza esta unidad cuando es asignada a una emergencia.
+     * Se muestra en consola una descripción textual de la operación.
+     *
+     * @param emergencia Emergencia que está siendo atendida por esta unidad.
+     */
     @Override
-    public String getEstado() {
-        return disponible ? "Disponible" : "Ocupado";
-    }
-
-    @Override
-    public boolean estaDisponible() {
-        return disponible;
-    }
-
-    @Override
-    public void liberarRecurso() {
-        this.disponible = true;
-        System.out.println(" La unidad de policía " + id + " ha sido liberada y está disponible nuevamente.");
-    }
-
-    @Override
-    public void liberarPersonal(int cantidad) {
-        System.out.println(" Policía " + id + " ha liberado " + cantidad + " oficiales.");
-    }
-
-    @Override
-    public int getCombustible() {
-        return this.combustible;
-    }
-    @Override
-    public String getId() {
-        return this.id;
-    }
-
-    @Override
-    public void gastarCombustible(int cantidad) {
-        this.combustible = Math.max(0, this.combustible - cantidad);
-        System.out.println(" Policía " + id + " ha gastado " + cantidad + " de combustible. Restante: " + this.combustible);
-    }
-
-    @Override
-    public void tanquearCombustible(int cantidad) {
-        this.combustible = Math.min(100, this.combustible + cantidad);
-        System.out.println(" Policía " + id + " ha tanqueado " + cantidad + " de combustible. Total: " + this.combustible);
-    }
-
-    @Override
-    public int getPersonalDisponible() {
-        return this.personalDisponible;
-    }
-
-    @Override
-    public void asignarPersonal(int cantidad) {
-        if (personalDisponible >= cantidad) {
-            personalDisponible -= cantidad;
-            System.out.println(" Se han asignado " + cantidad + " oficiales. Restantes: " + personalDisponible);
-        } else {
-            System.out.println(" No hay suficiente personal disponible en la policía.");
-        }
-    }
-
-    @Override
-    public String getUbicacion() {
-        return ubicacion;
-    }
-
-    @Override
-    public void setDisponible(boolean estado) {
-        this.disponible = estado;
+    public void atenderEmergencia(Emergencia emergencia) {
+        System.out.println("Policía " + getId() + " atendiendo emergencia: " + emergencia.getDescripcion());
     }
 }

@@ -1,1 +1,9 @@
 bin/
+
+# Ignorar todos los archivos .class
+*.class
+
+# Ignorar carpetas de compilación
+/bin/
+/out/
+/build/
