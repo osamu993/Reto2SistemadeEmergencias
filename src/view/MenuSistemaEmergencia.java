@@ -33,18 +33,6 @@ public class MenuSistemaEmergencia {
             System.out.println("1. Registrar emergencia");
             System.out.println("2. Gestionar emergencias");
             System.out.println("3. Mostrar recursos disponibles");
-<<<<<<< HEAD
-            System.out.println("4. Reasignar recursos");
-            System.out.println("5. Mostrar estadísticas del día");
-            System.out.println("6. Salir");
-            System.out.print("Seleccione una opción: ");
-
-            while (!scanner.hasNextInt()) {
-                System.out.println(" Entrada no válida. Ingrese un número del 1 al 6.");
-                scanner.next(); // Limpiar entrada incorrecta
-            }
-
-=======
             System.out.println("4. Mostrar estadísticas del día");
             System.out.println("5. Configurar estrategia de asignación");
             System.out.println("6. Ver reportes históricos");
@@ -56,7 +44,6 @@ public class MenuSistemaEmergencia {
                 System.out.println("\nEntrada inválida. Ingrese un número.");
                 scanner.next();
             }
->>>>>>> e3a5d801168915a8cb108beb18c7679b09fdb8a6
             opcion = scanner.nextInt();
             scanner.nextLine();
 // Ejecución de la opción seleccionada
@@ -128,45 +115,6 @@ public class MenuSistemaEmergencia {
 
     // --- Registro de una nueva emergencia ---
     private void registrarEmergencia() {
-<<<<<<< HEAD
-
-        System.out.print("Ingrese el tipo de emergencia (ROBO, INCENDIO, ACCIDENTE_VEHICULAR): ");
-        String tipo = scanner.nextLine().toUpperCase();
-        System.out.print("Ingrese la ubicación: ");
-        String ubicacion = scanner.nextLine();
-
-        System.out.print("Ingrese el nivel de gravedad (BAJO, MEDIO, ALTO): ");
-        String gravedad = scanner.nextLine().toUpperCase();
-
-        while (!gravedad.equals("BAJO") && !gravedad.equals("MEDIO") && !gravedad.equals("ALTO")) {
-            System.out.print(" Nivel de gravedad inválido. Ingrese BAJO, MEDIO o ALTO: ");
-            gravedad = scanner.nextLine().toUpperCase();
-        }
-
-        while (!scanner.hasNextInt()) {
-            System.out.println(" Entrada no válida. Ingrese un número entero para el tiempo estimado de respuesta.");
-            scanner.next(); // Limpiar entrada incorrecta
-        }
-        int tiempo = scanner.nextInt();
-        scanner.nextLine(); // Limpiar buffer
-
-        controller.registrarEmergencia(tipo, ubicacion, NivelGravedad.valueOf(gravedad), tiempo);
-        System.out.println(" Emergencia registrada correctamente.");
-
-        // Captura del tipo, ubicación y gravedad de la emergencia
-        String tipo, ubicacion = "", gravedad;
-        boolean entradaUbicacionValida = false;
-        List<String> zonasValidas = Arrays.asList("CENTRO", "NORTE", "SUR", "ESTE", "OESTE");
- // Validación del tipo de emergencia
-        do {
-            System.out.print("Ingrese el tipo de emergencia " + TipoEmergencia.getListaTipos() + ": ");
-            tipo = scanner.nextLine().toUpperCase();
-            if (TipoEmergencia.fromString(tipo) == null) {
-                System.out.println("Tipo de emergencia inválido. Intente de nuevo.");
-            }
-        } while (TipoEmergencia.fromString(tipo) == null);
-// Validación de la ubicación ingresada
-=======
         // Captura del tipo, ubicación y gravedad de la emergencia
         String tipo, ubicacion = "", gravedad;
         boolean entradaUbicacionValida = false;
@@ -226,7 +174,6 @@ public class MenuSistemaEmergencia {
                 .stream()
                 .filter(e -> !e.isAtendida())
                 .toList();
->>>>>>> e3a5d801168915a8cb108beb18c7679b09fdb8a6
 
         if (emergencias.isEmpty()) {
             System.out.println("\nNo hay emergencias activas para reasignar recursos.");
@@ -370,12 +317,6 @@ public class MenuSistemaEmergencia {
         if (historial.isEmpty()) {
             System.out.println("No hay registros históricos disponibles.");
         } else {
-<<<<<<< HEAD
-
-            System.out.println(" No hay recursos disponibles para reasignar.");
-
-=======
->>>>>>> e3a5d801168915a8cb108beb18c7679b09fdb8a6
 // Elimina duplicados para mostrar solo entradas únicas
             List<String> historialUnico = historial.stream()
                     .distinct()
@@ -401,10 +342,6 @@ public class MenuSistemaEmergencia {
             sistemaEmergencias.cerrarJornada();
         } else {
             System.out.println("Cierre de jornada cancelado.");
-<<<<<<< HEAD
-
-=======
->>>>>>> e3a5d801168915a8cb108beb18c7679b09fdb8a6
         }
     }
 
