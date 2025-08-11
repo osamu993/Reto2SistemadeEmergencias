@@ -17,3 +17,12 @@ Emergencia: Accidente Vehicular | Ubicación: NORTE | Gravedad: BAJO | Estado: A
 Emergencia: Robo | Ubicación: SUR | Gravedad: BAJO | Estado: Atendida | Tiempo: 20 min
 Emergencia: Robo | Ubicación: CENTRO | Gravedad: ALTO | Estado: Atendida | Tiempo: 10 min
 Emergencia: Robo | Ubicación: NORTE | Gravedad: MEDIO | Estado: Atendida | Tiempo: 13 min
+Emergencia: Incendio | Ubicación: NORTE | Gravedad: ALTO | Estado: Atendida | Tiempo: 18 min
+Emergencia: Accidente Vehicular | Ubicación: SUR | Gravedad: MEDIO | Estado: Atendida | Tiempo: 23 min
+Emergencia: Robo | Ubicación: ESTE | Gravedad: MEDIO | Estado: Atendida | Tiempo: 12 min
+Emergencia: Incendio | Ubicación: OESTE | Gravedad: BAJO | Estado: Atendida | Tiempo: 22 min
+Emergencia: Accidente Vehicular | Ubicación: NORTE | Gravedad: ALTO | Estado: Atendida | Tiempo: 16 min
+Emergencia: Incendio | Ubicación: SUR | Gravedad: MEDIO | Estado: Atendida | Tiempo: 25 min
+Emergencia: Robo | Ubicación: NORTE | Gravedad: BAJO | Estado: Atendida | Tiempo: 13 min
+Emergencia: Incendio | Ubicación: ESTE | Gravedad: ALTO | Estado: Atendida | Tiempo: 17 min
+Emergencia: Robo | Ubicación: SUR | Gravedad: MEDIO | Estado: Atendida | Tiempo: 20 min

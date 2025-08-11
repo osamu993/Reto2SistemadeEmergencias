@@ -8,6 +8,13 @@
             "type": "java",
             "name": "Main",
             "request": "launch",
+            "mainClass": "view.Main",
+            "projectName": "Reto2SistemadeEmergencias_5347daf6"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
             "mainClass": "utils.Main",
             "projectName": "Reto2SistemadeEmergencias_e98143e0"
         },
